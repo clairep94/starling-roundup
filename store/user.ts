@@ -14,15 +14,14 @@ export const useUserStore = defineStore('user', () => {
     isLoggingIn.value = true
 
     try {
-      const response = await $fetch<userAccountList>('https://api-sandbox.starlingbank.com/api/v2/accounts', {
+      const response = await $fetch<userAccountList>('/api/starling/accounts', {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'session-token': token,
         }
       })
       console.log(response)
-      userAccountList.value = response
+      // userAccountList.value = response
     } catch (error) {
       console.error(error) // change to toast
     } finally {
