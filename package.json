@@ -17,9 +17,12 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@justeattakeaway/pie-css": "^0.15.1",
     "@justeattakeaway/pie-icons-webc": "^1.6.0",
+    "@justeattakeaway/pie-webc": "^0.6.19",
     "@tailwindcss/vite": "^4.0.11",
     "@vueuse/core": "^12.8.2",
+    "nuxt-ssr-lit": "^1.6.29",
     "tailwindcss": "^4.0.11"
   }
 }

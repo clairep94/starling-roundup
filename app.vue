@@ -1,4 +1,5 @@
 <template>
+  <Notifications />
   <div class="w-full min-h-screen bg-home-peach">
     <NuxtLayout>
       <NuxtPage />
@@ -7,4 +8,5 @@
 </template>
 
 <script setup lang="ts">
+import Notifications from '~/components/Notifications.vue'
 </script>

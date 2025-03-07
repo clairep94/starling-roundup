@@ -8,10 +8,15 @@
       </h1>
     </div>
 
-    <form @submit.prevent="handleSubmit" class="flex flex-col gap-y-10">
-      <!-- Session Token -->
-      <div class="flex flex-col gap-y-2">
-        <label for="session-token" class="text-text-default/80 text-sm font-semibold md:text-lg">
+    <form data-test="login-form"
+      @submit.prevent="handleSubmit" 
+      class="flex flex-col gap-y-10">
+      <div data-test="session-token-form-field"
+        class="flex flex-col gap-y-2">
+        <label
+          data-test="session-token-form-field-label"
+          for="session-token" 
+          class="text-text-default/80 text-sm font-semibold md:text-lg">
           Session Token
         </label>
         <input
@@ -22,6 +27,18 @@
           class="p-3 border rounded-md border-input-border"
           required
         />
+        <label 
+          data-test="error-message" v-if="showErrorMessage"
+          class="text-red-700 font-medium"
+        >
+          Invalid session token. Please get a valid token from 
+          <a class="underline hover:cursor-pointer"
+            href="https://developer.starlingbank.com/"
+            target="_blank"
+          >
+            Starling Developers Portal.
+          </a>
+        </label>
       </div>
 
       <!-- Submit Button -->
@@ -47,12 +64,16 @@ import { useRouter } from 'vue-router'
 const userStore = useUserStore()
 const sessionToken = ref('')
 const router = useRouter()
+const showErrorMessage = ref(false)
 
 const handleSubmit = async () => {
+  showErrorMessage.value = false
   if (!sessionToken.value) return
   const successfulLogin = await userStore.login(sessionToken.value)
   if (successfulLogin) {
     router.push('/account')
+  } else {
+    showErrorMessage.value = true
   }
 }
 </script>

@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import type { userAccountList } from '~/types/userAccount.type'
 import type { userIdentity } from '~/types/userIdentity.type'
 import { useAccountStore } from './account'
+import { useNotificationsStore } from './notifications'
 import { useStorage } from '@vueuse/core'
 
 type userAccountResponse = {
@@ -19,6 +20,7 @@ export const useUserStore = defineStore('user', () => {
   const token = ref<string|null>(null)
   const isLoggingIn = ref(false)
   const user = ref<userIdentity>()
+  const notificationsStore = useNotificationsStore()
 
   const { setAccounts, clearAccounts } = useAccountStore()
 
@@ -42,7 +44,10 @@ export const useUserStore = defineStore('user', () => {
       token.value = newToken
       return true // successfully logged in
     } catch (error) {
-      console.error(error) // change to toast
+      notificationsStore.addNotification({
+        variant: "error",
+        message: "Invalid session token. Please get a valid token."
+      })
       clearAccounts()
       token.value = null
       return false // failed to log in
