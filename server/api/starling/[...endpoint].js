@@ -4,9 +4,8 @@ export default defineEventHandler(async (event) => {
 
   const baseUrl = "https://api-sandbox.starlingbank.com/api/v2/";
 
-  const url = `${baseUrl}${endpoint}`; // e.g. /api/v2/accounts, /api/v2/transactions, etc.
+  const url = `${baseUrl}${endpoint}`;
 
-  // Get the session token from the headers
   const sessionToken = event.node.req.headers["session-token"];
   console.log("Session token in server:", sessionToken);
   if (!sessionToken) {
@@ -17,25 +16,27 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // const response = await $fetch(url, {
-    //   method: "GET",
-    //   headers: {
-    //     Authorization: `Bearer ${sessionToken}`,
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-
-    // return response;
-
-    return {
-      statusCode: 200,
-      statusMessage: "Success",
-      data: {
-        endpoint,
-        sessionToken,
-        url,
+    const response = await $fetch(url, {
+      method: event.method,
+      headers: {
+        Authorization: `Bearer ${sessionToken}`,
+        "Content-Type": "application/json",
       },
-    };
+    });
+
+    return response;
+
+    // return {
+    //   statusCode: 200,
+    //   statusMessage: "Success",
+    //   data: {
+    //     endpoint,
+    //     sessionToken,
+    //     url,
+    //     event,
+    //     type: event.method,
+    //   },
+    // };
   } catch (error) {
     console.log(error);
     throw createError({
