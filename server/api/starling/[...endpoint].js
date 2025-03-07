@@ -6,7 +6,6 @@ export default defineEventHandler(async (event) => {
   const url = `${baseUrl}${endpoint}`;
 
   const sessionToken = event.node.req.headers["session-token"];
-  console.log("Session token in server:", sessionToken);
   if (!sessionToken) {
     throw createError({
       statusCode: 400,
@@ -24,7 +23,7 @@ export default defineEventHandler(async (event) => {
     });
 
     return {
-      ...response,
+      data: response,
       request: {
         endpoint,
         sessionToken,

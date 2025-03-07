@@ -6,7 +6,12 @@ import { useAccountStore } from './account'
 import { useStorage } from '@vueuse/core'
 
 type userAccountResponse = {
-  accounts: userAccountList,
+  data: { accounts: userAccountList}
+  request: any //debugging purposes only
+}
+
+type userIdentityResponse = {
+  data: userIdentity
   request: any //debugging purposes only
 }
 
@@ -33,7 +38,7 @@ export const useUserStore = defineStore('user', () => {
       })
       console.log(response)
       console.log("setting accounts")
-      setAccounts(response.accounts)
+      setAccounts(response.data.accounts)
       token.value = newToken
       return true // successfully logged in
     } catch (error) {
@@ -57,15 +62,16 @@ export const useUserStore = defineStore('user', () => {
   async function fetchUserDetails() {
     if (!token.value) return
     try {
-      const response = await $fetch<userIdentity>('/api/starling/identity/individual', {
+      const response = await $fetch<userIdentityResponse>('/api/starling/identity/individual', {
         method: 'GET',
         headers: {
           'session-token': token.value,
         }
       })
-      console.log(response)
+      console.log("response",response)
 
-      user.value = response
+      user.value = response.data
+      console.log("user", user.value)
     } catch (error) {
       console.error(error)
       clearAccounts()
@@ -73,5 +79,5 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  return { token, isLoggingIn, login, fetchUserDetails }
+  return { token, user, isLoggingIn, login, fetchUserDetails }
 })
