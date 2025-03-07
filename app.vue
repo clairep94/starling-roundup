@@ -1,6 +1,9 @@
 <template>
-  <div class="h-full w-full flex flex-col bg-white max-w-5xl">
-    <h1 class="text-3xl font-bold underline text-text-default">
+  <div class="h-full w-full flex flex-col bg-home-peach max-w-5xl">
+    <div class="w-full text-home-white bg-home-darkblue p-2">
+      Starling Bank
+    </div>
+    <h1 class="text-3xl font-bold underline text-home-darkblue">
       Hello world!
     </h1>
     <div class="flex p-2 rounded-sm border-input-border border">
