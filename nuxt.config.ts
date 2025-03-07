@@ -19,4 +19,9 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
   ],
+  app:{
+    head:{
+      titleTemplate: '%s | Claire Peng Roundup Challenge'
+    }
+  }
 });
