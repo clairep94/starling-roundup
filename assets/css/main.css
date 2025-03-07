@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* extending tailwind theme using colours from Starling site
+Tailwind docs:
+https://tailwindcss.com/docs/theme#default-theme-variable-reference */
+
 @theme{
   --color-text-default: #2c1c49;
   --color-text-secondary: #7a708c;
@@ -15,10 +19,50 @@
   --color-input-border: #e7e7e7;
   --color-input-hover: #f6f6f6;
   --color-input-active-border-colour: #4a90e2;
+  --color-home-purple: #6935d3;
+  --color-home-teal: #19d3c5;
+  --color-home-darkblue: #192851;
+  --color-home-peach: #f6efea;
+  --color-home-orange: #f08357;
+  --color-home-white: #fff;
 }
 
-/* Copied below from starling site, root-Cq-3aluX.css */
-/* https://tailwindcss.com/docs/theme#default-theme-variable-reference */
+/* Homepage */
+/* :root{
+  --f6jvsh0: "Universal Sans",Arial,Helvetica,sans-serif;
+  --f6jvsh1: none;
+  --f6jvsh2: inherit;
+  --f6jvsh3: currentColor;
+  --f6jvsh4: #fff;
+  --f6jvsh5: #6935d3;
+  --f6jvsh6: #19d3c5;
+  --f6jvsh7: #192851;
+  --f6jvsh8: #f6efea;
+  --f6jvsh9: #f08357;
+  --f6jvsha: #fff;
+  --f6jvshb: #eeeaf6;
+  --f6jvshc: #e7f9f7;
+  --f6jvshd: #e6e9f2;
+  --f6jvshe: #f7f7f7;
+  --f6jvshf: #e1d7f6;
+  --f6jvshg: #dcf;
+  --f6jvshh: #a586e5;
+  --f6jvshi: #4a2594;
+  --f6jvshj: #4f289e;
+  --f6jvshk: #f2f9f7;
+  --f6jvshl: #baeae7;
+  --f6jvshm: #12948a;
+  --f6jvshn: #4ea39b;
+  --f6jvsho: #a3a9ba;
+  --f6jvshp: #131e3d;
+  --f6jvshq: #e3e3e3;
+  --f6jvshr: #fdecef;
+  --f6jvshs: #ea5c5c;
+  --f6jvsht: #4ea39b;
+  --f6jvshu: #c3f0ec;
+} */
+
+/* Login page */
 /* :root {
   --font-size-xs: .75rem;
   --font-size-sm: .875rem;
