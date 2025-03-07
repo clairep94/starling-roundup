@@ -39,10 +39,8 @@ export default defineEventHandler(async (event) => {
       data: response,
       request: {
         endpoint,
-        sessionToken,
         url,
-        event,
-        type: event.method,
+        requestType: event.method,
       },
     };
   } catch (error) {

@@ -27,6 +27,12 @@ describe("Starling API Handler", () => {
         body: { key: "value" },
         expectedUrl: "https://api-sandbox.starlingbank.com/api/v2/test-endpoint?param1=value1&param2=value2",
         expectedBody: { key: "value" },
+        expectedData: { success: true },
+        expectedRequest: {
+          endpoint: "test-endpoint",
+          url: "https://api-sandbox.starlingbank.com/api/v2/test-endpoint?param1=value1&param2=value2",
+          requestType: "POST",
+        },
       },
     ],
     // Test case 2: GET request with query parameters, no body
@@ -36,6 +42,12 @@ describe("Starling API Handler", () => {
         query: { param1: "value1" },
         expectedUrl: "https://api-sandbox.starlingbank.com/api/v2/test-endpoint?param1=value1",
         expectedBody: undefined,
+        expectedData: { success: true },
+        expectedRequest: {
+          endpoint: "test-endpoint",
+          url: "https://api-sandbox.starlingbank.com/api/v2/test-endpoint?param1=value1",
+          requestType: "GET",
+        },
       },
     ],
     // Test case 3: POST request with only body, no query parameters
@@ -45,6 +57,12 @@ describe("Starling API Handler", () => {
         body: { key: "value" },
         expectedUrl: "https://api-sandbox.starlingbank.com/api/v2/test-endpoint",
         expectedBody: { key: "value" },
+        expectedData: { success: true },
+        expectedRequest: {
+          endpoint: "test-endpoint",
+          url: "https://api-sandbox.starlingbank.com/api/v2/test-endpoint",
+          requestType: "POST",
+        },
       },
     ],
     // Test case 4: GET request with no query parameters and no body
@@ -53,27 +71,34 @@ describe("Starling API Handler", () => {
         method: "GET",
         expectedUrl: "https://api-sandbox.starlingbank.com/api/v2/test-endpoint",
         expectedBody: undefined,
+        expectedData: { success: true },
+        expectedRequest: {
+          endpoint: "test-endpoint",
+          url: "https://api-sandbox.starlingbank.com/api/v2/test-endpoint",
+          requestType: "GET",
+        },
       },
     ],
   ])(
-    "should call the API with the correct parameters",
-    async ({ method, query, body, expectedUrl, expectedBody }) => {
+    "should call the API and return the correct data and request details for %s",
+    async ({ method, query, body, expectedUrl, expectedBody, expectedData, expectedRequest }) => {
       const event = {
         context: { params: { endpoint: "test-endpoint" } },
         node: { 
           req: { 
             headers: { "session-token": "test-token" },
-            query, // Passing query dynamically
-            body, // Passing body dynamically
+            query, 
+            body, 
           } 
         },
-        method, // Dynamically set method
+        method, 
       };
-  
-      $fetch.mockResolvedValue({ success: true });
-  
+
+      // Mocking the API response
+      $fetch.mockResolvedValue(expectedData );
+
       const result = await handler(event);
-  
+
       // Check the URL with query parameters
       expect($fetch).toHaveBeenCalledWith(
         expectedUrl,
@@ -83,14 +108,17 @@ describe("Starling API Handler", () => {
             Authorization: "Bearer test-token",
             "Content-Type": "application/json",
           },
-          body: expectedBody ? JSON.stringify(expectedBody) : undefined, // Only pass body if it exists
+          body: expectedBody ? JSON.stringify(expectedBody) : undefined,
         }
       );
+
+      // Check the returned response data
+      expect(result).toEqual({
+        data: expectedData,
+        request: expectedRequest,
+      });
     }
   );
-  
-
-  // it("should return the request result data and the request details")
 
   it("should return the error if API request fails", async () => {
     const event = {
