@@ -1,32 +1,77 @@
 import {ref} from 'vue'
 import { defineStore } from 'pinia'
-import type { userAccount, userAccountList } from '~/types/userAccount.type'
+import type { userAccountList } from '~/types/userAccount.type'
+import type { userIdentity } from '~/types/userIdentity.type'
+import { useAccountStore } from './account'
+import { useStorage } from '@vueuse/core'
+
+type userAccountResponse = {
+  accounts: userAccountList,
+  request: any //debugging purposes only
+}
 
 export const useUserStore = defineStore('user', () => {
   const token = ref<string|null>(null)
-  const userAccountList = ref<userAccountList|null>()
   const isLoggingIn = ref(false)
+  const user = ref<userIdentity>()
 
-  // get default accountUuid
-  // get default defaultCategory
+  const { setAccounts, clearAccounts } = useAccountStore()
 
-  async function login(token:string) {
+  /**
+   * Log in using the token
+   * @param newToken token for the starling api sandbox user
+   */
+  async function login(newToken:string): Promise<boolean> {
     isLoggingIn.value = true
 
     try {
-      const response = await $fetch<userAccountList>('/api/starling/accounts', {
+      const response = await $fetch<userAccountResponse>('/api/starling/accounts', {
         method: 'GET',
         headers: {
-          'session-token': token,
+          'session-token': newToken,
         }
       })
       console.log(response)
-      // userAccountList.value = response
+      console.log("setting accounts")
+      setAccounts(response.accounts)
+      token.value = newToken
+      return true // successfully logged in
     } catch (error) {
       console.error(error) // change to toast
+      clearAccounts()
+      token.value = null
+      return false // failed to log in
     } finally {
       isLoggingIn.value = false
     }
   }
-  return { token, userAccountList, isLoggingIn, login }
+
+  /**
+   * removes the token and accounts from the store
+   */
+  function logout() {
+    clearAccounts()
+    token.value = null
+  }
+
+  async function fetchUserDetails() {
+    if (!token.value) return
+    try {
+      const response = await $fetch<userIdentity>('/api/starling/identity/individual', {
+        method: 'GET',
+        headers: {
+          'session-token': token.value,
+        }
+      })
+      console.log(response)
+
+      user.value = response
+    } catch (error) {
+      console.error(error)
+      clearAccounts()
+      token.value = null
+    }
+  }
+
+  return { token, isLoggingIn, login, fetchUserDetails }
 })

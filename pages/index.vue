@@ -24,9 +24,9 @@
       "
       >
       <div data-test="logo-header" class="w-full flex md:p-12">
-        <img
+        <img @click="showLoginForm = false"
           src="@/public/StarlingLogoFullDark.png"
-          class="h-14 md:h-18"
+          class="h-14 md:h-18 hover:cursor-pointer"
         />
       </div>
 

@@ -42,12 +42,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useUserStore } from '@/store/user'
+import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const sessionToken = ref('')
+const router = useRouter()
 
 const handleSubmit = async () => {
   if (!sessionToken.value) return
-  await userStore.login(sessionToken.value)
+  const successfulLogin = await userStore.login(sessionToken.value)
+  if (successfulLogin) {
+    router.push('/account')
+  }
 }
 </script>
