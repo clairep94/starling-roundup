@@ -1,1 +1,62 @@
 @import "tailwindcss";
+
+@theme{
+  --color-text-default: #2c1c49;
+  --color-text-secondary: #7a708c;
+  --color-teal: #50e3c2;
+  --color-blue: #1e73be;
+  --color-white: #ffffff;
+  --color-dark-purple: #2c1c49;
+  --color-grey: #958da4;
+  --color-black: #000000;
+  --color-indigo-blue: #1e1937;
+  --color-light-grey: #ebebeb;
+  --color-extra-light-grey: #f8f8f8;
+  --color-input-border: #e7e7e7;
+  --color-input-hover: #f6f6f6;
+  --color-input-active-border-colour: #4a90e2;
+}
+
+/* Copied below from starling site, root-Cq-3aluX.css */
+/* https://tailwindcss.com/docs/theme#default-theme-variable-reference */
+/* :root {
+  --font-size-xs: .75rem;
+  --font-size-sm: .875rem;
+  --font-size-md: 1rem;
+  --text-color: #2c1c49;
+  --secondary-text-color: #7a708c;
+  --teal: #50e3c2;
+  --blue: #1e73be;
+  --starling-white: #ffffff;
+  --starling-red: #ea5c5c;
+  --starling-dark-purple: #2c1c49;
+  --starling-grey: #958da4;
+  --starling-black: #000000;
+  --starling-indigo-blue: #1e1937;
+  --light-grey: #ebebeb;
+  --extra-light-grey: #f8f8f8;
+  --button-primary-colour: var(--starling-dark-purple);
+  --button-primary-bg: #68d9cf;
+  --button-primary-bg-hover: #00c8bb;
+  --button-primary-bg-active: #00b9aa;
+  --button-primary-bg-disabled: #8fe6de;
+  --button-neutral-colour: #0c6dbb;
+  --button-neutral-bg: #eeeeee;
+  --button-neutral-bg-hover: #e7e7e7;
+  --button-neutral-bg-active: #d0d0d0;
+  --button-negative-colour: var(--starling-white);
+  --button-negative-bg: #ce3d3d;
+  --button-negative-bg-hover: #bb161c;
+  --button-negative-bg-active: #8b0e12;
+  --button-primary-bg-disabled: #f5d0d0;
+  --text-button-colour: var(--blue);
+  --text-button-colour-hover: #7fb4e9;
+  --text-button-colour-active: #abcef0;
+  --text-button-bg: transparent;
+  --input-border-colour: #e7e7e7;
+  --input-hover-colour: #f6f6f6;
+  --input-disabled-colour: var(--input-hover-colour);
+  --input-disabled-hover-colour: #ededed;
+  --input-active-border-colour: #4a90e2;
+  --max-screen-width: 62.5rem
+} */
