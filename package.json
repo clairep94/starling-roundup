@@ -10,7 +10,9 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "^1.0.3",
+    "@pinia/nuxt": "^0.10.1",
     "nuxt": "^3.8.2",
+    "pinia": "^3.0.1",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"
   },
