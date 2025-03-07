@@ -3,15 +3,19 @@
     <h1 class="text-3xl font-bold underline text-text-default">
       Hello world!
     </h1>
-   
+    <div class="flex p-2 rounded-sm border-input-border border">
+      <icon-heart/>
+    </div> 
     <pre class="text-text-secondary">
-    {{ data }}
+      {{ data }}
     </pre>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import '@justeattakeaway/pie-icons-webc/dist/IconHeart.js';
+
 const data = ref(null)
 onMounted(() => {
   addTodo()
