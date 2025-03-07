@@ -1,7 +1,7 @@
 <template>
-  <div class="h-full w-full flex flex-col bg-home-peach max-w-5xl">
-    <div class="w-full text-home-white bg-home-darkblue p-2">
-      Starling Bank
+  <div class="h-full w-full flex flex-col bg-home-peach max-w-5xl ">
+    <div class="w-full text-home-white bg-home-darkblue p-2 font-noto-sans tracking-wider">
+      Starling Bank <span class="font-poppins font-thin">Frontend</span> Challenge
     </div>
     <h1 class="text-3xl font-bold underline text-home-darkblue">
       Hello world!
