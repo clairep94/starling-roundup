@@ -33,6 +33,8 @@ https://tailwindcss.com/docs/theme#default-theme-variable-reference */
   --color-home-peach: #f6efea;
   --color-home-orange: #f08357;
   --color-home-white: #fff;
+  --color-button-teal: #68d9cf;
+  --color-button-teal-hover: #00c8bb;
 }
 
 /* Homepage */
