@@ -24,5 +24,10 @@ export default defineNuxtConfig({
     head:{
       titleTemplate: '%s | Claire Peng Roundup Challenge'
     }
+  },
+  vue: {
+    compilerOptions: {
+      isCustomElement: tag => tag.includes('pie-') || tag.includes('icon-')
+    }
   }
 });
