@@ -1,14 +1,15 @@
 <template>
-  <div class="w-full min-h-screen bg-home-peach">
-    <!-- App header -->
-     <main class="flex-grow">
+  <div class="w-full min-h-screen bg-white flex flex-row">
+    <NavigationBar
+    />
+    <main class="flex-grow">
       <slot/>
-     </main>
-    <!-- App Footer -->
+    </main>
   </div>
 </template>
 
 <script setup>
+import NavigationBar from '@/components/NavigationBar.vue'
 
 </script>
 
