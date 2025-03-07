@@ -1,21 +1,20 @@
 <template>
   <NuxtLayout name="authenticated">
-    <div>
-      Account Overview
-      <p>
-        Accounts:
-      </p> 
-      <pre>
-        {{ accountStore.accounts }}
-      </pre>
   
-      default account:
-      <pre>
-        {{ accountStore.defaultAccount }}
-      </pre>
-      {{userStore.user}}
-      {{ userStore.token }}
-    </div>
+  default account:
+  <pre>
+    {{ accountStore.defaultAccount }}
+  </pre>
+
+  User:
+  <pre>
+  {{userStore.user}}
+  </pre>
+  Token:
+  <pre>
+  {{ userStore.token }}
+  </pre>
+
   </NuxtLayout>
 </template>
 
