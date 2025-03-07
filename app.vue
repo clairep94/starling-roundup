@@ -1,9 +1,12 @@
 <template>
-  <div class="h-full w-full flex flex-col bg-purple-950">
-    <h1 class="text-3xl font-bold underline">
+  <div class="h-full w-full flex flex-col bg-white max-w-5xl">
+    <h1 class="text-3xl font-bold underline text-text-default">
       Hello world!
     </h1>
+   
+    <pre class="text-text-secondary">
     {{ data }}
+    </pre>
   </div>
 </template>
 
