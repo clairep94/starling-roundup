@@ -62,31 +62,29 @@ import "@justeattakeaway/pie-icons-webc/dist/IconCoinsLarge.js";
 import "@justeattakeaway/pie-icons-webc/dist/IconCoinsFilledLarge.js";
 import { useUserStore } from "~/store/user";
 import { useAccountStore } from "~/store/account";
-import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
 const accountStore = useAccountStore();
 
-const router = useRouter();
 
 const navbarLinks = [
   {
     title: "Home",
     icon: "icon-house-large",
     iconFilled: "icon-house-filled-large",
-    path: "/account",
+    path: "/",
   },
   {
     title: "Savings Space",
     icon: "icon-coins-large",
     iconFilled: "icon-coins-filled-large",
-    path: "/account/savings-space",
+    path: "/savings-spaces",
   },
 ];
 
 function handleLogout() {
   userStore.logout();
-  router.push("/");
+  navigateTo("/login");
 }
 </script>
 

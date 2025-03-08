@@ -22,7 +22,6 @@ const router = useRouter()
 
 function handleLogout(){
   userStore.logout()
-  router.push('/')
 }
 </script>
 

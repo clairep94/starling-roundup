@@ -71,7 +71,7 @@ const handleSubmit = async () => {
   if (!sessionToken.value) return
   const successfulLogin = await userStore.login(sessionToken.value)
   if (successfulLogin) {
-    router.push('/account')
+    navigateTo('/')
   } else {
     showErrorMessage.value = true
   }
