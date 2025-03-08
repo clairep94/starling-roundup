@@ -26,11 +26,15 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import '@justeattakeaway/pie-webc/components/toast.js';
-import { useNotificationsStore, notificationTimeout } from '~/store/notifications'
-import type { Notification } from '~/types/Notification.type'
+import { useNotificationsStore, notificationTimeout } from '../store/notifications'
+import type { Notification } from '../types/notification.type'
 
 const notificationsStore = useNotificationsStore()
 const { notifications } = storeToRefs(notificationsStore)
+
+function deleteNotification(notification: Notification){
+  notificationsStore.removeNotification(notification.id)
+}
 </script>
 
 <style scoped>

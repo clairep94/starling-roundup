@@ -1,6 +1,6 @@
 import {ref} from 'vue'
 import { defineStore } from 'pinia'
-import type { Notification } from '~/types/notification.type'
+import type { Notification } from '../types/notification.type'
 
 export const notificationTimeout = 5000
 

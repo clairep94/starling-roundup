@@ -9,4 +9,5 @@
 
 <script setup lang="ts">
 import Notifications from './components/Notifications.vue'
+//Todo: route protection here
 </script>
