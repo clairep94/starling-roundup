@@ -3,17 +3,19 @@
   
   default account:
   <pre>
-    {{ accountStore.defaultAccount }}
+    {{ accountsStore.selectedAccount }}
   </pre>
 
   User:
   <pre>
-  {{userIdStore.user}}
+  {{userIdStore.userIdentity}}
   </pre>
   Token:
   <pre>
   {{ userIdStore.token }}
   </pre>
+
+  {{ `feed/account/${accountsStore.selectedAccount.accountUid}/category/${accountsStore.selectedAccount.defaultCategory}` }}
 
   </NuxtLayout>
 </template>
@@ -32,9 +34,9 @@ useHead({
 })
 
 onMounted(() => {
-  console.log("fetch transactions list")
-  console.log("endpoint:", `feed/account/${accountsStore.defaultAccount.accountUid}/category/${accountsStore.defaultAccount.defaultCategory}`)
-  console.log("current date:", "todo!") //todo
+  // console.log("fetch transactions list")
+  // console.log("endpoint:", `feed/account/${accountsStore.defaultAccount.accountUid}/category/${accountsStore.defaultAccount.defaultCategory}`)
+  // console.log("current date:", "todo!") //todo
 })
 </script>
 

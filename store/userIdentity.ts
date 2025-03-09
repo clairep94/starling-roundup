@@ -17,7 +17,7 @@ type userIdentityResponse = {
  * Used to log in
  */
 export const useUserIdentityStore = defineStore('userIdentity', () => {
-  const userIdentity = useStorage<UserIdentity>('userIdentity', null)
+  const userIdentity = useStorage<UserIdentity>('userIdentity', {})
   const token = useStorage<Token>('token', null)
   const isLoadingLogin = ref<boolean>(false)
   const notificationsStore = useNotificationsStore()
@@ -28,7 +28,7 @@ export const useUserIdentityStore = defineStore('userIdentity', () => {
    * @param newToken token for the starling api sandbox user
    * @endpoint GET /api/starling/identity/individual
    */
-  async function login(newToken: Token): Promise<void> {
+  async function login(newToken: Token): Promise<boolean> {
     isLoadingLogin.value = true
     try {
       const response = await $fetch<userIdentityResponse>('/api/starling/identity/individual', {
@@ -40,8 +40,10 @@ export const useUserIdentityStore = defineStore('userIdentity', () => {
       userIdentity.value = response.data
       token.value = newToken
       await accountsStore.fetchAccounts(newToken)
+      return true
     } catch (error: OfetchError) {
       notificationsStore.addError(error)
+      return false
     } finally {
       isLoadingLogin.value = false
     }
@@ -53,7 +55,7 @@ export const useUserIdentityStore = defineStore('userIdentity', () => {
    * as this would require a new token every time we manually test the logout functionality
    */
   function logout() {
-    userIdentity.value = null
+    userIdentity.value = {}
     token.value = null
     accountsStore.clearAccounts()
   }

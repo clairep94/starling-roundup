@@ -20,7 +20,7 @@
       </div>
 
       <!-- User Name & Account Type -->
-      <NavigationBarProfile />
+      <!-- <NavigationBarProfile /> -->
 
       <!-- Links -->
       <div data-test="navbar-links" class="flex flex-col gap-y-1">
@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <LogoutButton />
+    <!-- <LogoutButton /> -->
   </div>
 </template>
 

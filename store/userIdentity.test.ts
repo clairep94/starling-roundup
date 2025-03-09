@@ -20,7 +20,7 @@ describe('User Identity Store', () => {
   describe('and when there is no user identity in local storage', () => {
     test('initialises the store with null user identity', () => {
       const store = useUserIdentityStore()
-      expect(store.userIdentity).toBeNull()
+      expect(store.userIdentity).toEqual({})
     })
     test('initialises the store with null token', () => {
       const store = useUserIdentityStore()
@@ -29,8 +29,7 @@ describe('User Identity Store', () => {
   })
   describe('and when there is user identity in local storage', () => {
     const userIdentity = generateMockUserIdentity()
-    // below is not working in test but working on browser
-    test.skip('initialises the store with the user identity from local storage', () => {
+    test('initialises the store with the user identity from local storage', () => {
       localStorage.setItem('userIdentity', JSON.stringify(userIdentity))
       const store = useUserIdentityStore()
       expect(store.userIdentity).toEqual(userIdentity)
@@ -78,7 +77,7 @@ describe('User Identity Store', () => {
 
       expect(notificationsStore.addError).toHaveBeenCalledWith(error)
       expect(store.token).toBe(null)
-      expect(store.userIdentity).toBe(null)
+      expect(store.userIdentity).toEqual({})
       expect(store.isLoadingLogin).toBeFalsy()
     })
     test('should not call other stores to fetch data with the token when the request fails', async () => {
@@ -101,7 +100,7 @@ describe('User Identity Store', () => {
       store.userIdentity = generateMockUserIdentity()
       store.logout()
       expect(store.token).toBe(null)
-      expect(store.userIdentity).toBe(null)
+      expect(store.userIdentity).toEqual({})
     })
     test('should call other store clear methods', () => {
       const store = useUserIdentityStore()
