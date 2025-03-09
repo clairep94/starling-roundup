@@ -12,6 +12,9 @@
 </template>
 
 <script setup lang="ts">
+import { useUserIdentityStore } from '@/store/userIdentity'
+const userIdStore = useUserIdentityStore()
+
 useHead({
   title: 'Savings Spaces'
 })
