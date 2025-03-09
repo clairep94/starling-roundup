@@ -93,4 +93,21 @@ describe('User Identity Store', () => {
       expect(accountsStore.fetchAccounts).not.toHaveBeenCalledWith(token)
     })
   })
+
+  describe('logout', () => {
+    test('should clear userIdentity and token', () => {
+      const store = useUserIdentityStore()
+      store.token = 'some-token'
+      store.userIdentity = generateMockUserIdentity()
+      store.logout()
+      expect(store.token).toBe(null)
+      expect(store.userIdentity).toBe(null)
+    })
+    test('should call other store clear methods', () => {
+      const store = useUserIdentityStore()
+      const accountsStore = useAccountsStore()
+      store.logout()
+      expect(accountsStore.clearAccounts).toHaveBeenCalled()
+    })
+  })
 })
