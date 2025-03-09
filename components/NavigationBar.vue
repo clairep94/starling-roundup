@@ -6,7 +6,7 @@
     <div class="flex flex-col gap-y-3">
 
       <!-- STARLING LOGO -->
-      <div class="my-6 mx-4 md:w-[200px] xl:w-[240px]">
+      <div data-test="starling-logo" class="my-6 mx-4 md:w-[200px] xl:w-[240px]">
         <img
           data-test="logo-mini"
           src="@/public/StarlingLogo.png"
