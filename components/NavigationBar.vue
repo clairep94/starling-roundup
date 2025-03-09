@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <!-- <LogoutButton /> -->
+    <LogoutButton />
   </div>
 </template>
 
