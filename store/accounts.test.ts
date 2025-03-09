@@ -1,12 +1,15 @@
-import { describe, beforeEach, test, expect } from 'vitest'
+import { describe, beforeEach, test, expect, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useAccountsStore } from './accounts'
 import { generateMockAccount } from '../types/account.type'
+
+vi.stubGlobal("$fetch", vi.fn());
 
 describe('Accounts Store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     localStorage.clear()
+    vi.resetAllMocks()
   })
 
   describe('and when there are no accounts in local storage', () => {
@@ -72,6 +75,24 @@ describe('Accounts Store', () => {
       expect(store.accounts).toEqual([])
       // expect(localStorage.getItem('accounts')).
       //   toEqual(JSON.stringify([]))
+    })
+  })
+
+  describe('fetchAccounts', () => {
+    test('should set the accounts in the store when the request is successful', async () => {
+      const store = useAccountsStore()
+      const accounts = [
+        generateMockAccount(),
+        generateMockAccount(),
+      ]
+      $fetch.mockResolvedValue({ data: { accounts } })
+      await store.fetchAccounts('test-token')
+      expect(store.accounts).toEqual(accounts)
+    })
+    test('should throw an error when the request fails', async () => {
+      const store = useAccountsStore()
+      $fetch.mockRejectedValue(new Error('API Error'))
+      await expect(store.fetchAccounts('test-token')).rejects.toThrow('Invalid session token. Please get a valid token.')
     })
   })
 })
