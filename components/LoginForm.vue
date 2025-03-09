@@ -47,9 +47,9 @@
           data-test="show-login-form-button"
           type="submit"
           class="rounded-full bg-button-teal hover:bg-button-teal-hover text-text-default py-2 px-6 text-lg hover:cursor-pointer"
-          :disabled="userStore.isLoggingIn"
+          :disabled="userIdStore.isLoadingLogin"
         >
-          {{ userStore.isLoggingIn ? 'Logging in...' : 'Log in with sandbox user' }}
+          {{ userIdStore.isLoadingLogin ? 'Logging in...' : 'Log in with sandbox user' }}
         </button>
       </div>
     </form>
@@ -58,10 +58,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useUserStore } from '../store/user'
+import { useUserIdentityStore } from '../store/userIdentity'
 import { useRouter } from 'vue-router'
 
-const userStore = useUserStore()
+const userIdStore = useUserIdentityStore()
 const sessionToken = ref('')
 const router = useRouter()
 const showErrorMessage = ref(false)
@@ -69,7 +69,7 @@ const showErrorMessage = ref(false)
 const handleSubmit = async () => {
   showErrorMessage.value = false
   if (!sessionToken.value) return
-  const successfulLogin = await userStore.login(sessionToken.value)
+  const successfulLogin = await userIdStore.login(sessionToken.value)
   if (successfulLogin) {
     navigateTo('/')
   } else {

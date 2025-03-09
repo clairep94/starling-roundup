@@ -8,11 +8,11 @@
 
   User:
   <pre>
-  {{userStore.user}}
+  {{userIdStore.user}}
   </pre>
   Token:
   <pre>
-  {{ userStore.token }}
+  {{ userIdStore.token }}
   </pre>
 
   </NuxtLayout>
@@ -20,21 +20,22 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useUserStore } from '@/store/user'
-import { useAccountStore } from '@/store/account'
+import { useUserIdentityStore } from '@/store/userIdentity'
+import { useAccountsStore } from '@/store/accounts'
 import { useRouter } from 'vue-router'
 
-const userStore = useUserStore()
-const accountStore = useAccountStore()
+const userIdStore = useUserIdentityStore()
+const accountsStore = useAccountsStore()
 
 useHead({
   title: 'Account Overview'
 })
 
 onMounted(() => {
-  userStore.fetchUserDetails()
+  console.log("fetch transactions list")
+  console.log("endpoint:", `feed/account/${accountsStore.defaultAccount.accountUid}/category/${accountsStore.defaultAccount.defaultCategory}`)
+  console.log("current date:", "todo!") //todo
 })
-
 </script>
 
 <style scoped>

@@ -1,11 +1,11 @@
 <template>
-  <NuxtLayout name="authenticated">
+  <!-- <NuxtLayout name="authenticated"> -->
     <div>
       Savings Spaces
     </div>
     show savings spaces here
     create new savings space
-  </NuxtLayout>
+  <!-- </NuxtLayout> -->
 </template>
 
 <script setup lang="ts">

@@ -20,25 +20,7 @@
       </div>
 
       <!-- User Name & Account Type -->
-      <div
-        data-test="user-name-account-type"
-        class="py-4 px-4 bg-white/10 flex flex-row items-center gap-x-2 border-l-teal border-l-3"
-      >
-        <div data-test="user-name-account-type-left" class="w-[45px]">
-          <div
-            data-test="user-icon-container"
-            class="bg-teal rounded-full h-7 w-7 flex items-center justify-center"
-          >
-            <icon-user />
-          </div>
-        </div>
-        <div class="hidden md:flex flex-col">
-          <p class="font-bold">
-            {{ userStore.user?.firstName }} {{ userStore.user?.lastName }}
-          </p>
-          <p>{{ accountStore.defaultAccount?.name }}</p>
-        </div>
-      </div>
+      <NavigationBarProfile />
 
       <!-- Links -->
       <div data-test="navbar-links" class="flex flex-col gap-y-1">
@@ -60,12 +42,9 @@ import "@justeattakeaway/pie-icons-webc/dist/IconHouseLarge.js";
 import "@justeattakeaway/pie-icons-webc/dist/IconHouseFilledLarge.js";
 import "@justeattakeaway/pie-icons-webc/dist/IconCoinsLarge.js";
 import "@justeattakeaway/pie-icons-webc/dist/IconCoinsFilledLarge.js";
-import { useUserStore } from "~/store/user";
-import { useAccountStore } from "~/store/account";
-
-const userStore = useUserStore();
-const accountStore = useAccountStore();
-
+import NavigationBarLink from "./NavigationBarLink.vue";
+import LogoutButton from "./LogoutButton.vue";
+import NavigationBarProfile from "./NavigationBarProfile.vue";
 
 const navbarLinks = [
   {
@@ -82,10 +61,6 @@ const navbarLinks = [
   },
 ];
 
-function handleLogout() {
-  userStore.logout();
-  navigateTo("/login");
-}
 </script>
 
 <style scoped></style>
