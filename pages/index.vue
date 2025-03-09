@@ -19,6 +19,10 @@
 
     {{ `feed/account/${accountsStore.selectedAccount.accountUid}/category/${accountsStore.selectedAccount.defaultCategory}` }}
 
+    <pre>
+    {{ transactionFeedStore.feed }}
+    </pre>
+    {{ transactionFeedStore.isLoadingTransactionFeed }}
   </NuxtLayout>
 </template>
 
@@ -26,19 +30,20 @@
 import { ref, onMounted } from 'vue'
 import { useUserIdentityStore } from '@/store/userIdentity'
 import { useAccountsStore } from '@/store/accounts'
+import { useTransactionFeedStore } from '@/store/transactionFeed'
 import { useRouter } from 'vue-router'
 
 const userIdStore = useUserIdentityStore()
 const accountsStore = useAccountsStore()
+const transactionFeedStore = useTransactionFeedStore()
 
 useHead({
   title: 'Account Overview'
 })
 
 onMounted(() => {
-  // console.log("fetch transactions list")
-  // console.log("endpoint:", `feed/account/${accountsStore.defaultAccount.accountUid}/category/${accountsStore.defaultAccount.defaultCategory}`)
-  // console.log("current date:", "todo!") //todo
+  console.log('test')
+  transactionFeedStore.fetchTransactionFeed('2025-03-03T12%3A34%3A56.000Z')
 })
 </script>
 
