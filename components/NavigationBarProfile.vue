@@ -12,25 +12,14 @@
       </div>
     </div>
     <div data-test="user-navbar-profile-right" class="hidden md:flex">
-      <!-- LOADING -->
-      <div v-if="userIdentityStore.isLoginLoading || accountsStore.isAccountsLoading">
-        Loading user details...
-      </div>
-
-      <!-- DATA -->
-      <div v-if="userIdentityStore.userIdentity && accountsStore.accounts"
+      <div 
         data-test="user-name-and-account-type" class="flex-col">
         <p data-test="user-full-name" class="font-bold">
-          {{ userIdentityStore.userIdentity.firstName }} {{ userIdentityStore.userIdentity.lastName }}
+          {{userIdStore.userIdentity.firstName}} {{userIdStore.userIdentity.lastName}}
         </p>
         <p data-test="user-account-type">
-          {{ accountStore.defaultAccount?.name }}
+          {{ accountsStore.selectedAccount.name }}
         </p>
-      </div>
-
-      <!-- ERROR -->
-      <div v-else>
-        Error loading user
       </div>
     </div>
   </div>
@@ -38,11 +27,11 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useUserIdentityStore } from "~/store/userIdentity";
-import { useAccountsStore } from "~/store/accounts";
+import { useUserIdentityStore } from '@/store/userIdentity'
+import { useAccountsStore } from '@/store/accounts'
 
-const userIdentityStore = useUserIdentityStore();
-const accountsStore = useAccountsStore();
+const userIdStore = useUserIdentityStore()
+const accountsStore = useAccountsStore()
 </script>
 
 <style scoped></style>

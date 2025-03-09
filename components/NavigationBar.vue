@@ -1,11 +1,11 @@
 <template>
-  <!-- Vertical Navbar -->
   <div
     data-test="nav-bar"
     class="bg-dark-purple text-white flex flex-col justify-between"
   >
     <div class="flex flex-col gap-y-3">
-      <!-- Logo -->
+
+      <!-- STARLING LOGO -->
       <div class="my-6 mx-4 md:w-[200px] xl:w-[240px]">
         <img
           data-test="logo-mini"
@@ -19,10 +19,10 @@
         />
       </div>
 
-      <!-- User Name & Account Type -->
-      <!-- <NavigationBarProfile /> -->
+      <!-- USER PROFILE -->
+      <NavigationBarProfile />
 
-      <!-- Links -->
+      <!-- LINKS -->
       <div data-test="navbar-links" class="flex flex-col gap-y-1">
         <NavigationBarLink
           v-for="link in navbarLinks"
@@ -32,7 +32,8 @@
       </div>
     </div>
 
-    <LogoutButton />
+    <!-- LOGOUT BUTTON -->
+    <LogoutButton data-test="logout-button" />
   </div>
 </template>
 

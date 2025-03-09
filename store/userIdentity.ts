@@ -55,8 +55,8 @@ export const useUserIdentityStore = defineStore('userIdentity', () => {
    * as this would require a new token every time we manually test the logout functionality
    */
   function logout() {
-    userIdentity.value = {}
     token.value = null
+    userIdentity.value = {}
     accountsStore.clearAccounts()
   }
 
