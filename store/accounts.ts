@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type { Account } from '../types/account.type'
 import type { Token } from '../types/auth.type'
+import type { OfetchError } from '../types/responseError.type'
 import { useStorage } from '@vueuse/core'
 import { useNotificationsStore } from './notifications'
 
@@ -52,11 +53,8 @@ export const useAccountsStore = defineStore('accounts', () => {
         }
       })
       setAccounts(response.data.accounts) 
-    } catch (error) {
-      notificationsStore.addNotification({
-        variant: "error",
-        message: `Error fetching accounts: ${error}`
-      })
+    } catch (error: OfetchError) {
+      notificationsStore.addError(error)
     } finally {
       isLoadingAccounts.value = false
     }

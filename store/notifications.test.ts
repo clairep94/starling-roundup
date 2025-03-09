@@ -56,4 +56,14 @@ describe('Notification Store', () => {
     notificationsStore.clearNotifications();
     expect(notificationsStore.notifications).toHaveLength(0);
   });
+
+  it('addError should add an error notification to the store', () => {
+    notificationsStore.addError('Error message');
+    expect(notificationsStore.notifications).toHaveLength(1);
+    expect(notificationsStore.notifications[0]).toEqual({
+      variant: 'error',
+      message: 'Error message',
+      id: 123456789000,
+    });
+  })
 });

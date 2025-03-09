@@ -2,13 +2,13 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type { UserIdentity } from '../types/userIdentity.type'
 import type { Token } from '../types/auth.type'
+import type { OfetchError } from '../types/responseError.type'
 import { useStorage } from '@vueuse/core'
 import { useNotificationsStore } from './notifications'
 import { useAccountsStore } from './accounts'
 
 type userIdentityResponse = {
   data: UserIdentity
-  request: any //debugging purposes only
 }
 
 /**
@@ -30,7 +30,6 @@ export const useUserIdentityStore = defineStore('userIdentity', () => {
    */
   async function login(newToken: Token): Promise<void> {
     isLoadingLogin.value = true
-
     try {
       const response = await $fetch<userIdentityResponse>('/api/starling/identity/individual', {
         method: 'GET',
@@ -41,11 +40,8 @@ export const useUserIdentityStore = defineStore('userIdentity', () => {
       userIdentity.value = response.data
       token.value = newToken
       await accountsStore.fetchAccounts(newToken)
-    } catch (error) {
-      notificationsStore.addNotification({
-        variant: "error",
-        message: "Invalid session token. Please get a valid token."
-      })
+    } catch (error: OfetchError) {
+      notificationsStore.addError(error)
     } finally {
       isLoadingLogin.value = false
     }

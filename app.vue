@@ -25,6 +25,8 @@ onBeforeMount(() => {
 watch(token, (newToken) => {
   if (!newToken) {
     navigateTo('/login')
+  } else {
+    navigateTo('/')
   }
 })
 </script>

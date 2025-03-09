@@ -14,11 +14,17 @@ export const useNotificationsStore = defineStore('notifications', () => {
       removeNotification(id);
     }, notificationTimeout);
   } 
+  function addError(ofetchError: string){
+    addNotification({
+      variant: "error",
+      message: ofetchError
+    })
+  }
   function removeNotification(id: number) {
     notifications.value = [...notifications.value.filter(item => item.id !== id)];
   }
   function clearNotifications() {
     notifications.value = []
   }
-  return { notifications, addNotification, removeNotification, clearNotifications }
+  return { notifications, addNotification, removeNotification, clearNotifications, addError }
 })

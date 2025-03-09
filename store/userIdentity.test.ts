@@ -6,6 +6,7 @@ import { useAccountsStore } from './accounts'
 import { generateMockUserIdentity } from '../types/userIdentity.type'
 import { createTestingPinia } from '@pinia/testing'
 import { generateMockToken } from '../types/auth.type'
+import { generateOfetchError } from '../types/responseError.type'
 
 vi.stubGlobal("$fetch", vi.fn());
 
@@ -70,14 +71,12 @@ describe('User Identity Store', () => {
       const store = useUserIdentityStore()
       const token = 'invalid-token'
       const notificationsStore = useNotificationsStore()
-      $fetch.mockRejectedValue(new Error('API Error'))
+      const error = generateOfetchError('GET', '/api/starling/identity/individual', 403, 'Forbidden')
+      $fetch.mockRejectedValue(error)
 
       await store.login(token)
 
-      expect(notificationsStore.addNotification).toHaveBeenCalledWith({
-        variant: 'error',
-        message: 'Invalid session token. Please get a valid token.'
-      })
+      expect(notificationsStore.addError).toHaveBeenCalledWith(error)
       expect(store.token).toBe(null)
       expect(store.userIdentity).toBe(null)
       expect(store.isLoadingLogin).toBeFalsy()
@@ -86,7 +85,8 @@ describe('User Identity Store', () => {
       const store = useUserIdentityStore()
       const token = 'invalid-token'
       const accountsStore = useAccountsStore()
-      $fetch.mockRejectedValue(new Error('API Error'))
+      const error = generateOfetchError('GET', '/api/starling/identity/individual', 403, 'Forbidden')
+      $fetch.mockRejectedValue(error)
 
       await store.login(token)
 

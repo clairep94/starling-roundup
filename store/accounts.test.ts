@@ -4,6 +4,8 @@ import { useAccountsStore } from './accounts'
 import { generateMockAccount } from '../types/account.type'
 import { useNotificationsStore } from './notifications'
 import { createTestingPinia } from '@pinia/testing'
+import { generateOfetchError } from '../types/responseError.type'
+
 
 vi.stubGlobal("$fetch", vi.fn());
 
@@ -106,14 +108,12 @@ describe('Accounts Store', () => {
       const store = useAccountsStore()
       const token = 'invalid-token'
       const notificationsStore = useNotificationsStore()
-      $fetch.mockRejectedValue(new Error('API Error'))
+      const error = generateOfetchError('GET', '/api/starling/accounts', 403, 'Forbidden')
+      $fetch.mockRejectedValue(error)
       await store.fetchAccounts(token)
 
-      expect(notificationsStore.addNotification).toHaveBeenCalledWith({
-        variant: 'error',
-        message: 'Error fetching accounts: Error: API Error'
-      })
-  
+      expect(notificationsStore.addError).toHaveBeenCalledWith(error)
+
       expect(store.accounts).toEqual([])
       expect(store.isLoadingAccounts).toBeFalsy()
     })
