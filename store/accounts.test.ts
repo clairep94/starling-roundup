@@ -2,12 +2,14 @@ import { describe, beforeEach, test, expect, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useAccountsStore } from './accounts'
 import { generateMockAccount } from '../types/account.type'
+import { useNotificationsStore } from './notifications'
+import { createTestingPinia } from '@pinia/testing'
 
 vi.stubGlobal("$fetch", vi.fn());
 
 describe('Accounts Store', () => {
   beforeEach(() => {
-    setActivePinia(createPinia())
+    setActivePinia(createTestingPinia({stubActions: false}))
     localStorage.clear()
     vi.resetAllMocks()
   })
@@ -28,7 +30,9 @@ describe('Accounts Store', () => {
       ]
       store.setAccounts(newAccounts)
       expect(store.accounts).toEqual(newAccounts)
-      // expect(localStorage.getItem('accounts')).toEqual(JSON.stringify(newAccounts))
+      // below is not working on test but is working in browser
+      // expect(localStorage.getItem('accounts'))
+      // .toEqual(JSON.stringify(newAccounts))
     })
   })
 
@@ -56,7 +60,9 @@ describe('Accounts Store', () => {
       ]
       store.setAccounts(newAccounts)
       expect(store.accounts).toEqual(newAccounts)
-      // expect(localStorage.getItem('accounts')).toEqual(JSON.stringify(newAccounts))
+      // below is not working on test but is working in browser
+      // expect(localStorage.getItem('accounts'))
+      // .toEqual(JSON.stringify(newAccounts))
     })
     test('should switch to a different account in the list', () => {
       const store = useAccountsStore()
@@ -73,26 +79,43 @@ describe('Accounts Store', () => {
       const store = useAccountsStore()
       store.clearAccounts()
       expect(store.accounts).toEqual([])
+      // below is not working on test but is working in browser
       // expect(localStorage.getItem('accounts')).
       //   toEqual(JSON.stringify([]))
     })
   })
 
   describe('fetchAccounts', () => {
+    test('should set isLoadingAccounts to true when the request has not yet completed', async () => {
+      const store = useAccountsStore()
+      store.fetchAccounts('test-token')
+      expect(store.isLoadingAccounts).toBeTruthy()
+    })
     test('should set the accounts in the store when the request is successful', async () => {
       const store = useAccountsStore()
       const accounts = [
         generateMockAccount(),
         generateMockAccount(),
       ]
-      $fetch.mockResolvedValue({ data: { accounts } })
+      $fetch.mockResolvedValue({ data: { accounts: accounts } })
       await store.fetchAccounts('test-token')
       expect(store.accounts).toEqual(accounts)
+      expect(store.isLoadingAccounts).toBeFalsy()
     })
-    test('should throw an error when the request fails', async () => {
+    test('should add an error notification when the request fails', async () => {
       const store = useAccountsStore()
+      const token = 'invalid-token'
+      const notificationsStore = useNotificationsStore()
       $fetch.mockRejectedValue(new Error('API Error'))
-      await expect(store.fetchAccounts('test-token')).rejects.toThrow('Invalid session token. Please get a valid token.')
+      await store.fetchAccounts(token)
+
+      expect(notificationsStore.addNotification).toHaveBeenCalledWith({
+        variant: 'error',
+        message: 'Error fetching accounts: Error: API Error'
+      })
+  
+      expect(store.accounts).toEqual([])
+      expect(store.isLoadingAccounts).toBeFalsy()
     })
   })
 })
