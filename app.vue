@@ -9,12 +9,12 @@
 
 <script setup lang="ts">
 import { ref, onBeforeMount, watch } from 'vue'
-import { useUserStore } from './store/user'
+import { useUserIdentityStore } from './store/userIdentity'
 import Notifications from './components/Notifications.vue'
 import { storeToRefs } from 'pinia'
 
-const userStore = useUserStore()
-const { token } = storeToRefs(userStore)
+const userIdStore = useUserIdentityStore()
+const { token } = storeToRefs(userIdStore)
 
 onBeforeMount(() => {
   if (!token.value) {

@@ -1,6 +1,6 @@
 <template>
   <div data-test="login-form" class="flex flex-col gap-y-6 md:p-12">
-    <div class="flex flex-col gap-y-2">
+    <div data-test="login-form-title" class="flex flex-col gap-y-2">
       <h2 class="text-lg md:text-2xl font-light text-text-default/70">Log in to</h2>
       <h1 class="text-4xl tracking-[1px] font-medium text-black/80 md:text-5xl">
         Online Banking
@@ -46,10 +46,14 @@
         <button
           data-test="show-login-form-button"
           type="submit"
-          class="rounded-full bg-button-teal hover:bg-button-teal-hover text-text-default py-2 px-6 text-lg hover:cursor-pointer"
-          :disabled="userStore.isLoggingIn"
+          class="rounded-full text-text-default py-2 px-6 text-lg transition-all"
+          :class="{
+            'bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer': !userIdStore.isLoadingLogin,
+            'bg-gray-400 cursor-not-allowed': userIdStore.isLoadingLogin
+          }"
+          :disabled="userIdStore.isLoadingLogin"
         >
-          {{ userStore.isLoggingIn ? 'Logging in...' : 'Log in with sandbox user' }}
+          {{ userIdStore.isLoadingLogin ? 'Logging in...' : 'Log in with sandbox user' }}
         </button>
       </div>
     </form>
@@ -58,10 +62,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useUserStore } from '../store/user'
+import { useUserIdentityStore } from '../store/userIdentity'
 import { useRouter } from 'vue-router'
 
-const userStore = useUserStore()
+const userIdStore = useUserIdentityStore()
 const sessionToken = ref('')
 const router = useRouter()
 const showErrorMessage = ref(false)
@@ -69,7 +73,7 @@ const showErrorMessage = ref(false)
 const handleSubmit = async () => {
   showErrorMessage.value = false
   if (!sessionToken.value) return
-  const successfulLogin = await userStore.login(sessionToken.value)
+  const successfulLogin = await userIdStore.login(sessionToken.value)
   if (successfulLogin) {
     navigateTo('/')
   } else {

@@ -1,7 +1,7 @@
 <template>
   <div
   :data-test="`link-${link.title}`"
-  @click="router.push(link.path)"
+  @click="navigateTo(link.path)"
   class="py-4 px-4 text-white/80 hover:text-white hover:font-medium hover:cursor-pointer flex flex-row items-center gap-x-2 border-l-3"
   :class="{
     'bg-white/30 hover:bg-white/40 text-white font-medium border-l-blue-600': isCurrentLink,
@@ -34,7 +34,6 @@ const props = defineProps<{
   };
 }>();
 
-const router = useRouter();
 const route = useRoute();
 
 const isCurrentLink = computed(() => route.path === props.link.path);
