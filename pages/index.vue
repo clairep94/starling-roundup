@@ -1,21 +1,23 @@
 <template>
-  <NuxtLayout name="authenticated">
-  
-  default account:
-  <pre>
-    {{ accountsStore.selectedAccount }}
-  </pre>
+  <div v-if="!userIdStore.token">
+    Not logged in...
+  </div>
+  <NuxtLayout v-else name="authenticated">
+    default account:
+    <pre>
+      {{ accountsStore.selectedAccount }}
+    </pre>
 
-  User:
-  <pre>
-  {{userIdStore.userIdentity}}
-  </pre>
-  Token:
-  <pre>
-  {{ userIdStore.token }}
-  </pre>
+    User:
+    <pre>
+    {{userIdStore.userIdentity}}
+    </pre>
+    Token:
+    <pre>
+    {{ userIdStore.token }}
+    </pre>
 
-  {{ `feed/account/${accountsStore.selectedAccount.accountUid}/category/${accountsStore.selectedAccount.defaultCategory}` }}
+    {{ `feed/account/${accountsStore.selectedAccount.accountUid}/category/${accountsStore.selectedAccount.defaultCategory}` }}
 
   </NuxtLayout>
 </template>

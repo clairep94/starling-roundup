@@ -1,5 +1,8 @@
 <template>
-  <NuxtLayout name="authenticated">
+  <div v-if="!userIdStore.token">
+    Not logged in...
+  </div>
+  <NuxtLayout v-else name="authenticated">
     <div>
       Savings Spaces
     </div>
