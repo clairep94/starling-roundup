@@ -1,6 +1,6 @@
 <template>
   <div data-test="login-form" class="flex flex-col gap-y-6 md:p-12">
-    <div class="flex flex-col gap-y-2">
+    <div data-test="login-form-title" class="flex flex-col gap-y-2">
       <h2 class="text-lg md:text-2xl font-light text-text-default/70">Log in to</h2>
       <h1 class="text-4xl tracking-[1px] font-medium text-black/80 md:text-5xl">
         Online Banking
@@ -46,7 +46,11 @@
         <button
           data-test="show-login-form-button"
           type="submit"
-          class="rounded-full bg-button-teal hover:bg-button-teal-hover text-text-default py-2 px-6 text-lg hover:cursor-pointer"
+          class="rounded-full text-text-default py-2 px-6 text-lg transition-all"
+          :class="{
+            'bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer': !userIdStore.isLoadingLogin,
+            'bg-gray-400 cursor-not-allowed': userIdStore.isLoadingLogin
+          }"
           :disabled="userIdStore.isLoadingLogin"
         >
           {{ userIdStore.isLoadingLogin ? 'Logging in...' : 'Log in with sandbox user' }}
