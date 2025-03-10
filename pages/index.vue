@@ -23,6 +23,7 @@
 
     <!-- MAIN -->
     <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-6 overflow-scroll">
+      Balance: {{ formatCurrencyAmount(balanceStore.effectiveBalance) }}
       <!-- LOADING -->
       <div data-test="loading-transactions" v-if="transactionFeedStore.isLoadingTransactionFeed">
         Loading transactions...
@@ -52,11 +53,14 @@ import { ref, onMounted } from 'vue'
 import { useUserIdentityStore } from '@/store/userIdentity'
 import { useAccountsStore } from '@/store/accounts'
 import { useTransactionFeedStore } from '@/store/transactionFeed'
+import { useBalanceStore } from '@/store/balance'
 import { useRouter } from 'vue-router'
+import { formatCurrencyAmount } from '~/utils/formatData'
 
 const userIdStore = useUserIdentityStore()
 const accountsStore = useAccountsStore()
 const transactionFeedStore = useTransactionFeedStore()
+const balanceStore = useBalanceStore()
 
 useHead({
   title: 'Account Overview'
@@ -66,6 +70,7 @@ const isoString = "2025-01-10T12:34:56.000Z"
 
 onMounted(() => {
   transactionFeedStore.fetchTransactionFeed(isoString)
+  balanceStore.fetchBalance()
 })
 </script>
 
