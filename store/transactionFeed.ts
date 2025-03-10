@@ -34,21 +34,24 @@ export const useTransactionFeedStore = defineStore('transactionFeed', () => {
       return false
     }
     isLoadingTransactionFeed.value = true
-    let url = `/api/starling/feed/account/${accountsStore.selectedAccount.accountUid}/category/${accountsStore.selectedAccount.defaultCategory}`
-    console.log(url)
+
+    const proxyBaseURL = '/api/starling'
+    const endpoint = `/feed/account/${accountsStore.selectedAccount.accountUid}/category/${accountsStore.selectedAccount.defaultCategory}`
+    let url = proxyBaseURL + endpoint
+    url += '?changesSince=' + changesSinceDateIsoString
+    
     try {
       const response = await $fetch<transactionFeedResponse>(url, {
         method: 'GET',
         headers: {
           'session-token': userIdentityStore.token,
         },
-        query:{
-          "changesSince": changesSinceDateIsoString
-        }
       })
+      console.log('transaction feed response:', response)
       transactionFeed.value = response.data.feedItems
       return true
     } catch (error: OfetchError) {
+      console.log('transaction feed error:', error)
       notificationsStore.addError(error)
       return false
     } finally {

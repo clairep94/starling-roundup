@@ -1,27 +1,13 @@
 <template>
   <div v-if="!userIdStore.token">
-    Not logged in...
+    Redirecting to login page...
   </div>
   <NuxtLayout v-else name="authenticated">
-    default account:
+    Transaction feed:
     <pre>
-      {{ accountsStore.selectedAccount }}
+    {{ transactionFeedStore.transactionFeed }}
     </pre>
-
-    User:
-    <pre>
-    {{userIdStore.userIdentity}}
-    </pre>
-    Token:
-    <pre>
-    {{ userIdStore.token }}
-    </pre>
-
-    {{ `feed/account/${accountsStore.selectedAccount.accountUid}/category/${accountsStore.selectedAccount.defaultCategory}` }}
-
-    <pre>
-    {{ transactionFeedStore.feed }}
-    </pre>
+    Loading transactions:
     {{ transactionFeedStore.isLoadingTransactionFeed }}
   </NuxtLayout>
 </template>
@@ -41,9 +27,10 @@ useHead({
   title: 'Account Overview'
 })
 
+const isoString = "2025-01-10T12:34:56.000Z"
+
 onMounted(() => {
-  console.log('test')
-  transactionFeedStore.fetchTransactionFeed('2025-03-03T12%3A34%3A56.000Z')
+  transactionFeedStore.fetchTransactionFeed(isoString)
 })
 </script>
 
