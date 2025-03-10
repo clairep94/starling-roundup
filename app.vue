@@ -1,6 +1,6 @@
 <template>
   <Notifications />
-  <div class="w-full min-h-screen bg-home-peach">
+  <div class="w-full min-h-screen h-screen bg-white">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

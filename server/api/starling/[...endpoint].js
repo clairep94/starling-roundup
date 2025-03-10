@@ -1,5 +1,5 @@
-import { defineEventHandler, createError } from 'h3';
-
+import { defineEventHandler, createError } from "h3";
+import { getQuery } from "h3";
 export default defineEventHandler(async (event) => {
   // error if no session token
   const sessionToken = event.node.req.headers["session-token"];
@@ -15,14 +15,16 @@ export default defineEventHandler(async (event) => {
   const baseUrl = "https://api-sandbox.starlingbank.com/api/v2/";
 
   let url = `${baseUrl}${endpoint}`;
+  console.log("proxy url", url);
+  console.log("event", event);
 
-  if(event.node.req.query){ //add query params if there any
-    let queries = []
-    Object.entries(event.node.req.query).forEach(([key, value]) => {
-      queries.push(`${key}=${value}`)
-    });
-    url = url + '?' + queries.join('&')
-    console.log(url)
+  const queryParams = getQuery(event);
+
+  if (queryParams && Object.keys(queryParams).length > 0) {
+    console.log("queryParams", queryParams);
+    const queryString = new URLSearchParams(queryParams).toString();
+    url += `?${queryString}`;
+    console.log("query url", url);
   }
 
   try {
@@ -32,7 +34,9 @@ export default defineEventHandler(async (event) => {
         Authorization: `Bearer ${sessionToken}`,
         "Content-Type": "application/json",
       },
-      body: event.node.req.body? JSON.stringify(event.node.req.body) : undefined
+      body: event.node.req.body
+        ? JSON.stringify(event.node.req.body)
+        : undefined,
     });
 
     return {
