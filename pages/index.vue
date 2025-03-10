@@ -21,20 +21,27 @@
     </div>
 
 
-    <!-- LOADING -->
-    <div data-test="loading-transactions" v-if="transactionFeedStore.isLoadingTransactionFeed">
-      Loading transactions...
-    </div>
-
-    <!-- NO DATA -->
-    <div data-test="no-transactions-found-message" v-else-if="transactionFeedStore.transactionFeed.length == 0">
-      No transactions found.
-    </div>
-
-    <!-- TRANSACTIONS LIST -->
-    <div data-test="transaction-feed-list" v-else
-    class="flex flex-col gap-2">
-      <TransactionFeedItem v-for="transaction in transactionFeedStore.transactionFeed" :transactionFeedItem="transaction" :key="transaction.id" />
+    <!-- MAIN -->
+    <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-6 overflow-scroll">
+      <!-- LOADING -->
+      <div data-test="loading-transactions" v-if="transactionFeedStore.isLoadingTransactionFeed">
+        Loading transactions...
+      </div>
+  
+      <!-- NO DATA -->
+      <div data-test="no-transactions-found-message" v-else-if="transactionFeedStore.transactionFeed.length == 0">
+        No transactions found.
+      </div>
+  
+      <!-- TRANSACTIONS LIST -->
+      <div data-test="transaction-feed-list" v-else
+      class="flex flex-col gap-2">
+        Filter by type
+        Filter by spendingCategory
+        date selector
+  
+        <TransactionFeedItem v-for="transaction in transactionFeedStore.transactionFeed" :transactionFeedItem="transaction" :key="transaction.id" />
+      </div>
     </div>
     
   </NuxtLayout>

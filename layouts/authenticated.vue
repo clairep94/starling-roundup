@@ -1,8 +1,8 @@
 <template>
-  <div class="w-full min-h-screen bg-white flex flex-row">
+  <div class="w-full min-h-screen max-h-screen overflow-clip bg-white flex flex-row">
     <NavigationBar
     />
-    <main class="flex-grow">
+    <main class="flex-grow overflow-scroll">
       <slot/>
     </main>
   </div>
