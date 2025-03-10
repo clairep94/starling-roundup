@@ -1,5 +1,5 @@
 import { defineEventHandler, createError } from "h3";
-
+import { getQuery } from "h3";
 export default defineEventHandler(async (event) => {
   // error if no session token
   const sessionToken = event.node.req.headers["session-token"];
@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
 
   if (queryParams && Object.keys(queryParams).length > 0) {
     console.log("queryParams", queryParams);
-    //add query params if there any
     const queryString = new URLSearchParams(queryParams).toString();
     url += `?${queryString}`;
     console.log("query url", url);
