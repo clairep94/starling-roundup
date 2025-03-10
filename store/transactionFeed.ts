@@ -1,7 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type { FeedItem, FeedItems } from '../types/feedItem.type'
-import type { Token } from '../types/auth.type'
 import type { OfetchError } from '../types/responseError.type'
 import { useNotificationsStore } from './notifications'
 import { useUserIdentityStore } from './userIdentity'
@@ -47,11 +46,9 @@ export const useTransactionFeedStore = defineStore('transactionFeed', () => {
           'session-token': userIdentityStore.token,
         },
       })
-      console.log('transaction feed response:', response)
       transactionFeed.value = response.data.feedItems
       return true
     } catch (error: OfetchError) {
-      console.log('transaction feed error:', error)
       notificationsStore.addError(error)
       return false
     } finally {
