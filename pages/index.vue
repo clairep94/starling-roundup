@@ -1,48 +1,36 @@
 <template>
-  <div v-if="!userIdStore.token">
+  <div v-if="!userIdStore.token" data-test="redirecting-to-login" class="flex flex-col items-center justify-center h-screen">
     Redirecting to login page...
   </div>
-  <NuxtLayout v-else name="authenticated">
-    <!-- PAGE TITLE SECTION -->
-    <div data-test="page-title-section" class="flex flex-col px-6 py-4 pb-0 md:px-8 md:py-6 md:pb-0 border-b border-b-gray-100">
-
-      <!-- USER FULL NAME -->
-      <div data-test="user-full-name" class="text-2xl font-bold text-black/80">
-        {{ userIdStore.userIdentity.firstName }} {{ userIdStore.userIdentity.lastName }}
-      </div>
-
-      <!-- TABS -->
-      <div data-test="home-page-tabs" class="flex flex-row gap-4">
-        <div data-test="account-overview-tab" 
-        class="text-sm font-semibold text-black/80 hover:cursor-pointer py-4 border-b-2 border-b-teal">
-          Transaction Feed
-        </div>
-      </div>
-    </div>
-
+  <NuxtLayout v-else name="authenticated"
+    :pageTitle="`${userIdStore.userIdentity.firstName} ${userIdStore.userIdentity.lastName}`"
+    :subPages="[
+      { title: 'Transaction Feed', path: '/' },
+    ]">
 
     <!-- MAIN -->
     <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-6 overflow-scroll">
-      Balance: {{ formatCurrencyAmount(balanceStore.effectiveBalance) }}
+      Balance: 
+      <!-- {{ formatCurrencyAmount(balanceStore.effectiveBalance) }} -->
       <!-- LOADING -->
-      <div data-test="loading-transactions" v-if="transactionFeedStore.isLoadingTransactionFeed">
+      <!-- <div data-test="loading-transactions" v-if="transactionFeedStore.isLoadingTransactionFeed">
         Loading transactions...
-      </div>
+      </div> -->
   
       <!-- NO DATA -->
-      <div data-test="no-transactions-found-message" v-else-if="transactionFeedStore.transactionFeed.length == 0">
+      <!-- <div data-test="no-transactions-found-message" v-else-if="transactionFeedStore.transactionFeed.length == 0">
         No transactions found.
-      </div>
+      </div> -->
   
       <!-- TRANSACTIONS LIST -->
-      <div data-test="transaction-feed-list" v-else
+      <!-- <div data-test="transaction-feed-list" v-else
       class="flex flex-col gap-2">
         Filter by type
         Filter by spendingCategory
         date selector
   
         <TransactionFeedItem v-for="transaction in transactionFeedStore.transactionFeed" :transactionFeedItem="transaction" :key="transaction.id" />
-      </div>
+      </div> -->
     </div>
     
   </NuxtLayout>
@@ -60,7 +48,7 @@ import { formatCurrencyAmount } from '~/utils/formatData'
 const userIdStore = useUserIdentityStore()
 const accountsStore = useAccountsStore()
 const transactionFeedStore = useTransactionFeedStore()
-const balanceStore = useBalanceStore()
+// const balanceStore = useBalanceStore()
 
 useHead({
   title: 'Account Overview'
@@ -70,7 +58,7 @@ const isoString = "2025-01-10T12:34:56.000Z"
 
 onMounted(() => {
   transactionFeedStore.fetchTransactionFeed(isoString)
-  balanceStore.fetchBalance()
+  // balanceStore.fetchBalance()
 })
 </script>
 

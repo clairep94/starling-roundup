@@ -43,6 +43,8 @@ import "@justeattakeaway/pie-icons-webc/dist/IconHouseLarge.js";
 import "@justeattakeaway/pie-icons-webc/dist/IconHouseFilledLarge.js";
 import "@justeattakeaway/pie-icons-webc/dist/IconCoinsLarge.js";
 import "@justeattakeaway/pie-icons-webc/dist/IconCoinsFilledLarge.js";
+import "@justeattakeaway/pie-icons-webc/dist/IconGridViewLarge.js";
+import "@justeattakeaway/pie-icons-webc/dist/IconGridViewFilledLarge.js";
 import NavigationBarLink from "./NavigationBarLink.vue";
 import LogoutButton from "./LogoutButton.vue";
 import NavigationBarProfile from "./NavigationBarProfile.vue";
@@ -55,10 +57,10 @@ const navbarLinks = [
     path: "/",
   },
   {
-    title: "Savings Space",
-    icon: "icon-coins-large",
-    iconFilled: "icon-coins-filled-large",
-    path: "/savings-spaces",
+    title: "Spaces",
+    icon: "icon-grid-view-large",
+    iconFilled: "icon-grid-view-filled-large",
+    path: "/spaces",
   },
 ];
 
