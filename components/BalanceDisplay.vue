@@ -3,9 +3,19 @@
     <p data-test="balance-title" class="text-sm font-semibold text-black/70">
       Your Balance
     </p>
+    
+    <!-- LOADING -->
     <p v-if="balanceStore.isLoadingBalance" data-test="loading-balance"
       class="text-xl text-black/80"
     > Loading...</p>
+
+    <!-- NO BALANCE -->
+    <p v-else-if="balanceStore.effectiveBalance === null" data-test="no-balance"
+      class="text-xl text-black/80"
+    > No balance found. 
+    </p>
+
+    <!-- BALANCE AMOUNT -->
     <p v-else data-test="balance-amount"
       class="text-2xl font-extrabold text-black/80">
       {{ formatCurrencyAmount(balanceStore.effectiveBalance) }}
@@ -20,7 +30,7 @@ import { formatCurrencyAmount } from '~/utils/formatData'
 
 const balanceStore = useBalanceStore()
 
-onMounted(() => {
+onBeforeMount(() => {
   balanceStore.fetchBalance()
 })
 </script>
