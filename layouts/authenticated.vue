@@ -1,5 +1,4 @@
 <template>
-  
   <div class="w-full min-h-screen max-h-screen overflow-clip bg-white flex flex-row">
     <NavigationBar/>
     <main class="flex-grow overflow-scroll">
@@ -9,7 +8,6 @@
         <!-- USER FULL NAME -->
         <div data-test="user-full-name" class="text-2xl font-bold text-black/80">
           {{ props.pageTitle }}
-          <!-- {{ userIdStore.userIdentity.firstName }} {{ userIdStore.userIdentity.lastName }} -->
         </div>
 
         <!-- TABS -->

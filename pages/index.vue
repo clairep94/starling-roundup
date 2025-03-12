@@ -7,10 +7,9 @@
     :subPages="[
       { title: 'Transaction Feed', path: '/' },
     ]">
-
     <!-- MAIN -->
     <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-6 overflow-scroll">
-      Balance: 
+      <BalanceDisplay />
       <!-- {{ formatCurrencyAmount(balanceStore.effectiveBalance) }} -->
       <!-- LOADING -->
       <!-- <div data-test="loading-transactions" v-if="transactionFeedStore.isLoadingTransactionFeed">
@@ -48,7 +47,7 @@ import { formatCurrencyAmount } from '~/utils/formatData'
 const userIdStore = useUserIdentityStore()
 const accountsStore = useAccountsStore()
 const transactionFeedStore = useTransactionFeedStore()
-// const balanceStore = useBalanceStore()
+const balanceStore = useBalanceStore()
 
 useHead({
   title: 'Account Overview'
@@ -58,6 +57,7 @@ const isoString = "2025-01-10T12:34:56.000Z"
 
 onMounted(() => {
   transactionFeedStore.fetchTransactionFeed(isoString)
+  console.log('mounted')
   // balanceStore.fetchBalance()
 })
 </script>

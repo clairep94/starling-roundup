@@ -1,0 +1,30 @@
+<template>
+  <div class="flex flex-col w-full items-center gap-1">
+    <p data-test="balance-title" class="text-sm font-semibold text-black/70">
+      Your Balance
+    </p>
+    <p v-if="balanceStore.isLoadingBalance" data-test="loading-balance"
+      class="text-xl text-black/80"
+    > Loading...</p>
+    <p v-else data-test="balance-amount"
+      class="text-2xl font-extrabold text-black/80">
+      {{ formatCurrencyAmount(balanceStore.effectiveBalance) }}
+    </p>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useBalanceStore } from '@/store/balance'
+import { formatCurrencyAmount } from '~/utils/formatData'
+
+const balanceStore = useBalanceStore()
+
+onMounted(() => {
+  balanceStore.fetchBalance()
+})
+</script>
+
+<style lang="scss" scoped>
+
+</style>
