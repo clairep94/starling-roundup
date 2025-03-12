@@ -1,6 +1,6 @@
 <template>
   <div id="date-range-picker" date-rangepicker class="flex items-center justify-center w-full">
-
+    <span class="mx-4 text-gray-500">from</span>
     <!-- START TIME -->
     <div class="relative">
       <!-- CALENDAR ICON -->
@@ -9,7 +9,12 @@
           <icon-calendar-day class="text-gray-500" size="xs"/>
         </div>
       </div>
-      <input id="datepicker-range-start" name="start" type="date" class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5 " placeholder="Select date start">
+      <input id="datepicker-range-start" name="start" type="date" 
+      :value="start"
+      @input="start = $event.target.value"
+      :max="end"
+      @change="emit('date-range-selected', start, end)"
+      class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5 " placeholder="Select date start">
     </div>
 
     <span class="mx-4 text-gray-500">to</span>
@@ -22,21 +27,31 @@
           <icon-calendar-day class="text-gray-500" size="xs"/>
         </div>
       </div>
-      <input id="datepicker-range-end" name="end" type="date" class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5 " placeholder="Select date end">
+      <input id="datepicker-range-end" name="end" type="date" 
+      :value="end"
+      @input="end = $event.target.value"
+      @change="emit('date-range-selected', start, end)"
+      :min="start"
+      :max="props.currentDate"
+      class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5 " placeholder="Select date end">
     </div>
   </div>
   
 </template>
 
 <script setup lang="ts">
+import { ref, defineProps, defineEmits } from 'vue'
 import "@justeattakeaway/pie-icons-webc/dist/IconCalendarDay.js";
 
+const props = defineProps<{
+  startProp: string,
+  endProp: string,
+  currentDate: string,
+}>();
 
-// gets fed props -- start = date 7 days ago at 00:00:00, end = current date at 23:59:59
-// emits "date-range-selected" event with start and end date whenever start or end is changed
-// date pickers only control the date, not the time
-// time is calculated so that start time is 00:00:00 and end time is 23:59:59
-
+const start = ref<string>(props.startProp.split('T')[0])
+const end = ref<string>(props.endProp.split('T')[0])
+const emit = defineEmits(['date-range-selected'])
 </script>
 
 <style scoped>

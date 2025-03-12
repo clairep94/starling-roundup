@@ -20,8 +20,13 @@
     <div data-test="right-side" class="flex flex-row gap-2 justify-center items-center">
       <!-- TODO: icon if round up has already been applied -->
        ICON
-      <div data-test="amount" class="text-sm font-semibold text-black/80">
-        {{ formattedCurrencyAmount }}
+      <div data-test="amount" class="text-sm font-semibold "
+        :class="{
+          'text-blue-700/70': direction === 'IN',
+          'text-black/80': direction === 'OUT'
+        }"
+      >
+        {{ direction === 'IN' ? '+' : '' }}{{ formattedCurrencyAmount }} 
       </div>
     </div>
   </div>
@@ -35,7 +40,7 @@ const props = defineProps<{
   transactionFeedItem: FeedItem;
 }>();
 
-const { amount, direction, settlementTime, counterPartyName, spendingCategory } = props.transactionFeedItem;
+const { amount, direction, settlementTime, counterPartyName, spendingCategory, counterPartyUid } = props.transactionFeedItem;
 
 const formattedCurrencyAmount = formatCurrencyAmount(amount);
 const formattedSpendingCategory = formatUpperSnakeCaseToTitleString(spendingCategory);
