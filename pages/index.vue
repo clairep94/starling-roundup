@@ -8,7 +8,7 @@
       { title: 'Transaction Feed', path: '/' },
     ]">
     <!-- MAIN -->
-    <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-6 gap-4 overflow-scroll">
+    <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-6 gap-4">
       <BalanceDisplay />
 
       <!-- LOADING -->
@@ -23,10 +23,8 @@
   
       <!-- TRANSACTIONS LIST -->
       <div data-test="transaction-feed-list" v-else
-      class="flex flex-col gap-2">
-        Filter by type
-        Filter by spendingCategory
-        date selector
+        class="flex flex-col gap-2">
+        <DateRangePicker />
   
         <TransactionFeedItem v-for="transaction in transactionFeedStore.transactionFeed" :transactionFeedItem="transaction" :key="transaction.id" />
       </div>
@@ -43,6 +41,9 @@ import { useTransactionFeedStore } from '@/store/transactionFeed'
 import { useBalanceStore } from '@/store/balance'
 import { useRouter } from 'vue-router'
 import { formatCurrencyAmount } from '~/utils/formatData'
+import DateRangePicker from '@/components/DateRangePicker.vue'
+import BalanceDisplay from '@/components/BalanceDisplay.vue'
+import TransactionFeedItem from '@/components/TransactionFeedItem.vue'
 
 const userIdStore = useUserIdentityStore()
 const accountsStore = useAccountsStore()
