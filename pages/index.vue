@@ -84,11 +84,11 @@ function handleDateRangeSelected(start:string, end:string) {
 
   console.log('Selected Start Date:', selectedStart.value)
   console.log('Selected End Date:', selectedEnd.value)
-  transactionFeedStore.fetchTransactionFeed(selectedStart.value)
+  transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
 }
 
 onMounted(() => {
-  transactionFeedStore.fetchTransactionFeed(selectedStart.value)
+  transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
 })
 </script>
 
