@@ -8,26 +8,33 @@
       { title: 'Transaction Feed', path: '/' },
     ]">
     <!-- MAIN -->
-    <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-6 gap-4">
+    <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 gap-6 lg:flex-row-reverse lg:px-8 lg:py-6 lg:gap-8">
       <BalanceDisplay />
 
-      <!-- LOADING -->
-      <div data-test="loading-transactions" v-if="transactionFeedStore.isLoadingTransactionFeed">
-        Loading transactions...
-      </div>
-  
-      <!-- NO DATA -->
-      <div data-test="no-transactions-found-message" v-else-if="transactionFeedStore.transactionFeed.length == 0">
-        No transactions found.
-      </div>
-  
-      <!-- TRANSACTIONS LIST -->
-      <div data-test="transaction-feed-list" v-else
-        class="flex flex-col gap-2">
+      <!-- TRANSACTIONS -->
+      <div class="flex flex-col flex-grow gap-4 w-full">
         <DateRangePicker />
+
+        <!-- LOADING -->
+        <div data-test="loading-transactions" v-if="transactionFeedStore.isLoadingTransactionFeed">
+          Loading transactions...
+        </div>
+    
+        <!-- NO DATA -->
+        <div data-test="no-transactions-found-message" v-else-if="transactionFeedStore.transactionFeed.length == 0">
+          No transactions found.
+        </div>
+    
+        <!-- TRANSACTIONS LIST -->
+        <div data-test="transaction-feed-list" v-else
+          class="flex flex-col gap-2">
   
-        <TransactionFeedItem v-for="transaction in transactionFeedStore.transactionFeed" :transactionFeedItem="transaction" :key="transaction.id" />
+    
+          <TransactionFeedItem v-for="transaction in transactionFeedStore.transactionFeed" :transactionFeedItem="transaction" :key="transaction.id" />
+        </div>
       </div>
+
+
     </div>
     
   </NuxtLayout>

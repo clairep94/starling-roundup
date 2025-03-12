@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col w-full items-center gap-1">
+  <div class="flex flex-col lg:w-[250px] w-full items-center gap-1">
     <p data-test="balance-title" class="text-sm font-semibold text-black/70">
-      Your Balance
+      Your Current Balance
     </p>
     
     <!-- LOADING -->
