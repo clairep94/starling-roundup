@@ -60,6 +60,7 @@ import DateRangePicker from '@/components/DateRangePicker.vue'
 import Balance from '@/components/Balance.vue'
 import TransactionFeedItem from '@/components/TransactionFeedItem.vue'
 
+
 const userIdStore = useUserIdentityStore()
 const accountsStore = useAccountsStore()
 const transactionFeedStore = useTransactionFeedStore()
