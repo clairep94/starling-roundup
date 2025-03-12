@@ -1,11 +1,8 @@
 import type { CurrencyAndAmount, FeedItem } from "../types/feedItem.type";
 
-export function findRoundUpAmount(amount: CurrencyAndAmount): CurrencyAndAmount{
+export function findRoundUpAmount(amount: CurrencyAndAmount): number{
   const { minorUnits } = amount;
-  return {
-    currency: amount.currency,
-    minorUnits: (Math.ceil(minorUnits / 100) * 100 - minorUnits)
-  };
+  return (Math.ceil(minorUnits / 100) * 100 - minorUnits)
 }
 
 export function calculateRoundUpFromTransactionFeed(transactionFeedList: FeedItem[]): number{

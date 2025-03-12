@@ -29,6 +29,12 @@
         }"
       >
         {{ direction === 'IN' ? '+' : '' }}{{ formattedCurrencyAmount }} 
+        
+        <span v-if="direction === 'OUT'" class="text-xs text-gray-500">
+          {{ formatCurrencyAmount({
+            currency: 'GBP',
+            minorUnits: findRoundUpAmount(amount)}) }}
+        </span>
       </div>
     </div>
   </div>
@@ -37,7 +43,7 @@
 <script setup lang="ts">
 import type { FeedItem } from "@/types/FeedItem";
 import { formatCurrencyAmount, formatUpperSnakeCaseToTitleString, extractTime } from "~/utils/formatData";
-import { uuidToHexColour } from '~/utils/uuidToHexColour'
+import { findRoundUpAmount } from "~/utils/roundUpCalculate";
 
 const props = defineProps<{
   transactionFeedItem: FeedItem;
@@ -48,8 +54,6 @@ const { amount, direction, settlementTime, counterPartyName, spendingCategory, c
 const formattedCurrencyAmount = formatCurrencyAmount(amount);
 const formattedSpendingCategory = formatUpperSnakeCaseToTitleString(spendingCategory);
 const formattedSettlementTime = extractTime(settlementTime);
-// const counterPartyNameInitialsColour = uuidToHexColour(counterPartyUid);
-// const counterPartyNameInitialsColourStyle = `bg-${counterPartyNameInitialsColour}-500 text-white`;
 
 </script>
 

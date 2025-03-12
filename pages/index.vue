@@ -11,7 +11,10 @@
     <!-- MAIN -->
     <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 gap-6 lg:flex-row-reverse lg:px-8 lg:py-6 lg:gap-8">
       <Balance />
-
+      <!-- <Roundup :selectedItems="outgoingTransactions" /> -->
+      <Roundup v-if="!transactionFeedStore.isLoadingTransactionFeed && transactionFeedStore.transactionFeed.length > 0" 
+        :selectedItems="outgoingTransactions"
+        />
 
       <!-- TRANSACTIONS -->
       <div class="flex flex-col flex-grow gap-4 w-full">
@@ -19,6 +22,7 @@
           :startProp="selectedStart"
           :endProp="selectedEnd"
           :currentDate="defaultEndDate.split('T')[0]"
+          :disabled="transactionFeedStore.isLoadingTransactionFeed"
         />
 
         <!-- LOADING -->
@@ -59,7 +63,7 @@ import { formatCurrencyAmount } from '~/utils/formatData'
 import DateRangePicker from '@/components/DateRangePicker.vue'
 import Balance from '@/components/Balance.vue'
 import TransactionFeedItem from '@/components/TransactionFeedItem.vue'
-
+import Roundup from '@/components/Roundup.vue'
 
 const userIdStore = useUserIdentityStore()
 const accountsStore = useAccountsStore()
@@ -86,6 +90,10 @@ function handleDateRangeSelected(start:string, end:string) {
   console.log('Selected End Date:', selectedEnd.value)
   transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
 }
+
+const outgoingTransactions = computed(() => {
+  return transactionFeedStore.transactionFeed.filter(el => el.direction === 'OUT')
+})
 
 onMounted(() => {
   transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
