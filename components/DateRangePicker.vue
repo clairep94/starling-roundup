@@ -1,5 +1,5 @@
 <template>
-  <div id="date-range-picker" date-rangepicker class="flex items-center justify-center w-full">
+  <div id="date-range-picker" class="flex items-center justify-center w-full">
     <span class="mx-4 text-gray-500">from</span>
     <!-- START TIME -->
     <div class="relative">
@@ -13,6 +13,7 @@
       :value="start"
       @input="start = $event.target.value"
       :max="end"
+      :disabled="props.disabled"
       @change="emit('date-range-selected', start, end)"
       class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5 " placeholder="Select date start">
     </div>
@@ -33,6 +34,7 @@
       @change="emit('date-range-selected', start, end)"
       :min="start"
       :max="props.currentDate"
+      :disabled="props.disabled"
       class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5 " placeholder="Select date end">
     </div>
   </div>
@@ -47,6 +49,7 @@ const props = defineProps<{
   startProp: string,
   endProp: string,
   currentDate: string,
+  disabled: boolean
 }>();
 
 const start = ref<string>(props.startProp.split('T')[0])
