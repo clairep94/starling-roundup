@@ -1,4 +1,4 @@
-import type { CurrencyAndAmount } from './feedItem.type'
+import type { CurrencyAndAmount } from "./currencyAndAmount.type"
 
 export type SavingsGoal = {
   savingsGoalUid: string,

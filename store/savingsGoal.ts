@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import type { CurrencyAndAmount } from '../types/feedItem.type'
+// import type { CurrencyAndAmount } from '../types/feedItem.type'
 import type { SavingsGoal, SavingsGoals } from '../types/savingsGoal.type'
 import type { OfetchError } from '../types/responseError.type'
 import { useNotificationsStore } from './notifications'

@@ -1,4 +1,4 @@
-import type { CurrencyAndAmount } from "./feedItem.type"
+import type { CurrencyAndAmount } from "./currencyAndAmount.type"
 import { faker } from '@faker-js/faker'
 
 export type Balance = {

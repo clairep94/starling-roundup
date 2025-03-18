@@ -1,3 +1,5 @@
+import type { CurrencyAndAmount } from "./currencyAndAmount.type"
+
 /**
  * 	An item from the account holders's transaction feed
  */
@@ -41,14 +43,6 @@ export type FeedItem = {
 export type FeedItems = {
   feedItems: FeedItem[]
 } 
-
-/**
- * 	Representation of money
- */
-export type CurrencyAndAmount = {
-  currency: string, //eg.GBP
-  minorUnits: number, //eg. 123456 for £1234.56
-}
 
 export type TransactionDirection = 'IN' | 'OUT'
 

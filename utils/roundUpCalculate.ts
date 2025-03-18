@@ -1,4 +1,5 @@
-import type { CurrencyAndAmount, FeedItem } from "../types/feedItem.type";
+import type { FeedItem } from "../types/feedItem.type";
+import type { CurrencyAndAmount } from "../types/currencyAndAmount.type";
 
 export function findRoundUpAmount(amount: CurrencyAndAmount): number{
   const { minorUnits } = amount;
