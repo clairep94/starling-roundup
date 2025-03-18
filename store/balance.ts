@@ -28,6 +28,7 @@ export const useBalanceStore = defineStore('balance', () => {
    */
   async function fetchBalance(): Promise<void> {
     if (!accountsStore.selectedAccount || !userIdentityStore.token) {
+      notificationsStore.addError('Cannot fetch balance without an account or token')
       return
     }
     isLoadingBalance.value = true
