@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { useBalanceStore } from '@/store/balance'
 import { formatCurrencyAmount } from '~/utils/formatData'
 

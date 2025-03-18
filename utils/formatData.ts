@@ -1,6 +1,8 @@
+export const defaultLocale = 'en-GB' //set to en-GB since starling is based in UK
+
 export function formatCurrencyAmount(amount:{currency:string, minorUnits:number}){
   const { currency, minorUnits } = amount
-  return new Intl.NumberFormat('en-GB', {
+  return new Intl.NumberFormat(defaultLocale, {
     style: 'currency',
     currency: currency,
   }).format(minorUnits / 100)
@@ -20,6 +22,6 @@ export function extractTime(isoString: string){
 
   const date = new Date(isoString);  
 
-  return date.toLocaleString('en-GB', {dateStyle: "medium",
+  return date.toLocaleString(defaultLocale, {dateStyle: "medium",
     timeStyle: "short",});
 }
