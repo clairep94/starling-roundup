@@ -1,47 +1,52 @@
 <template>
-  <div v-if="!userIdStore.token">
+  <div v-if="!userIdStore.token" data-test="redirecting-to-login" class="flex flex-col items-center justify-center h-screen">
     Redirecting to login page...
   </div>
-  <NuxtLayout v-else name="authenticated">
-    <!-- PAGE TITLE SECTION -->
-    <div data-test="page-title-section" class="flex flex-col px-6 py-4 pb-0 md:px-8 md:py-6 md:pb-0 border-b border-b-gray-100">
-
-      <!-- USER FULL NAME -->
-      <div data-test="user-full-name" class="text-2xl font-bold text-black/80">
-        {{ userIdStore.userIdentity.firstName }} {{ userIdStore.userIdentity.lastName }}
+  <NuxtLayout v-else name="authenticated"
+    :pageTitle="`${userIdStore.userIdentity.firstName} ${userIdStore.userIdentity.lastName}`"
+    :subPages="[
+      { title: 'Transaction Feed', path: '/' },
+    ]">
+    <!-- MAIN -->
+    <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 gap-6 lg:flex-row-reverse lg:px-8 lg:py-6 lg:gap-8">
+      <div class="flex flex-col gap-6 w-full lg:w-1/3 items-center">
+        <Balance />
+        <Roundup v-if="!transactionFeedStore.isLoadingTransactionFeed && transactionFeedStore.transactionFeed.length > 0" 
+          :selectedItems="outgoingTransactions"
+          />
       </div>
 
-      <!-- TABS -->
-      <div data-test="home-page-tabs" class="flex flex-row gap-4">
-        <div data-test="account-overview-tab" 
-        class="text-sm font-semibold text-black/80 hover:cursor-pointer py-4 border-b-2 border-b-teal">
-          Transaction Feed
+      <!-- TRANSACTIONS -->
+      <div class="flex flex-col flex-grow gap-4 w-full">
+        <DateRangePicker @date-range-selected="handleDateRangeSelected"
+          :startProp="selectedStart"
+          :endProp="selectedEnd"
+          :currentDate="defaultEndDate.split('T')[0]"
+          :disabled="transactionFeedStore.isLoadingTransactionFeed"
+        />
+
+        <!-- LOADING -->
+        <div data-test="loading-transactions" v-if="transactionFeedStore.isLoadingTransactionFeed"
+        class="flex flex-col flex-grow gap-4 w-full items-center justify-center text-black/60 mt-10"
+        >
+          Loading transactions...
+        </div>
+    
+        <!-- NO DATA -->
+        <div data-test="no-transactions-found-message" v-else-if="transactionFeedStore.transactionFeed.length == 0"
+        class="flex flex-col flex-grow gap-4 w-full items-center justify-center text-black/60 mt-10"
+        >
+          No transactions found.
+        </div>
+    
+        <!-- TRANSACTIONS LIST -->
+        <div data-test="transaction-feed-list" v-else
+          class="flex flex-col gap-2">
+          <TransactionFeedItem v-for="transaction in transactionFeedStore.transactionFeed" :transactionFeedItem="transaction" :key="transaction.id" />
         </div>
       </div>
-    </div>
 
 
-    <!-- MAIN -->
-    <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-6 overflow-scroll">
-      <!-- LOADING -->
-      <div data-test="loading-transactions" v-if="transactionFeedStore.isLoadingTransactionFeed">
-        Loading transactions...
-      </div>
-  
-      <!-- NO DATA -->
-      <div data-test="no-transactions-found-message" v-else-if="transactionFeedStore.transactionFeed.length == 0">
-        No transactions found.
-      </div>
-  
-      <!-- TRANSACTIONS LIST -->
-      <div data-test="transaction-feed-list" v-else
-      class="flex flex-col gap-2">
-        Filter by type
-        Filter by spendingCategory
-        date selector
-  
-        <TransactionFeedItem v-for="transaction in transactionFeedStore.transactionFeed" :transactionFeedItem="transaction" :key="transaction.id" />
-      </div>
     </div>
     
   </NuxtLayout>
@@ -52,7 +57,13 @@ import { ref, onMounted } from 'vue'
 import { useUserIdentityStore } from '@/store/userIdentity'
 import { useAccountsStore } from '@/store/accounts'
 import { useTransactionFeedStore } from '@/store/transactionFeed'
+import { useBalanceStore } from '@/store/balance'
 import { useRouter } from 'vue-router'
+import { formatCurrencyAmount } from '~/utils/formatData'
+import DateRangePicker from '@/components/DateRangePicker.vue'
+import Balance from '@/components/Balance.vue'
+import TransactionFeedItem from '@/components/TransactionFeedItem.vue'
+import Roundup from '@/components/Roundup.vue'
 
 const userIdStore = useUserIdentityStore()
 const accountsStore = useAccountsStore()
@@ -62,10 +73,30 @@ useHead({
   title: 'Account Overview'
 })
 
-const isoString = "2025-01-10T12:34:56.000Z"
+const currentDate = new Date()
+const defaultStartDate = new Date(currentDate.setDate(currentDate.getDate() - 7))
+  .toISOString()// 7 days ago
+
+const defaultEndDate = new Date().toISOString() // Today
+
+const selectedStart = ref<string>(defaultStartDate.split('T')[0] + 'T00:00:00.000Z') //2025-03-05T02:11:13.920Z
+const selectedEnd = ref<string>(defaultEndDate.split('T')[0] + 'T23:59:59.999Z') //2025-03-12T02:09:22.744Z
+
+function handleDateRangeSelected(start:string, end:string) {
+  selectedStart.value = start + 'T00:00:00.000Z'
+  selectedEnd.value = end + 'T23:59:59.999Z'
+
+  console.log('Selected Start Date:', selectedStart.value)
+  console.log('Selected End Date:', selectedEnd.value)
+  transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
+}
+
+const outgoingTransactions = computed(() => {
+  return transactionFeedStore.transactionFeed.filter(el => el.direction === 'OUT')
+})
 
 onMounted(() => {
-  transactionFeedStore.fetchTransactionFeed(isoString)
+  transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
 })
 </script>
 

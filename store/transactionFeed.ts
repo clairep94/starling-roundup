@@ -24,20 +24,22 @@ export const useTransactionFeedStore = defineStore('transactionFeed', () => {
 
   /**
    * Fetch the transaction feed for the selected account
-   * @endpoint GET /api/starling/feed/account/{accountUid}/category/{categoryUid}
-   * @param changesSinceDateIsoString ISO string of the date to fetch changes since
-   * @returns true for successful fetch, false for failed fetch
+   * @endpoint GET /api/starling/feed/account/{accountUid}/category/{categoryUid}/transactions-between
+   * @param minTransactionTimestamp ISO string of the date to fetch changes since
+   * @param maxTransactionTimestamp ISO string of the date to fetch changes until
    */
-  async function fetchTransactionFeed(changesSinceDateIsoString: string): Promise<boolean> {
+  async function fetchTransactionFeed(minTransactionTimestamp: string, maxTransactionTimestamp:string): Promise<void> {
     if (!accountsStore.selectedAccount || !userIdentityStore.token) {
-      return false
+      notificationsStore.addError('Cannot fetch transactions without an account or token')
+      return
     }
     isLoadingTransactionFeed.value = true
 
     const proxyBaseURL = '/api/starling'
-    const endpoint = `/feed/account/${accountsStore.selectedAccount.accountUid}/category/${accountsStore.selectedAccount.defaultCategory}`
+    const endpoint = `/feed/account/${accountsStore.selectedAccount.accountUid}/category/${accountsStore.selectedAccount.defaultCategory}/transactions-between`
     let url = proxyBaseURL + endpoint
-    url += '?changesSince=' + changesSinceDateIsoString
+    url += '?minTransactionTimestamp=' + minTransactionTimestamp
+    url += '&maxTransactionTimestamp=' + maxTransactionTimestamp
     
     try {
       const response = await $fetch<transactionFeedResponse>(url, {
@@ -47,10 +49,8 @@ export const useTransactionFeedStore = defineStore('transactionFeed', () => {
         },
       })
       transactionFeed.value = response.data.feedItems
-      return true
     } catch (error: OfetchError) {
       notificationsStore.addError(error)
-      return false
     } finally {
       isLoadingTransactionFeed.value = false
     }

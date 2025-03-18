@@ -17,7 +17,7 @@ describe('NavigationBar.vue', () => {
     const links = wrapper.findAllComponents(NavigationBarLink)
     expect(links).toHaveLength(2)
     expect(links[0].props('link').title).toBe('Home')
-    expect(links[1].props('link').title).toBe('Savings Space')
+    expect(links[1].props('link').title).toBe('Spaces')
   })
   it('renders the logout button', () => {
     expect(wrapper.findComponent(LogoutButton).exists()).toBe(true)
