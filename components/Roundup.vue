@@ -11,7 +11,6 @@
           minorUnits: roundupTotalMinorUnits
         }) }} -->
 
-
       £{{ (roundupTotalMinorUnits / 100).toFixed(2) }}
     </p>
     <button
@@ -32,6 +31,7 @@ import { findRoundUpAmount } from "~/utils/roundUpCalculate";
 import { v4 as uuidv4 } from 'uuid';
 import { useNotificationsStore } from '@/store/notifications';
 import { useUserIdentityStore } from '@/store/userIdentity';
+import { useAccountsStore } from '@/store/accounts';
 
 const props = defineProps<{
   selectedItems: FeedItem[];
@@ -41,6 +41,7 @@ const isTransferInProgress = ref(false);
 
 const notificationsStore = useNotificationsStore()
 const userIdentityStore = useUserIdentityStore()
+const accountsStore = useAccountsStore()
 
 const roundupTotalMinorUnits = computed(() => {
   return props.selectedItems.reduce((acc, item) => acc + findRoundUpAmount(item.amount), 0);
@@ -52,28 +53,29 @@ async function handleTransfer() {
 
   const uuid = uuidv4();
   console.log('Transfer initiated', roundupTotalMinorUnits.value, uuid);
+  console.log('Transfer initiated', userIdentityStore.token);
 
-  // try {
-  //   isTransferInProgress.value = true;
-  //   const proxyBaseURL = '/api/starling'
-  //   const endpoint = `/account/${accountsStore.selectedAccount.accountUid}/savings-goals/${savingsGoalUid}/add-money/${uuid}`
-  //   const response = await fetch(proxyBaseURL + endpoint, {
-  //     method: 'PUT',
-  //     headers: {
-  //       'Content-Type': 'application',
-  //       'Authorization': `Bearer ${userIdentityStore.accessToken}`
-  //     },
-  //     body: JSON.stringify({
-  //       amount: {
-  //         currency: 'GBP',
-  //         minorUnits: roundupTotalMinorUnits.value
-  //       }
-  //     })
-  //   })
-  // } catch (error) {
-  //   notificationsStore.addError(error)
-  // } finally {
-  //   isTransferInProgress.value = false
-  // }
+  try {
+    isTransferInProgress.value = true;
+    const proxyBaseURL = '/api/starling'
+    const endpoint = `/account/${accountsStore.selectedAccount.accountUid}/savings-goals/${savingsGoalUid}/add-money/${uuid}`
+    const response = await $fetch(proxyBaseURL + endpoint, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application',
+        'Authorization': `Bearer ${userIdentityStore.token}`
+      },
+      body: JSON.stringify({
+        amount: {
+          currency: 'GBP',
+          minorUnits: roundupTotalMinorUnits.value
+        }
+      })
+    })
+  } catch (error) {
+    notificationsStore.addError(error)
+  } finally {
+    isTransferInProgress.value = false
+  }
 }
 </script>
