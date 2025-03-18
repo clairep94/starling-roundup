@@ -10,91 +10,93 @@ import { createTestingPinia } from '@pinia/testing'
 import { generateMockToken } from '../types/auth.type'
 import { generateOfetchError } from '../types/responseError.type'
 
-
 vi.stubGlobal("$fetch", vi.fn());
 
 describe('Balance Store', () => {
+  let store: ReturnType<typeof useBalanceStore>
+  let notificationsStore: ReturnType<typeof useNotificationsStore> 
+  let userIdentityStore: ReturnType<typeof useUserIdentityStore>
+  let accountsStore: ReturnType<typeof useAccountsStore>
+
   beforeEach(() => {
-    setActivePinia(createTestingPinia({stubActions: false}))
-    vi.resetAllMocks()
-  })
+    setActivePinia(createTestingPinia({ stubActions: false }));
+    vi.resetAllMocks();
 
-  describe('initialisation', () => {
-    test('should initialise with null balance', () => {
-      const store = useBalanceStore()
-      expect(store.balance).toBeNull()
-    })
+    store = useBalanceStore();
+    notificationsStore = useNotificationsStore();
+    userIdentityStore = useUserIdentityStore();
+    accountsStore = useAccountsStore();
+  });
 
-    test('should initialise with isLoadingBalance set to false', () => {
-      const store = useBalanceStore()
-      expect(store.isLoadingBalance).toBeFalsy()
-    })
-  })
+  describe('initialization', () => {
+    test('should start with a null balance', () => {
+      expect(store.balance).toBeNull();
+    });
+
+    test('should start with isLoadingBalance set to false', () => {
+      expect(store.isLoadingBalance).toBeFalsy();
+    });
+  });
 
   describe('fetchBalance', () => {
-    test('should not fetch balance if selected account or token is missing', async () => {
-      const store = useBalanceStore()
-      const notificationsStore = useNotificationsStore()
+    const setupValidAuthentication = () => {
+      accountsStore.accounts = [generateMockAccount()];
+      userIdentityStore.token = generateMockToken();
+    };
 
-      await store.fetchBalance()
+    test('should not fetch balance if account or token is missing', async () => {
+      await store.fetchBalance();
 
-      expect(notificationsStore.addError).toHaveBeenCalledWith('Cannot fetch balance without an account or token')
-      expect($fetch).not.toHaveBeenCalled()
-    })
-    test('should set isLoadingBalance to true when fetching balance', () => {
-      const store = useBalanceStore()
-      const userIdentityStore = useUserIdentityStore()
-      const accountsStore = useAccountsStore()
+      expect(notificationsStore.addError).toHaveBeenCalledWith(
+        'Cannot fetch balance without an account or token'
+      );
+      expect($fetch).not.toHaveBeenCalled();
+    });
 
-      const mockAccounts= [generateMockAccount()]
-      const mockToken = generateMockToken()
+    test('should set isLoadingBalance to true when fetching starts', () => {
+      setupValidAuthentication();
+      store.fetchBalance();
+      expect(store.isLoadingBalance).toBeTruthy();
+    });
 
-      accountsStore.accounts = mockAccounts
-      userIdentityStore.token = mockToken
+    test('should call the correct endpoint with headers', () => {
+      setupValidAuthentication();
+      const { accountUid } = accountsStore.accounts[0];
+      const token = userIdentityStore.token;
 
-      store.fetchBalance()
-      expect($fetch).toHaveBeenCalled()
+      store.fetchBalance();
 
-      expect(store.isLoadingBalance).toBeTruthy()
-    })
-    test('should set balance to the fetched balance', async () => {
-      const store = useBalanceStore()
-      const userIdentityStore = useUserIdentityStore()
-      const accountsStore = useAccountsStore()
-      const notificationsStore = useNotificationsStore()
+      expect($fetch).toHaveBeenCalledWith(
+        `/api/starling/accounts/${accountUid}/balance`,
+        {
+          method: 'GET',
+          headers: { 'session-token': token }
+        }
+      );
+    });
 
-      const mockAccounts= [generateMockAccount()]
-      const mockToken = generateMockToken()
+    test('should update balance with fetched data', async () => {
+      setupValidAuthentication();
+      const mockBalance = generateMockBalance();
+      $fetch.mockResolvedValue({ data: mockBalance });
 
-      accountsStore.accounts = mockAccounts
-      userIdentityStore.token = mockToken
+      await store.fetchBalance();
 
-      const mockBalance = generateMockBalance()
+      expect(store.balance).toEqual(mockBalance);
+      expect(notificationsStore.addError).not.toHaveBeenCalled();
+    });
 
-      $fetch.mockResolvedValue({data: mockBalance})
+    test('should add an error notification when request fails', async () => {
+      setupValidAuthentication();
+      const { accountUid } = accountsStore.accounts[0];
+      const token = userIdentityStore.token;
 
-      await store.fetchBalance()
+      const error = generateOfetchError('GET', `/api/starling/accounts/${accountUid}/balance`, 403, 'Forbidden');
+      $fetch.mockRejectedValue(error);
 
-      expect(store.balance).toEqual(mockBalance)
-    })
-  })
-  test('should add an error notification when the request fails', async () => {
-    const store = useBalanceStore()
-    const userIdentityStore = useUserIdentityStore()
-    const accountsStore = useAccountsStore()
-    const notificationsStore = useNotificationsStore()
+      await store.fetchBalance();
 
-    const mockAccounts= [generateMockAccount()]
-    const mockToken = generateMockToken()
-
-    accountsStore.accounts = mockAccounts
-    userIdentityStore.token = mockToken
-
-    const error = generateOfetchError('GET', '/api/starling/account/1234/balance', 403, 'Forbidden')
-    $fetch.mockRejectedValue(error)
-
-    await store.fetchBalance()
-
-    expect(notificationsStore.addError).toHaveBeenCalledWith(error)
-  })
-})
+      expect(notificationsStore.addError).toHaveBeenCalledWith(error);
+    });
+  });
+});

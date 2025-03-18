@@ -30,7 +30,8 @@ export const useTransactionFeedStore = defineStore('transactionFeed', () => {
    */
   async function fetchTransactionFeed(minTransactionTimestamp: string, maxTransactionTimestamp:string): Promise<void> {
     if (!accountsStore.selectedAccount || !userIdentityStore.token) {
-      return 
+      notificationsStore.addError('Cannot fetch transactions without an account or token')
+      return
     }
     isLoadingTransactionFeed.value = true
 
