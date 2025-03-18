@@ -6,15 +6,15 @@
     :pageTitle="`${userIdStore.userIdentity.firstName} ${userIdStore.userIdentity.lastName}`"
     :subPages="[
       { title: 'Transaction Feed', path: '/' },
-      { title: 'Round Up', path: '/round-up' }
     ]">
     <!-- MAIN -->
     <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 gap-6 lg:flex-row-reverse lg:px-8 lg:py-6 lg:gap-8">
-      <Balance />
-      <!-- <Roundup :selectedItems="outgoingTransactions" /> -->
-      <Roundup v-if="!transactionFeedStore.isLoadingTransactionFeed && transactionFeedStore.transactionFeed.length > 0" 
-        :selectedItems="outgoingTransactions"
-        />
+      <div class="flex flex-col gap-6 w-full lg:w-1/3 items-center">
+        <Balance />
+        <Roundup v-if="!transactionFeedStore.isLoadingTransactionFeed && transactionFeedStore.transactionFeed.length > 0" 
+          :selectedItems="outgoingTransactions"
+          />
+      </div>
 
       <!-- TRANSACTIONS -->
       <div class="flex flex-col flex-grow gap-4 w-full">
