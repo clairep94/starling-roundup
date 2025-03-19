@@ -9,7 +9,7 @@ import { createTestingPinia } from '@pinia/testing'
 import { generateMockToken } from '../types/auth.type'
 import { generateOfetchError } from '../types/responseError.type'
 import { faker } from '@faker-js/faker'
-import { generateMockSavingsGoal } from '../types/savingsGoal.type'
+import { generateMockSavingsGoal, generateMockSavingsGoalRequest } from '../types/savingsGoal.type'
 
 vi.stubGlobal("$fetch", vi.fn())
 
@@ -27,7 +27,18 @@ describe('Savings Goal Store', () => {
     notificationsStore = useNotificationsStore();
     userIdentityStore = useUserIdentityStore();
     accountsStore = useAccountsStore();
+    resetStoreAndAuthentication()
   })
+
+  const setupValidAuthentication = () => {
+    accountsStore.accounts = [generateMockAccount()];
+    userIdentityStore.token = generateMockToken();
+  };
+
+  const resetStoreAndAuthentication = () => {
+    store.savingsGoals = []
+    userIdentityStore.logout()
+  }
 
   describe('initialisation', () => {
     test('should initialise with an empty savings goals array', () => {
@@ -44,12 +55,8 @@ describe('Savings Goal Store', () => {
     })
   })
 
-  const setupValidAuthentication = () => {
-    accountsStore.accounts = [generateMockAccount()];
-    userIdentityStore.token = generateMockToken();
-  };
-
   describe('fetchSavingsGoals', () => {
+
     describe('and when selected account or token are missing', async () => {
       beforeEach(async () => {
         await store.fetchSavingsGoals()
@@ -117,6 +124,9 @@ describe('Savings Goal Store', () => {
       test('should not update the savings goals', () => {
         expect(store.savingsGoals).toEqual([])
       })
+      test('should set the loading ref to false', () => {
+        expect(store.isLoadingSavingsGoals).toBe(false)
+      })
     })
 
     describe('and when the request is successful', () => {
@@ -135,8 +145,7 @@ describe('Savings Goal Store', () => {
           status: 200,
           data: mockResult
         })
-        const result = await store.fetchSavingsGoals()
-        console.log(result)
+        await store.fetchSavingsGoals()
       })
 
       test('should not add an error notification', () => {
@@ -146,6 +155,118 @@ describe('Savings Goal Store', () => {
       test('should update the savings goals', () => {
         expect(store.savingsGoals).toEqual(mockResult.savingsGoalList)
       })
+
+      test('should set the loading ref to false', () => {
+        expect(store.isLoadingSavingsGoals).toBe(false)
+      })
     })
+  })
+
+  describe('createSavingsGoal', () => {
+    const savingsGoalRequest = generateMockSavingsGoalRequest({name: "fake savings goal"})
+
+    describe('and when selected account or token are missing', async () => {
+      beforeEach(async () => {
+        await store.createSavingsGoal(savingsGoalRequest)
+      })
+      test('should not fetch', () => {
+        expect($fetch).not.toHaveBeenCalled()
+      })
+      test('should add an error notification', () => {
+        expect(notificationsStore.addError).toHaveBeenCalledWith(
+          'Cannot create savings goal without an account or token'
+        )
+      })
+    })
+
+    describe('and while the request is in progress', () => {
+      beforeEach(() => {
+        setupValidAuthentication()
+      })
+
+      test('should set isLoadingCreateSavingsGoal to true when fetching savings goals', () => {
+        store.createSavingsGoal(savingsGoalRequest)        
+        expect(store.isLoadingCreateSavingsGoal).toBe(true)
+      })
+      test('should not set the other loading refs when fetching savings goals', () => {
+        store.createSavingsGoal(savingsGoalRequest)      
+        expect(store.isLoadingSavingsGoals).toBe(false)
+        expect(store.isLoadingTransferToSavingsGoal).toBe(false)
+      })
+      test('should call the correct endpoint and headers', () => {
+        const { accountUid } = accountsStore.selectedAccount;
+        const token = userIdentityStore.token;
+  
+        store.createSavingsGoal(savingsGoalRequest)
+        expect($fetch).toHaveBeenCalledWith(
+          `/api/starling/account/${accountUid}/savings-goals`,
+          {
+            "headers": {
+              "session-token": token
+            },
+            "method": "PUT",
+            "body": savingsGoalRequest
+          }
+        )
+      })
+    })
+
+    describe('and when the request fails', async () => {
+      let accountUid, error
+
+      beforeEach(async () => {
+        setupValidAuthentication()
+        accountUid  = accountsStore.selectedAccount?.accountUid;
+        error = generateOfetchError(
+          'PUT', 
+          `/api/starling/account/${accountUid}/savings-goals`,
+          403,
+          'Forbidden'
+        )
+        $fetch.mockRejectedValue(error)
+        await store.createSavingsGoal()
+      })
+
+      test('should add an error notification', () => {
+        expect(notificationsStore.addError).toHaveBeenCalledWith(error)
+      })
+      test('should return false', () => {
+        expect(store.createSavingsGoal).toHaveLastResolvedWith(false)
+      })
+      test('should set the loading ref to false', () => {
+        expect(store.isLoadingCreateSavingsGoal).toBe(false)
+      })
+    })
+
+    describe('and when the request is successful', () => {
+      let accountUid, mockResult
+
+      beforeEach(async () => {
+        setupValidAuthentication()
+        accountUid = accountsStore.selectedAccount?.accountUid;
+        mockResult = {
+          savingsGoalUid: "some uuid",
+          success: true
+        }
+        $fetch.mockResolvedValue({
+          status: 200,
+          data: mockResult
+        })
+        await store.createSavingsGoal(savingsGoalRequest)
+      })
+
+      test('should not add an error notification', () => {
+        expect(notificationsStore.addError).not.toHaveBeenCalled()
+      })
+
+      test('should update the savings goals', () => {
+        expect(store.createSavingsGoal).toHaveLastResolvedWith(true)
+      })
+
+      test('should set the loading ref to false', () => {
+        expect(store.isLoadingCreateSavingsGoal).toBe(false)
+      })
+    })
+
   })
 })
