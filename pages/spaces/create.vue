@@ -11,8 +11,6 @@
 
     <!-- CREATE A SAVINGS SPACE MAIN -->
     <div data-test="create-space-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-6 overflow-scroll bg-gray-50 min-h-full gap-3">
-      space name: {{ spaceName }}
-      space target: {{ spaceTarget }}
   
       <!-- CREATE A SAVINGS SPACE FORM -->
       <div class="bg-white rounded-lg border border-input-border/70 p-6 flex flex-col gap-5">
@@ -22,7 +20,7 @@
 
         <form data-test="create-space-form"
           @submit.prevent="handleSubmit" 
-          class="flex flex-col gap-y-10">
+          class="flex flex-col gap-y-6">
 
           <div data-test="space-name-form-field"
           class="flex flex-col gap-y-2">
@@ -70,10 +68,10 @@
               type="submit"
               class="rounded-full text-text-default py-2 px-6 text-md transition-all"
               :class="{
-                'bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer': !userIdStore.isLoadingLogin,
-                'bg-gray-400 cursor-not-allowed': userIdStore.isLoadingLogin
+                'bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer': true,
+                'bg-gray-400 cursor-not-allowed': false
               }"
-              :disabled="userIdStore.isLoadingLogin"
+              :disabled="false"
             >
               Submit
             </button>
@@ -86,9 +84,12 @@
 
 <script setup lang="ts">
 import { useAccountsStore } from '../../store/accounts'
-import { useUserIdentityStore } from '@/store/userIdentity'
+import { useUserIdentityStore } from '../../store/userIdentity'
+import { useSavingsGoalsStore } from '../../store/savingsGoals'
+
 const userIdStore = useUserIdentityStore()
 const accountsStore = useAccountsStore()
+const savingsGoalsStore = useSavingsGoalsStore()
 
 useHead({
   title: 'Create Savings Space'
@@ -111,6 +112,7 @@ const formData = computed(() => {
 
 function handleSubmit(){
   console.log('submitting form:', formData.value)
+  savingsGoalsStore.createSavingsGoal(formData.value)
 }
 </script>
 

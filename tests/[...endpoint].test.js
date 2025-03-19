@@ -101,7 +101,10 @@ describe("Starling API Handler", () => {
         context: { params: { endpoint: "test-endpoint" } },
         node: {
           req: {
-            headers: { "session-token": "test-token" },
+            headers: {
+              "session-token": "test-token",
+              "content-type": "application/json",
+            },
             query,
             body,
           },
@@ -119,6 +122,7 @@ describe("Starling API Handler", () => {
         method,
         headers: {
           Authorization: "Bearer test-token",
+          Accept: "application/json",
           "Content-Type": "application/json",
         },
         body: expectedBody ? JSON.stringify(expectedBody) : undefined,
