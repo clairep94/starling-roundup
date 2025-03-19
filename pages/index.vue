@@ -11,13 +11,15 @@
     <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 gap-6 lg:flex-row-reverse lg:px-8 lg:py-6 lg:gap-8">
       <div class="flex flex-col gap-6 w-full lg:w-1/3 items-center">
         <Balance />
-        <Roundup v-if="!transactionFeedStore.isLoadingTransactionFeed && transactionFeedStore.transactionFeed.length > 0" 
-          :selectedItems="outgoingTransactions"
-          />
       </div>
 
       <!-- TRANSACTIONS -->
       <div class="flex flex-col flex-grow gap-4 w-full">
+        <div class="flex w-full items-center justify-center">
+          <Roundup v-if="!transactionFeedStore.isLoadingTransactionFeed && transactionFeedStore.transactionFeed.length > 0" 
+            :selectedItems="outgoingTransactions"
+            />
+        </div>
         <DateRangePicker data-test="date-range-picker"
           @date-range-selected="handleDateRangeSelected"
           :startProp="selectedStart"
@@ -40,6 +42,7 @@
 import { ref, onMounted } from 'vue'
 import { useUserIdentityStore } from '../store/userIdentity'
 import { useTransactionFeedStore } from '../store/transactionFeed'
+import { useSavingsGoalsStore } from '../store/savingsGoals'
 import DateRangePicker from '../components/DateRangePicker.vue'
 import Balance from '../components/Balance.vue'
 import Roundup from '../components/Roundup.vue'

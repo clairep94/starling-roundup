@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import handler from "~/server/api/starling/[...endpoint].js";
-import { getQuery } from "h3";
+import { getQuery, readBody } from "h3";
 
 vi.stubGlobal("$fetch", vi.fn());
 
@@ -101,7 +101,10 @@ describe("Starling API Handler", () => {
         context: { params: { endpoint: "test-endpoint" } },
         node: {
           req: {
-            headers: { "session-token": "test-token" },
+            headers: {
+              "session-token": "test-token",
+              "content-type": "application/json",
+            },
             query,
             body,
           },
@@ -119,6 +122,7 @@ describe("Starling API Handler", () => {
         method,
         headers: {
           Authorization: "Bearer test-token",
+          Accept: "application/json",
           "Content-Type": "application/json",
         },
         body: expectedBody ? JSON.stringify(expectedBody) : undefined,

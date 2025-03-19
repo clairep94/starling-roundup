@@ -3,6 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css','@justeattakeaway/pie-css'],
+  ssr: false,
 
   vite: {
     plugins: [

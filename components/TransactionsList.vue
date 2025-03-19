@@ -23,7 +23,7 @@
     <div data-test="transaction-list-group" v-for="transactionGroup in organisedByDatesItems" :key="transactionGroup.date"
       class="flex flex-col"
     >
-      <div data-test="transaction-list-group-date" class="text-black/50 text-sm font-medium py-3 border-b border-gray-200">
+      <div data-test="transaction-list-group-date" class="text-black/50 text-sm font-medium py-3 border-b border-input-border">
         {{ 
           (currentDate.split('T')[0] === transactionGroup.date) ?
           'Today'
