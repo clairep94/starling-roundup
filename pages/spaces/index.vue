@@ -14,13 +14,13 @@
       
       <!-- CARD -->
       <div v-for="goal in savingsGoalsStore.savingsGoals"
-        class="bg-white rounded-lg border border-input-border/70 p-3 flex flex-col sm:flex-row justify-between gap-4"
+        class="bg-white rounded-lg border border-input-border/70 p-3 flex flex-row justify-between gap-4"
       >
         <!-- LEFT -->
         <div class="flex flex-row gap-3">
           <!-- IMAGE -->
           <div class="rounded-sm bg-gray-400 w-15 h-15 object-cover overflow-clip">
-            <img :src="`https://picsum.photos/seed/${goal.savingsGoalUid}/100/100`" alt="Goal Image"/>
+            <img :src="`https://picsum.photos/seed/${goal.savingsGoalUid}/100/100`" alt="Goal Image" class="w-full h-full"/>
           </div>
 
           <!-- NAME & TOTAL -->
