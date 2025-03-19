@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import handler from "~/server/api/starling/[...endpoint].js";
-import { getQuery } from "h3";
+import { getQuery, readBody } from "h3";
 
 vi.stubGlobal("$fetch", vi.fn());
 
