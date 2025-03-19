@@ -66,12 +66,7 @@
             <button
               data-test="submit-create-space-form"
               type="submit"
-              class="rounded-full text-text-default py-2 px-6 text-md transition-all"
-              :class="{
-                'bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer': true,
-                'bg-gray-400 cursor-not-allowed': false
-              }"
-              :disabled="false"
+              class="rounded-full text-text-default py-2 px-6 text-md transition-all bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer"
             >
               Submit
             </button>
@@ -86,10 +81,12 @@
 import { useAccountsStore } from '../../store/accounts'
 import { useUserIdentityStore } from '../../store/userIdentity'
 import { useSavingsGoalsStore } from '../../store/savingsGoals'
+import { useNotificationsStore } from '../../store/notifications'
 
 const userIdStore = useUserIdentityStore()
 const accountsStore = useAccountsStore()
 const savingsGoalsStore = useSavingsGoalsStore()
+const notificationsStore = useNotificationsStore()
 
 useHead({
   title: 'Create Savings Space'
@@ -110,9 +107,17 @@ const formData = computed(() => {
   }
 })
 
-function handleSubmit(){
+async function handleSubmit (){
   console.log('submitting form:', formData.value)
-  savingsGoalsStore.createSavingsGoal(formData.value)
+  const result = await savingsGoalsStore.createSavingsGoal(formData.value)
+  if (result === true) {
+    console.log('success!')
+    notificationsStore.addNotification({
+      variant: 'success',
+      message: 'Successfully created new savings space.'
+    })
+    navigateTo('/spaces')
+  }
 }
 </script>
 
