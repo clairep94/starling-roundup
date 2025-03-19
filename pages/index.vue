@@ -21,7 +21,7 @@
         <DateRangePicker @date-range-selected="handleDateRangeSelected"
           :startProp="selectedStart"
           :endProp="selectedEnd"
-          :currentDate="defaultEndDate.split('T')[0]"
+          :currentDate="defaultEndDate"
           :disabled="transactionFeedStore.isLoadingTransactionFeed"
         />
 

@@ -5,7 +5,7 @@ import DateRangePicker from './DateRangePicker.vue';
 const defaultProps = {
   startProp: '2024-03-10T12:34:56Z',
   endProp: '2024-03-15T07:08:09Z',
-  currentDate: '2024-03-18',
+  currentDate: '2024-03-18T07:08:09Z',
   disabled: false
 };
 
@@ -34,7 +34,7 @@ describe('DateRangePicker', () => {
     
     expect(startInput.attributes('max')).toBe(defaultProps.endProp.split('T')[0]);
     expect(endInput.attributes('min')).toBe(defaultProps.startProp.split('T')[0]);    
-    expect(endInput.attributes('max')).toBe(defaultProps.currentDate);
+    expect(endInput.attributes('max')).toBe(defaultProps.currentDate.split('T')[0]);
   });
 
   it('emits event when start date changes', async () => {

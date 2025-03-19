@@ -34,7 +34,7 @@
         @input="end = $event.target.value"
         @change="emit('date-range-selected', start, end)"
         :min="start"
-        :max="props.currentDate"
+        :max="currentDate"
         :disabled="props.disabled"
         class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5" 
         placeholder="Select date end"/>
@@ -56,6 +56,7 @@ const props = defineProps<{
 
 const start = ref<string>(props.startProp.split('T')[0])
 const end = ref<string>(props.endProp.split('T')[0])
+const currentDate = ref<string>(props.currentDate.split('T')[0])
 const emit = defineEmits(['date-range-selected'])
 </script>
 
