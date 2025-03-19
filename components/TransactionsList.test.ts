@@ -7,7 +7,7 @@ import { generateFeedItem, type FeedItem } from '../types/feedItem.type'
 function factory(isLoading:boolean, items:FeedItem[]): VueWrapper<any>{
   return shallowMount(TransactionsList, {
     props: {
-      isLoading, items
+      isLoading, items, currentDate: '2025-01-01'
     }
   })
 }

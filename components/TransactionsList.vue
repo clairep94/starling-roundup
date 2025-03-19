@@ -3,7 +3,10 @@
   <div data-test="loading-transactions" v-if="props.isLoading"
   class="flex flex-col flex-grow gap-4 w-full items-center justify-center text-black/60 mt-10"
   >
-    Loading transactions...
+    <pie-spinner variant="secondary"/>
+    <p class="text-lg text-black/70">
+      Loading balance...
+    </p>
   </div>
 
   <!-- NO DATA -->
