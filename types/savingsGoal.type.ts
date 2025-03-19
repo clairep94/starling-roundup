@@ -12,3 +12,14 @@ export type SavingsGoal = {
 export type SavingsGoals = {
   savingsGoalsList: SavingsGoal[]
 }
+
+export type SavingsGoalRequest = {
+  name: string,
+  currency: string,
+  target?: CurrencyAndAmount,
+  base64EncodedPhoto?: string
+}
+
+export type TopUpRequest = {
+  amount: CurrencyAndAmount
+}
