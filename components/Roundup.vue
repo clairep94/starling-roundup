@@ -63,6 +63,7 @@ async function handleTransfer() {
       method: 'PUT',
       headers: {
         'Content-Type': 'application',
+        'Accept': 'application/json',
         'Authorization': `Bearer ${userIdentityStore.token}`
       },
       body: JSON.stringify({

@@ -11,15 +11,31 @@
 
     <!-- SAVINGS SPACES -->
     <div data-test="all-spaces-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-6 overflow-scroll bg-gray-50 min-h-full gap-3">
-      
+      <!-- TOTAL SAVED -->
+      <div class="bg-white rounded-lg border border-input-border/70 p-6 flex flex-col items-center justify-center gap-1">
+        <h4 class="text-sm text-black/70 font-medium">
+          Total amount held in Spaces
+        </h4>
+        <h3 class="text-2xl text-black/80 font-extrabold">
+          {{ formatCurrencyAmount(totalSavedAmount) }}
+        </h3>
+        <button
+          data-test="show-login-form-button"
+          @click="navigateTo('/spaces/create')"
+          class="rounded-full text-text-default text-md py-2 px-6 transition-all bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer mt-6"
+        >
+          Create a new space
+        </button>
+      </div>
+
       <!-- CARD -->
       <div v-for="goal in savingsGoalsStore.savingsGoals"
-        class="bg-white rounded-lg border border-input-border/70 p-3 flex flex-row justify-between gap-4"
+        class="bg-white rounded-lg border border-input-border/70 p-3 md:p-5 flex flex-row justify-between gap-4"
       >
         <!-- LEFT -->
         <div class="flex flex-row gap-3">
           <!-- IMAGE -->
-          <div class="rounded-sm bg-gray-400 w-15 h-15 object-cover overflow-clip">
+          <div class="rounded-sm bg-gray-400 w-15 h-15 md:w-18 md:h-18 object-cover overflow-clip">
             <img :src="`https://picsum.photos/seed/${goal.savingsGoalUid}/100/100`" alt="Goal Image" class="w-full h-full"/>
           </div>
 
@@ -51,15 +67,7 @@
         </div>
       </div>
 
-      <!-- TOTAL SAVED -->
-      <div class="bg-white rounded-lg border border-input-border/70 p-6 flex flex-col items-center justify-center gap-1">
-        <h4 class="text-sm text-black/70 font-medium">
-          Total amount held in Spaces
-        </h4>
-        <h3 class="text-2xl text-black/80 font-extrabold">
-          {{ formatCurrencyAmount(totalSavedAmount) }}
-        </h3>
-      </div>
+
     </div>
   </NuxtLayout>
 </template>
