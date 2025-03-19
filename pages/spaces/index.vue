@@ -28,7 +28,6 @@
             <h4 class="font-bold text-black/70">
               {{ goal.name }}
             </h4>
-            <!-- <p>{{goal.state}}</p> -->
             <p class="font-semibold text-sm text-black/60">
               {{formatCurrencyAmount(goal.target)}}
             </p>
@@ -36,21 +35,29 @@
         </div>
         
         <!-- RIGHT -->
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-1 items-end justify-between">
           <h5 class="font-bold text-black/80">
             {{ formatCurrencyAmount(goal.totalSaved) }}
           </h5>
-          <p>{{goal.savedPercentage}}</p>
+          <div class="flex flex-row items-center gap-1">
+            <p class="text-xs text-black/60">{{goal.savedPercentage}}%</p>
+            <div class="w-[120px] bg-white border border-input-border h-[8px] rounded-full overflow-clip">
+              <div 
+                class="bg-input-border h-full"
+                :style="{ width: goal.savedPercentage + '%' }"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- TOTAL SAVED -->
-      <div class="bg-white rounded-lg border border-input-border/70 p-6 flex flex-col items-center justify-center gap-4">
+      <div class="bg-white rounded-lg border border-input-border/70 p-6 flex flex-col items-center justify-center gap-1">
         <h4 class="text-sm text-black/70 font-medium">
           Total amount held in Spaces
         </h4>
-        <h3>
-
+        <h3 class="text-2xl text-black/80 font-extrabold">
+          {{ formatCurrencyAmount(totalSavedAmount) }}
         </h3>
       </div>
     </div>
@@ -74,6 +81,19 @@ onMounted(() => {
   savingsGoalsStore.fetchSavingsGoals()
 })
 
+import { computed } from 'vue';
+
+// Computed property to calculate total saved amount with currency
+const totalSavedAmount = computed(() => {
+  if (!savingsGoalsStore.savingsGoals.length) {
+    return { minorUnits: 0, currency: 'GBP' };
+  }
+  const total = savingsGoalsStore.savingsGoals.reduce(
+    (acc, goal) => acc + goal.totalSaved.minorUnits, 
+    0
+  );
+  return { minorUnits: total, currency: 'GBP' };
+});
 </script>
 
 <style scoped>
