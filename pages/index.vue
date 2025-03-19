@@ -18,60 +18,37 @@
 
       <!-- TRANSACTIONS -->
       <div class="flex flex-col flex-grow gap-4 w-full">
-        <DateRangePicker @date-range-selected="handleDateRangeSelected"
+        <DateRangePicker data-test="date-range-picker"
+          @date-range-selected="handleDateRangeSelected"
           :startProp="selectedStart"
           :endProp="selectedEnd"
           :currentDate="defaultEndDate"
           :disabled="transactionFeedStore.isLoadingTransactionFeed"
         />
 
-        <!-- LOADING -->
-        <div data-test="loading-transactions" v-if="transactionFeedStore.isLoadingTransactionFeed"
-        class="flex flex-col flex-grow gap-4 w-full items-center justify-center text-black/60 mt-10"
-        >
-          Loading transactions...
-        </div>
-    
-        <!-- NO DATA -->
-        <div data-test="no-transactions-found-message" v-else-if="transactionFeedStore.transactionFeed.length == 0"
-        class="flex flex-col flex-grow gap-4 w-full items-center justify-center text-black/60 mt-10"
-        >
-          No transactions found.
-        </div>
-    
-        <!-- TRANSACTIONS LIST -->
-        <div data-test="transaction-feed-list" v-else
-          class="flex flex-col gap-2">
-          <TransactionFeedItem v-for="transaction in transactionFeedStore.transactionFeed" :transactionFeedItem="transaction" :key="transaction.id" />
-        </div>
+        <TransactionsList data-test="transactions-list"
+          :is-loading="transactionFeedStore.isLoadingTransactionFeed"
+          :items="transactionFeedStore.transactionFeed"
+        />
       </div>
-
-
     </div>
-    
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useUserIdentityStore } from '@/store/userIdentity'
-import { useAccountsStore } from '@/store/accounts'
-import { useTransactionFeedStore } from '@/store/transactionFeed'
-import { useBalanceStore } from '@/store/balance'
-import { useRouter } from 'vue-router'
-import { formatCurrencyAmount } from '~/utils/formatData'
-import DateRangePicker from '@/components/DateRangePicker.vue'
-import Balance from '@/components/Balance.vue'
-import TransactionFeedItem from '@/components/TransactionFeedItem.vue'
-import Roundup from '@/components/Roundup.vue'
-
-const userIdStore = useUserIdentityStore()
-const accountsStore = useAccountsStore()
-const transactionFeedStore = useTransactionFeedStore()
+import { useUserIdentityStore } from '../store/userIdentity'
+import { useTransactionFeedStore } from '../store/transactionFeed'
+import DateRangePicker from '../components/DateRangePicker.vue'
+import Balance from '../components/Balance.vue'
+import Roundup from '../components/Roundup.vue'
 
 useHead({
-  title: 'Account Overview'
+  title: 'Transaction Feed'
 })
+
+const userIdStore = useUserIdentityStore()
+const transactionFeedStore = useTransactionFeedStore()
 
 const currentDate = new Date()
 const defaultStartDate = new Date(currentDate.setDate(currentDate.getDate() - 7))
@@ -79,15 +56,28 @@ const defaultStartDate = new Date(currentDate.setDate(currentDate.getDate() - 7)
 
 const defaultEndDate = new Date().toISOString() // Today
 
-const selectedStart = ref<string>(defaultStartDate.split('T')[0] + 'T00:00:00.000Z') //2025-03-05T02:11:13.920Z
-const selectedEnd = ref<string>(defaultEndDate.split('T')[0] + 'T23:59:59.999Z') //2025-03-12T02:09:22.744Z
+/**
+ * Update time from the date time string to be the start of the day
+ */
+function appendStartTime(str:string):string{
+  return str.split('T')[0] + 'T00:00:00.000Z'
+}
+/**
+ * Update time from the date time string to be the end of the day
+ */
+function appendEndTime(str:string):string{
+  return str.split('T')[0] + 'T23:59:59.999Z'
+}
 
+const selectedStart = ref<string>(defaultStartDate.split('T')[0] + 'T00:00:00.000Z')
+const selectedEnd = ref<string>(defaultEndDate.split('T')[0] + 'T23:59:59.999Z')
+
+/**
+ * Normalises the start and end emitted from the DateRangePicker, then calls fetchTransactionFeed
+ */
 function handleDateRangeSelected(start:string, end:string) {
-  selectedStart.value = start + 'T00:00:00.000Z'
-  selectedEnd.value = end + 'T23:59:59.999Z'
-
-  console.log('Selected Start Date:', selectedStart.value)
-  console.log('Selected End Date:', selectedEnd.value)
+  selectedStart.value = appendStartTime(start)
+  selectedEnd.value = appendEndTime(end)
   transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
 }
 
