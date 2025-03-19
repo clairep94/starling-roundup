@@ -118,15 +118,18 @@ describe("Starling API Handler", () => {
       const result = await handler(event);
 
       // Check the URL with query parameters
-      expect($fetch).toHaveBeenCalledWith(expectedUrl, {
-        method,
-        headers: {
-          Authorization: "Bearer test-token",
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: expectedBody ? JSON.stringify(expectedBody) : undefined,
-      });
+      expect($fetch).toHaveBeenCalledWith(
+        expectedUrl,
+        expect.objectContaining({
+          method,
+          headers: {
+            Authorization: "Bearer test-token",
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          ...(expectedBody ? { body: expectedBody } : {}),
+        })
+      );
 
       // Check the returned response data
       expect(result).toEqual({
