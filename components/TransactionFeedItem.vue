@@ -17,24 +17,20 @@
     </div>
     
     <!-- AMOUNT & TOGGLE -->
-    <div data-test="right-side" class="flex flex-row gap-2 justify-center items-center">
-      <!-- TODO: icon if round up has already been applied -->
-      <div v-if="userNote">
-      roundupIcon
-      </div>
-      <div data-test="amount" class="text-sm font-semibold "
+    <div data-test="right-side" class="flex flex-col gap-1 justify-center items-end">
+      <div data-test="amount" class="text-sm font-semibold text-right"
         :class="{
           'text-blue-700/70': direction === 'IN',
           'text-black/80': direction === 'OUT'
         }"
       >
-        {{ direction === 'IN' ? '+' : '' }}{{ formattedCurrencyAmount }} 
-        
-        <span v-if="direction === 'OUT'" class="text-xs text-gray-500">
-          {{ formatCurrencyAmount({
-            currency: 'GBP',
-            minorUnits: findRoundUpAmount(amount)}) }}
-        </span>
+        {{ direction === 'IN' ? '+' : '' }}{{ formattedCurrencyAmount }}   
+      </div>
+      <div v-if="direction === 'OUT'" data-test="round-up-amount" class="flex flex-row gap-[2px] items-center text-gray-500">
+        <icon-coins/>
+        <p class="text-xs">
+          {{ formattedRoundupAmount }}
+        </p>
       </div>
     </div>
   </div>
@@ -44,16 +40,27 @@
 import type { FeedItem } from "@/types/FeedItem";
 import { formatCurrencyAmount, formatUpperSnakeCaseToTitleString, extractTime } from "~/utils/formatData";
 import { findRoundUpAmount } from "~/utils/roundUpCalculate";
+import "@justeattakeaway/pie-icons-webc/dist/IconCoins.js";
+import "@justeattakeaway/pie-icons-webc/dist/IconCoinsFilled.js";
+import { useAccountsStore } from '@/store/accounts'
+
+const accountsStore = useAccountsStore()
 
 const props = defineProps<{
   transactionFeedItem: FeedItem;
 }>();
 
-const { amount, direction, settlementTime, counterPartyName, spendingCategory, counterPartyUid, userNote } = props.transactionFeedItem;
+const { amount, direction, settlementTime, counterPartyName, spendingCategory, userNote } = props.transactionFeedItem;
 
 const formattedCurrencyAmount = formatCurrencyAmount(amount);
 const formattedSpendingCategory = formatUpperSnakeCaseToTitleString(spendingCategory);
 const formattedSettlementTime = extractTime(settlementTime);
+const formattedRoundupAmount = formatCurrencyAmount(
+  {
+    currency: accountsStore.selectedAccount ? accountsStore.selectedAccount.currency : 'GBP',
+    minorUnits: findRoundUpAmount(amount)
+  }
+)
 
 </script>
 

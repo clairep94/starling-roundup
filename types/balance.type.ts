@@ -1,5 +1,5 @@
 import type { CurrencyAndAmount } from "./currencyAndAmount.type"
-import { faker } from '@faker-js/faker'
+import { generateMockCurrencyAndAmount } from "./currencyAndAmount.type"
 
 export type Balance = {
   "clearedBalance": CurrencyAndAmount,
@@ -13,12 +13,12 @@ export type Balance = {
 
 export function generateMockBalance(): Balance {
   return {
-    clearedBalance: {currency: "GBP", minorUnits: faker.number.int({min:0, max:faker.number.int({min:0, max:100})})},
-    effectiveBalance: {currency: "GBP", minorUnits: faker.number.int({min:0, max:100})},
-    pendingTransactions: {currency: "GBP", minorUnits: faker.number.int({min:0, max:100})},
-    acceptedOverdraft: {currency: "GBP", minorUnits: faker.number.int({min:0, max:100})},
-    amount: {currency: "GBP", minorUnits: faker.number.int({min:0, max:100})},
-    totalClearedBalance: {currency: "GBP", minorUnits: faker.number.int({min:0, max:100})},
-    totalEffectiveBalance: {currency: "GBP", minorUnits: faker.number.int({min:0, max:100})}
+    clearedBalance: generateMockCurrencyAndAmount(),
+    effectiveBalance: generateMockCurrencyAndAmount(),
+    pendingTransactions: generateMockCurrencyAndAmount(),
+    acceptedOverdraft: generateMockCurrencyAndAmount(),
+    amount: generateMockCurrencyAndAmount(),
+    totalClearedBalance: generateMockCurrencyAndAmount(),
+    totalEffectiveBalance: generateMockCurrencyAndAmount()
   }
 }
