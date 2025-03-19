@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { formatCurrencyAmount, formatUpperSnakeCaseToTitleString, extractTime } from './formatData';
+import { formatCurrencyAmount, formatUpperSnakeCaseToTitleString, extractTime, extractDate } from './formatData';
 
 describe('formatCurrencyAmount', () => {
   test('formats currency correctly', () => {
@@ -26,7 +26,7 @@ describe('extractTime', () => {
   test('extracts time from ISO string', () => {
     const isoString = '2025-03-18T15:30:00Z';
     const formattedTime = extractTime(isoString);
-    expect(formattedTime).toBeTruthy();
+    expect(formattedTime).toBe('15:30');
   });
 
   test('returns empty string for empty input', () => {
@@ -37,3 +37,19 @@ describe('extractTime', () => {
     expect(extractTime('awrowijr')).toBe('Invalid Date');
   });
 });
+
+describe('extractDate', () => {
+  test('extracts date from ISO string', () => {
+    const isoString = '2025-03-18T15:30:00Z';
+    const formattedDate = extractDate(isoString);
+    expect(formattedDate).toBe('Tuesday 18 March');
+  });
+
+  test('returns empty string for empty input', () => {
+    expect(extractTime('')).toBe('');
+  });
+
+  test('handles invalid date input', () => {
+    expect(extractTime('awrowijr')).toBe('Invalid Date');
+  });
+})
