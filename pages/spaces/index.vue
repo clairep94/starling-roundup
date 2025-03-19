@@ -10,7 +10,7 @@
     ]">
 
     <!-- SAVINGS SPACES -->
-    <div data-test="all-spaces-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-6 overflow-scroll bg-gray-50 min-h-full gap-3">
+    <div data-test="all-spaces-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-5 overflow-scroll bg-gray-50 min-h-full gap-3">
       <!-- TOTAL SAVED -->
       <div class="bg-white rounded-lg border border-input-border/70 p-6 flex flex-col items-center justify-center gap-1">
         <h4 class="text-sm text-black/70 font-medium">
