@@ -22,6 +22,18 @@ export function extractTime(isoString: string){
 
   const date = new Date(isoString);  
 
-  return date.toLocaleString(defaultLocale, {dateStyle: "medium",
-    timeStyle: "short",});
+  return date.toLocaleTimeString(defaultLocale, 
+    {timeStyle: "short"});
+}
+
+export function extractDate(isoString: string){
+  if (!isoString) return '';
+
+  const date = new Date(isoString.split('T')[0])
+
+  return date.toLocaleDateString(defaultLocale, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  })
 }

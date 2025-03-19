@@ -29,6 +29,7 @@
         <TransactionsList data-test="transactions-list"
           :is-loading="transactionFeedStore.isLoadingTransactionFeed"
           :items="transactionFeedStore.transactionFeed"
+          :current-date="defaultEndDate"
         />
       </div>
     </div>

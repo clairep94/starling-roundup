@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row w-full justify-between p-4 border-t border-b border-gray-200">
+  <div class="flex flex-row w-full justify-between p-4 border-b border-gray-200">
     <div data-test="left-side" class="flex flex-row gap-4 justify-center items-center">
       <div data-test="logo-container"
         class="bg-red-500/50 w-12 h-12 rounded-sm items-center justify-center flex text-white font-semibold"
