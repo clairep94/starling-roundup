@@ -24,7 +24,7 @@
     <button
       data-test="navigate-to-create-space-button"
       @click="navigateTo('/spaces/create')"
-      class="rounded-full text-text-default text-md py-2 px-6 transition-all bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer mt-6"
+      class="rounded-full text-text-default text-sm md:text-md py-2 px-6 transition-all bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer mt-6 line-clamp-1"
     >
       Create a new space
     </button>

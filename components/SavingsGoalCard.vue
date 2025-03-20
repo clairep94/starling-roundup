@@ -16,7 +16,7 @@
     <div data-test="savings-space-name-and-total"
       class="flex flex-col">
       <h4 data-test="savings-goal-name" 
-      class="font-bold text-black/70">
+      class="font-bold text-black/70 line-clamp-2">
         {{ goal.name }}
       </h4>
       <p data-test="savings-goal-target"
