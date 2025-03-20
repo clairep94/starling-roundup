@@ -21,7 +21,7 @@
       <!-- LOADING -->
       <div v-if="savingsGoalsStore.isLoadingSavingsGoals" 
         data-test="loading-savings-goals"
-        class="flex flex-col gap-1 items-center mt-2 justify-center min-h-[200px]"
+        class="flex flex-col gap-1 items-center justify-center min-h-[200px]"
       >
         <pie-spinner variant="secondary"/>
         <p class="text-lg text-black/70">
@@ -32,6 +32,7 @@
       <!-- NO SAVINGS SPACES -->
       <div v-else-if="!savingsGoalsStore.savingsGoals.length"
         data-test="no-savings-goals"
+        class="flex flex-col w-full items-center justify-center h-[200px]"
       >
         <p class="text-lg text-black/70">
           No savings goals yet. Click on the button above to create a new space.
