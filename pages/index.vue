@@ -18,7 +18,7 @@
         <div class="flex w-full items-center justify-center">
           <!-- TODO: replace props drilling below with date range store -->
           <Roundup data-test="round-up" class="mb-4"
-            :selectedItems="outgoingTransactions"
+            :selectedItems="filteredTransactions"
             :isLoadingFeed="transactionFeedStore.isLoadingTransactionFeed"
             :selectedStart="selectedStart" 
             :selectedEnd="selectedEnd"
@@ -88,8 +88,14 @@ function handleDateRangeSelected(start:string, end:string) {
   transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
 }
 
-const outgoingTransactions = computed(() => {
-  return transactionFeedStore.transactionFeed.filter(el => el.direction === 'OUT')
+/**
+ * Assumption that only outgoing transactions that are NOT "INTERNAL_TRANSFER" can be applied topups with -- I believe this is the behaviour on the app
+ * So that users cannot apply topups and past topup transactions
+ */
+const filteredTransactions = computed(() => {
+  return transactionFeedStore.transactionFeed
+    .filter(el => el.direction === 'OUT')
+    .filter(el => el.source !== "INTERNAL_TRANSFER")
 })
 
 onMounted(() => {

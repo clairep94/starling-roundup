@@ -26,7 +26,7 @@
       >
         {{ direction === 'IN' ? '+' : '' }}{{ formattedCurrencyAmount }}   
       </div>
-      <div v-if="direction === 'OUT'" data-test="round-up-amount" class="flex flex-row gap-[2px] items-center text-gray-500">
+      <div v-if="direction === 'OUT' && source !=='INTERNAL_TRANSFER'" data-test="round-up-amount" class="flex flex-row gap-[2px] items-center text-gray-500">
         <icon-coins/>
         <p class="text-xs">
           {{ formattedRoundupAmount }}
@@ -50,7 +50,7 @@ const props = defineProps<{
   transactionFeedItem: FeedItem;
 }>();
 
-const { amount, direction, settlementTime, counterPartyName, spendingCategory, userNote } = props.transactionFeedItem;
+const { amount, direction, settlementTime, counterPartyName, spendingCategory, userNote, source } = props.transactionFeedItem;
 
 const formattedCurrencyAmount = formatCurrencyAmount(amount);
 const formattedSpendingCategory = formatUpperSnakeCaseToTitleString(spendingCategory);
