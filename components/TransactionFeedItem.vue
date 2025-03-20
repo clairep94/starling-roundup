@@ -2,12 +2,12 @@
   <div class="flex flex-row w-full justify-between p-4 border-b border-input-border">
     <div data-test="left-side" class="flex flex-row gap-4 justify-center items-center">
       <div data-test="counterparty-image-container" 
-        class="rounded-sm bg-gray-400 w-12 h-12 object-cover overflow-clip">
+        class="rounded-sm bg-gray-400 min-w-12 h-12 object-cover overflow-clip">
         <img data-test="counterparty-image" 
         :src="`https://picsum.photos/seed/${transactionFeedItem.counterPartyUid}/100/100`" alt="counter party image" class="w-full h-full"/>
       </div>
       <div data-test="transaction-details" class="flex flex-col">
-        <div data-test="counter-party-name" class="text-sm font-semibold text-black/80">
+        <div data-test="counter-party-name" class="text-sm font-semibold text-black/80 line-clamp-2">
           {{ counterPartyName }}
         </div>
         <div data-test="transaction-time-and-category" class="text-xs text-gray-500">
