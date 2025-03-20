@@ -11,9 +11,14 @@
 
   <!-- NO DATA -->
   <div data-test="no-transactions-found-message" v-else-if="props.items.length == 0"
-  class="flex flex-col flex-grow gap-4 w-full items-center justify-center text-black/60 mt-10"
+  class="flex flex-col flex-grow gap-4 w-full items-center justify-center text-black/50 mt-10"
   >
-    No transactions found.
+    <p class="text-center">
+      No transactions found. 
+      <br>
+      <br>
+      Update the date range, or simulate transactions on the Starling API Sandbox to see them here.
+    </p>
   </div>
 
   <!-- TRANSACTIONS LIST -->
@@ -44,6 +49,7 @@ import { ref, defineProps, computed } from 'vue'
 import TransactionFeedItem from '../components/TransactionFeedItem.vue'
 import type { FeedItem } from '../types/feedItem.type';
 import { extractDate } from '../utils/formatData';
+import '@justeattakeaway/pie-webc/components/spinner.js'
 
 const props = defineProps<{
   isLoading: boolean,
