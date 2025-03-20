@@ -9,9 +9,11 @@ import { createTestingPinia } from '@pinia/testing'
 import { generateMockToken } from '../types/auth.type'
 import { generateOfetchError } from '../types/responseError.type'
 import { faker } from '@faker-js/faker'
-import { generateMockSavingsGoal, generateMockSavingsGoalRequest } from '../types/savingsGoal.type'
+import { generateMockSavingsGoal, generateMockSavingsGoalRequest, generateTopUpRequest } from '../types/savingsGoal.type'
+import * as uuid from 'uuid';
 
 vi.stubGlobal("$fetch", vi.fn())
+vi.mock('uuid')
 
 describe('Savings Goal Store', () => {
   let store: ReturnType<typeof useSavingsGoalsStore>
@@ -184,11 +186,11 @@ describe('Savings Goal Store', () => {
         setupValidAuthentication()
       })
 
-      test('should set isLoadingCreateSavingsGoal to true when fetching savings goals', () => {
+      test('should set isLoadingCreateSavingsGoal to true when creating savings goals', () => {
         store.createSavingsGoal(savingsGoalRequest)        
         expect(store.isLoadingCreateSavingsGoal).toBe(true)
       })
-      test('should not set the other loading refs when fetching savings goals', () => {
+      test('should not set the other loading refs when creating savings goals', () => {
         store.createSavingsGoal(savingsGoalRequest)      
         expect(store.isLoadingSavingsGoals).toBe(false)
         expect(store.isLoadingTransferToSavingsGoal).toBe(false)
@@ -267,6 +269,62 @@ describe('Savings Goal Store', () => {
         expect(store.isLoadingCreateSavingsGoal).toBe(false)
       })
     })
+  })
 
+  describe('transferToSavingsGoal', () => {
+    const transferRequestBody = generateTopUpRequest()
+    const savingsGoalUuid = 'some_savings_goal_uuid'
+    const mockTransferUid = 'mock-transfer-uuid';
+
+    async function performTransfer(){
+      await store.transferToSavingsGoal(savingsGoalUuid, transferRequestBody)
+    }
+
+    describe('and when selected account or token are missing', async () => {
+      beforeEach(async () => {
+        performTransfer()
+      })
+      test('should not fetch', () => {
+        expect($fetch).not.toHaveBeenCalled()
+      })
+      test('should add an error notification', () => {
+        expect(notificationsStore.addError).toHaveBeenCalledWith(
+          'Cannot top up savings goal without an account or token'
+        )
+      })
+    })
+
+    describe('and while the request is in progress', () => {
+      beforeEach(() => {
+        setupValidAuthentication()
+      })
+
+      test('should set isLoadingTransferToSavingsGoal to true when transfering to a savings goal', () => {
+        performTransfer()        
+        expect(store.isLoadingTransferToSavingsGoal).toBe(true)
+      })
+      test('should not set the other loading refs when transfering to a savings goal', () => {
+        performTransfer() 
+        expect(store.isLoadingSavingsGoals).toBe(false)
+        expect(store.isLoadingCreateSavingsGoal).toBe(false)
+      })
+      test('should call the correct endpoint and headers', () => {
+        const { accountUid } = accountsStore.selectedAccount;
+        const token = userIdentityStore.token;
+        vi.spyOn(uuid, 'v4').mockReturnValue(mockTransferUid)
+  
+        performTransfer() 
+        expect($fetch).toHaveBeenCalledWith(
+          `/api/starling/account/${accountUid}/savings-goals/${savingsGoalUuid}/add-money/${mockTransferUid}`,
+          {
+            "headers": {
+              "session-token": token
+            },
+            "method": "PUT",
+            "body": transferRequestBody
+          }
+        )
+      })
+    })
   })
 })

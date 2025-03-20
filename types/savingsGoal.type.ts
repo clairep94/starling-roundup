@@ -9,7 +9,6 @@ export type SavingsGoal = {
   savedPercentage: number,
   state: 'CREATING' | 'ACTIVE' |  'ARCHIVING' | 'ARCHIVED' | 'RESTORING' | 'PENDING'
 }
-
 export function generateMockSavingsGoal(overrides?:any): SavingsGoal{
   let result = {
     savingsGoalUid: faker.string.uuid(),
@@ -48,4 +47,13 @@ export function generateMockSavingsGoalRequest(overrides?:any): SavingsGoalReque
 
 export type TopUpRequest = {
   amount: CurrencyAndAmount
+}
+export function generateTopUpRequest(overrides?:any): TopUpRequest {
+  let result = {
+    amount: generateMockCurrencyAndAmount()
+  }
+  return {
+    ...result,
+    ...(overrides ? overrides : {})
+  }
 }

@@ -95,7 +95,7 @@ export const useSavingsGoalsStore = defineStore('savingsGoals', () => {
           },
           body: requestBody
         })
-        return response.data.success
+        return response.data.success // TODO: error handling if success if false
 
       } catch (error: OfetchError) {
         notificationsStore.addError(error)
@@ -112,7 +112,7 @@ export const useSavingsGoalsStore = defineStore('savingsGoals', () => {
    */
     async function transferToSavingsGoal(savingsGoalUid:string, requestBody: TopUpRequest): Promise<boolean>{
       if (!accountsStore.selectedAccount || !userIdentityStore.token) {
-        notificationsStore.addError('Cannot topup savings goal without an account or token')
+        notificationsStore.addError('Cannot top up savings goal without an account or token')
         return false
       }
 
@@ -132,7 +132,7 @@ export const useSavingsGoalsStore = defineStore('savingsGoals', () => {
           },
           body: requestBody
         })
-        return response.data.success
+        return response.data.success // TODO: error handling if success if false
 
       } catch (error: OfetchError) {
         notificationsStore.addError(error)
