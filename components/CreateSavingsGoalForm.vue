@@ -1,16 +1,20 @@
 <template>
   <div class="bg-white rounded-lg border border-input-border/70 p-6 flex flex-col gap-5">
+
+    <!-- TITLE -->
     <h3 data-test="create-savings-space-form-title"
     class="text-2xl text-black/80 font-extrabold">
       Create a new Space
     </h3>
 
+    <!-- FORM -->
     <form data-test="create-space-form"
       @submit.prevent="handleSubmit" 
       class="flex flex-col gap-y-6">
 
+      <!-- SPACE NAME -->
       <div data-test="space-name-form-field"
-      class="flex flex-col gap-y-2">
+        class="flex flex-col gap-y-2">
         <label
           data-test="space-name-form-field-label"
           for="space-name" 
@@ -30,6 +34,7 @@
         />
       </div>
 
+      <!-- SPACE TARGET AMOUNT -->
       <div data-test="space-target-field"
         class="flex flex-col gap-y-2">
         <label
