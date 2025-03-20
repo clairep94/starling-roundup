@@ -2,8 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { shallowMount, VueWrapper } from '@vue/test-utils'
 import SavingsGoalCard from './SavingsGoalCard.vue'
 import { generateMockSavingsGoal, type SavingsGoal } from '../types/savingsGoal.type'
-import { formatCurrencyAmount } from '../utils/formatData'
-import { generateMockCurrencyAndAmount } from '../types/currencyAndAmount.type'
 
 function factory(goal:SavingsGoal): VueWrapper<any>{
   return shallowMount(SavingsGoalCard, {
