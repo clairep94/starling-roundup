@@ -4,7 +4,6 @@ import TransactionFeedItem from './TransactionFeedItem.vue'
 import { generateFeedItem, type FeedItem } from '../types/feedItem.type'
 import { formatCurrencyAmount, formatUpperSnakeCaseToTitleString, extractTime } from "../utils/formatData";
 import { findRoundUpAmount } from '../utils/roundUpCalculate';
-import { useAccountsStore } from '../store/accounts';
 import { createTestingPinia } from '@pinia/testing'
 
 function factory(transactionFeedItem:FeedItem): VueWrapper<any>{
@@ -44,7 +43,7 @@ describe('Transaction Feed Item', () => {
     })
     it('should display an image for the counterparty', () => {
       expect(wrapper.find('[data-test="counterparty-image"]').attributes('src')).toBe(
-        `https://picsum.photos/seed/${item.counterPartyUid}/100/100`
+        `https://picsum.photos/seed/${item.counterPartyName}/100/100`
       )
     })
   })

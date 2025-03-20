@@ -9,7 +9,7 @@
     <div data-test="savings-space-image-container"
     class="rounded-sm bg-gray-400 min-w-15 h-15 md:min-w-18 md:h-18 object-cover overflow-clip">
       <img data-test="savings-space-image"
-      :src="`https://picsum.photos/seed/${goal.savingsGoalUid}/100/100`" alt="Goal Image" class="w-full h-full"/>
+      :src="`https://picsum.photos/seed/${goal.name}/100/100`" alt="Goal Image" class="w-full h-full"/>
     </div>
 
     <!-- NAME & TOTAL -->
