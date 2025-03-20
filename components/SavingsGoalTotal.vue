@@ -1,6 +1,7 @@
 <template>
   <div class="bg-white rounded-lg border border-input-border/70 p-6 flex flex-col items-center justify-center gap-1">
-    <h4 class="text-sm text-black/70 font-medium">
+    <h4 data-test="savings-goal-total-title"
+    class="text-sm text-black/70 font-medium">
       Total amount held in Spaces
     </h4>
 
@@ -21,7 +22,7 @@
 
     <!-- BUTTON TO NAV CREATE-NEW-SAVINGS-SPACE -->
     <button
-      data-test="show-login-form-button"
+      data-test="navigate-to-create-space-button"
       @click="navigateTo('/spaces/create')"
       class="rounded-full text-text-default text-md py-2 px-6 transition-all bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer mt-6"
     >
@@ -34,6 +35,7 @@
 import { defineProps, computed } from 'vue'
 import { formatCurrencyAmount } from '../utils/formatData'
 import type { SavingsGoal } from '../types/savingsGoal.type';
+import { navigateTo } from 'nuxt/app'
 
 const props = defineProps<{
   savingsGoals: SavingsGoal[],
