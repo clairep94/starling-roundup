@@ -42,8 +42,10 @@ describe('Transaction Feed Item', () => {
         formatUpperSnakeCaseToTitleString(item.spendingCategory)
       )
     })
-    it('should display the first name and last name of the counterparty', () => {
-      expect(wrapper.find('[data-test="logo-container"]').text()).toBe("HW")
+    it('should display an image for the counterparty', () => {
+      expect(wrapper.find('[data-test="counterparty-image"]').attributes('src')).toBe(
+        `https://picsum.photos/seed/${item.counterPartyUid}/100/100`
+      )
     })
   })
 

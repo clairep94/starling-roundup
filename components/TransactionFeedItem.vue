@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-row w-full justify-between p-4 border-b border-input-border">
     <div data-test="left-side" class="flex flex-row gap-4 justify-center items-center">
-      <div data-test="logo-container"
-        class="bg-red-500/50 w-12 h-12 rounded-sm items-center justify-center flex text-white font-semibold"
-      >
-        {{ counterPartyName.split(' ').map((word) => word[0]).join('').toUpperCase() }}
+      <div data-test="counterparty-image-container" 
+        class="rounded-sm bg-gray-400 w-12 h-12 object-cover overflow-clip">
+        <img data-test="counterparty-image" 
+        :src="`https://picsum.photos/seed/${transactionFeedItem.counterPartyUid}/100/100`" alt="counter party image" class="w-full h-full"/>
       </div>
       <div data-test="transaction-details" class="flex flex-col">
         <div data-test="counter-party-name" class="text-sm font-semibold text-black/80">
@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FeedItem } from "@/types/FeedItem";
+import type { FeedItem } from "../types/feedItem.type";
 import { formatCurrencyAmount, formatUpperSnakeCaseToTitleString, extractTime } from "~/utils/formatData";
 import { findRoundUpAmount } from "~/utils/roundUpCalculate";
 import "@justeattakeaway/pie-icons-webc/dist/IconCoins.js";
