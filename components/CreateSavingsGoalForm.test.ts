@@ -2,8 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { shallowMount, VueWrapper } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useSavingsGoalsStore } from '../store/savingsGoals'
+import { useNotificationsStore } from '../store/notifications'
 import CreateSavingsGoalForm from './CreateSavingsGoalForm.vue'
 import { generateMockToken } from '../types/auth.type'
+
+vi.mock('nuxt/app', () => ({
+  navigateTo: vi.fn()
+}))
 
 function factory(): VueWrapper<any>{
   return shallowMount(CreateSavingsGoalForm, {
@@ -55,12 +60,25 @@ describe('Create Savings Goal Form', () => {
     expect(label.text()).not.toContain('Required')
   })
 
-  it('should attempt to create a space when the user clicks', async() => {
+  it('should attempt to create a space when the user clicks', async () => {
     const wrapper = factory()
     const savingsStore = useSavingsGoalsStore()
-    await wrapper.find('input').setValue('#space-name', 'some space')
+    const notificationsStore = useNotificationsStore()
+    const { navigateTo } = await import('nuxt/app')
+
+    vi.spyOn(savingsStore, 'createSavingsGoal').mockResolvedValue(true)
+    vi.spyOn(notificationsStore, 'addNotification')
+
+    await wrapper.find('#space-name').setValue('some space')
+    await wrapper.find('#space-target').setValue('123.45')
     await wrapper.find('form').trigger('submit')
+
     expect(savingsStore.createSavingsGoal).toHaveBeenCalled()
+    expect(notificationsStore.addNotification).toHaveBeenCalledWith({
+      variant: 'success',
+      message: 'Successfully created new savings space.'
+    })
+    expect(navigateTo).toHaveBeenCalledWith('/spaces')
   })
 
   it('should disable the button when loading create space', async () => {

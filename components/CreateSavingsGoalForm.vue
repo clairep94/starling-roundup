@@ -74,6 +74,7 @@ import { ref, computed } from 'vue'
 import { useAccountsStore } from '../store/accounts'
 import { useSavingsGoalsStore } from '../store/savingsGoals'
 import { useNotificationsStore } from '../store/notifications'
+import { navigateTo } from 'nuxt/app'
 
 const accountsStore = useAccountsStore()
 const savingsGoalsStore = useSavingsGoalsStore()
