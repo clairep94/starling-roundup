@@ -1,6 +1,7 @@
 <template>
   <div class="bg-white rounded-lg border border-input-border/70 p-6 flex flex-col gap-5">
-    <h3 class="text-2xl text-black/80 font-extrabold">
+    <h3 data-test="create-savings-space-form-title"
+    class="text-2xl text-black/80 font-extrabold">
       Create a new Space
     </h3>
 
@@ -54,7 +55,12 @@
         <button
           data-test="submit-create-space-form"
           type="submit"
-          class="rounded-full text-text-default py-2 px-6 text-md transition-all bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer"
+          class="rounded-full text-text-default py-2 px-6 text-lg transition-all"
+          :class="{
+            'bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer': !savingsGoalsStore.isLoadingCreateSavingsGoal,
+            'bg-gray-400 cursor-not-allowed': savingsGoalsStore.isLoadingCreateSavingsGoal
+          }"
+          :disabled="savingsGoalsStore.isLoadingCreateSavingsGoal"
         >
           Submit
         </button>
@@ -64,6 +70,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import { useAccountsStore } from '../store/accounts'
 import { useSavingsGoalsStore } from '../store/savingsGoals'
 import { useNotificationsStore } from '../store/notifications'
@@ -87,7 +94,6 @@ const formData = computed(() => {
 })
 
 async function handleSubmit (){
-  console.log('submitting form:', formData.value)
   const result = await savingsGoalsStore.createSavingsGoal(formData.value)
   if (result === true) {
     notificationsStore.addNotification({
