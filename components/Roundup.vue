@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col lg:w-[400px] w-full items-center gap-1">
     <!-- TITLE -->
-    <p data-test="roundup-title" class="text-sm font-semibold text-black/70">
+    <h4 data-test="roundup-title" class="text-sm font-semibold text-black/70">
       Your Potential Roundup
-    </p>
+    </h4>
 
     <!-- LOADING -->
     <div data-test="loading-transactions" v-if="isLoadingFeed">
@@ -11,13 +11,13 @@
     </div>
 
     <!-- ROUNDUP AMOUNT -->
-    <p v-else data-test="roundup-amount" 
+    <h3 v-else data-test="roundup-amount" 
       class="text-2xl font-extrabold text-black/80">
       {{ formatCurrencyAmount(roundupTotalCurrencyAndAmount) }}
-    </p>
+    </h3>
 
     <!-- SHOW SPACES FOR TRANSFER BUTTON -->
-    <button data-test="show-spaces-button"
+    <button data-test="show-spaces-for-transfer-button"
       class="rounded-full text-text-default py-2 px-6 text-md transition-all cursor-pointer"
       :class="{
         'bg-button-teal hover:bg-button-teal-hover': !isSpacesSelectionOpen,
@@ -44,11 +44,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import type { FeedItem } from '../types/feedItem.type';
 import { findRoundUpAmount } from "../utils/roundUpCalculate";
 import { useAccountsStore } from '../store/accounts';
 import { useSavingsGoalsStore } from '../store/savingsGoals';
+import { formatCurrencyAmount } from '../utils/formatData';
 
 const props = defineProps<{
   selectedItems: FeedItem[];
@@ -70,7 +71,7 @@ const roundupTotalMinorUnits = computed(() => {
 
 const roundupTotalCurrencyAndAmount = computed(() => {
   return {
-    currency: accountsStore.selectedAccount.currency ?? 'GBP', //default to GBP
+    currency: accountsStore.selectedAccount?.currency ?? 'GBP', //default to GBP
     minorUnits: roundupTotalMinorUnits.value
   } 
 })
