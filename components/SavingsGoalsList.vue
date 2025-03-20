@@ -16,7 +16,7 @@
       data-test="no-savings-goals"
       class="flex flex-col w-full items-center justify-center h-[200px]"
     >
-      <p class="text-lg text-black/70">
+      <p class="text-black/50">
         No savings goals yet. Click on the button above to create a new space.
       </p>
     </div>

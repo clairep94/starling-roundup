@@ -11,7 +11,7 @@
 
   <!-- NO DATA -->
   <div data-test="no-transactions-found-message" v-else-if="props.items.length == 0"
-  class="flex flex-col flex-grow gap-4 w-full items-center justify-center text-black/60 mt-10"
+  class="flex flex-col flex-grow gap-4 w-full items-center justify-center text-black/50 mt-10"
   >
     <p class="text-center">
       No transactions found. 
