@@ -1,26 +1,20 @@
-# Nuxt Example
+# Frontend Tech Test - Claire Peng
 
-Deploy your [Nuxt](https://nuxt.com) project to Vercel with zero configuration.
+This is the frontend tech test of Claire Peng for Starling. The live site is deployed [here](https://starling-fe-tech-test.vercel.app/spaces)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/examples/tree/main/framework-boilerplates/nuxtjs&template=nuxtjs)
+This project uses the following tech:
 
-_Live Example: https://nuxtjs-template.vercel.app_
-
-Look at the [Nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.
+| **Category**   | **Tool**                |
+|-----------------|------------------------|
+| Framework        | Nuxt 3                |
+| Deployment       | Vercel                |
+| Testing          | Vitest                |
+| Styling          | Tailwind, Pie Library |
 
 ## Setup
 
-Make sure to install the dependencies:
-
 ```bash
-# yarn
-yarn
-
-# npm
 npm install
-
-# pnpm
-pnpm install --shamefully-hoist
 ```
 
 ## Development Server
@@ -45,4 +39,10 @@ Locally preview production build:
 npm run preview
 ```
 
-Checkout the [deployment documentation](https://nuxt.com/docs/getting-started/deployment#presets) for more information.
+## Testing
+
+Note: the test for the proxy/middleware has two failing tests because I wasn't able to figure out how to mock `ofetch`/`h3`'s `getQuery` method for the test, however in manual testing it behaves as expected. All other tests should pass as expected. Notes on challenges around the proxy server & using Nuxt's `$fetch` will follow in the implementation notes (TODO).
+
+```
+npm run test
+```
