@@ -16,26 +16,23 @@
       <!-- TRANSACTIONS -->
       <div class="flex flex-col flex-grow gap-4 w-full">
         <div class="flex w-full items-center justify-center">
-          <!-- TODO: replace props drilling below with date range store -->
           <Roundup data-test="round-up" class="mb-4"
             :selectedItems="filteredTransactions"
             :isLoadingFeed="transactionFeedStore.isLoadingTransactionFeed"
-            :selectedStart="selectedStart" 
-            :selectedEnd="selectedEnd"
             />
         </div>
         <DateRangePicker data-test="date-range-picker"
           @date-range-selected="handleDateRangeSelected"
-          :startProp="selectedStart"
-          :endProp="selectedEnd"
-          :currentDate="defaultEndDate"
+          :currentDate="currentDate"
+          :startProp="dateRangeStore.selectedStart"
+          :endProp="dateRangeStore.selectedEnd"
           :disabled="transactionFeedStore.isLoadingTransactionFeed"
         />
 
         <TransactionsList data-test="transactions-list"
           :is-loading="transactionFeedStore.isLoadingTransactionFeed"
           :items="transactionFeedStore.transactionFeed"
-          :current-date="defaultEndDate"
+          :current-date="currentDate"
         />
       </div>
     </div>
@@ -46,6 +43,7 @@
 import { ref, onMounted } from 'vue'
 import { useUserIdentityStore } from '../store/userIdentity'
 import { useTransactionFeedStore } from '../store/transactionFeed'
+import { useDateRangeStore } from '../store/dateRange'
 import DateRangePicker from '../components/DateRangePicker.vue'
 import Balance from '../components/Balance.vue'
 import Roundup from '../components/Roundup.vue'
@@ -56,37 +54,15 @@ useHead({
 
 const userIdStore = useUserIdentityStore()
 const transactionFeedStore = useTransactionFeedStore()
+const dateRangeStore = useDateRangeStore()
 
-const currentDate = new Date()
-const defaultStartDate = new Date(currentDate.setDate(currentDate.getDate() - 7))
-  .toISOString()// 7 days ago
 
-const defaultEndDate = new Date().toISOString() // Today
-
-/**
- * Update time from the date time string to be the start of the day
- */
-function appendStartTime(str:string):string{
-  return str.split('T')[0] + 'T00:00:00.000Z'
-}
-/**
- * Update time from the date time string to be the end of the day
- */
-function appendEndTime(str:string):string{
-  return str.split('T')[0] + 'T23:59:59.999Z'
-}
-
-const selectedStart = ref<string>(defaultStartDate.split('T')[0] + 'T00:00:00.000Z')
-const selectedEnd = ref<string>(defaultEndDate.split('T')[0] + 'T23:59:59.999Z')
-
-/**
- * Normalises the start and end emitted from the DateRangePicker, then calls fetchTransactionFeed
- */
 function handleDateRangeSelected(start:string, end:string) {
-  selectedStart.value = appendStartTime(start)
-  selectedEnd.value = appendEndTime(end)
-  transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
+  dateRangeStore.setDateRange(start, end)
+  transactionFeedStore.fetchTransactionFeed(dateRangeStore.selectedStart, dateRangeStore.selectedEnd)
 }
+
+const currentDate = new Date().toISOString()
 
 /**
  * Assumption that only outgoing transactions that are NOT "INTERNAL_TRANSFER" can be applied topups with -- I believe this is the behaviour on the app
@@ -99,7 +75,7 @@ const filteredTransactions = computed(() => {
 })
 
 onMounted(() => {
-  transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
+  transactionFeedStore.fetchTransactionFeed(dateRangeStore.selectedStart, dateRangeStore.selectedEnd)
 })
 </script>
 
