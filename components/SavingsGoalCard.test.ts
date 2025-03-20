@@ -25,7 +25,7 @@ describe('Savings Goal Card', () => {
       })
     })
     it('should display an image', () => {
-      expect(wrapper.find('img').attributes('src')).toBe('https://picsum.photos/seed/some_uuid/100/100')
+      expect(wrapper.find('img').attributes('src')).toBe('https://picsum.photos/seed/some goal/100/100')
     })
     it('should display the goal name', () => {
       expect(wrapper.find('[data-test="savings-goal-name"]').text()).toBe('some goal')
@@ -53,7 +53,7 @@ describe('Savings Goal Card', () => {
       })
     })
     it('should display an image', () => {
-      expect(wrapper.find('img').attributes('src')).toBe('https://picsum.photos/seed/some_uuid/100/100')
+      expect(wrapper.find('img').attributes('src')).toBe('https://picsum.photos/seed/some goal/100/100')
     })
     it('should display the goal name', () => {
       expect(wrapper.find('[data-test="savings-goal-name"]').text()).toBe('some goal')
@@ -81,7 +81,7 @@ describe('Savings Goal Card', () => {
       })
     })
     it('should display an image', () => {
-      expect(wrapper.find('img').attributes('src')).toBe('https://picsum.photos/seed/some_uuid/100/100')
+      expect(wrapper.find('img').attributes('src')).toBe('https://picsum.photos/seed/some goal/100/100')
     })
     it('should display the goal name', () => {
       expect(wrapper.find('[data-test="savings-goal-name"]').text()).toBe('some goal')

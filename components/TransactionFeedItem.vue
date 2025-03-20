@@ -4,7 +4,7 @@
       <div data-test="counterparty-image-container" 
         class="rounded-sm bg-gray-400 min-w-12 h-12 object-cover overflow-clip">
         <img data-test="counterparty-image" 
-        :src="`https://picsum.photos/seed/${transactionFeedItem.counterPartyUid}/100/100`" alt="counter party image" class="w-full h-full"/>
+        :src="`https://picsum.photos/seed/${counterPartyName}/100/100`" alt="counter party image" class="w-full h-full"/>
       </div>
       <div data-test="transaction-details" class="flex flex-col">
         <div data-test="counter-party-name" class="text-sm font-semibold text-black/80 line-clamp-2">
