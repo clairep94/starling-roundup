@@ -31,8 +31,6 @@
     <!-- SPACES FOR TRANSFER -->
     <SavingsGoalsForTransferList data-test="spaces-for-transfer" v-if="isSpacesSelectionOpen" class="mt-2"
       :transferAmount="roundupTotalCurrencyAndAmount"
-      :selectedStart="selectedStart"
-      :selectedEnd="selectedEnd"
     />
   </div>
 </template>
@@ -48,8 +46,6 @@ import SavingsGoalsForTransferList from './SavingsGoalsForTransferList.vue';
 const props = defineProps<{
   selectedItems: FeedItem[];
   isLoadingFeed: boolean;
-  selectedStart: string; //TODO: replace props drilling below with date range store
-  selectedEnd: string; //TODO: replace props drilling below with date range store
 }>();
 
 const isSpacesSelectionOpen = ref(false);
