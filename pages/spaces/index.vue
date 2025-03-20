@@ -9,65 +9,45 @@
       { title: 'Create a new space', path: '/spaces/create' }
     ]">
 
-    <!-- SAVINGS SPACES -->
+    <!-- SAVINGS SPACES -- opting for feeding-in-props pattern because they call the same GET endpoint -->
     <div data-test="all-spaces-main" class="flex flex-col flex-grow px-6 py-4 md:px-8 md:py-5 overflow-scroll bg-gray-50 min-h-full gap-3">
       <!-- TOTAL SAVED -->
-      <div class="bg-white rounded-lg border border-input-border/70 p-6 flex flex-col items-center justify-center gap-1">
-        <h4 class="text-sm text-black/70 font-medium">
-          Total amount held in Spaces
-        </h4>
-        <h3 class="text-2xl text-black/80 font-extrabold">
-          {{ formatCurrencyAmount(totalSavedAmount) }}
-        </h3>
-        <button
-          data-test="show-login-form-button"
-          @click="navigateTo('/spaces/create')"
-          class="rounded-full text-text-default text-md py-2 px-6 transition-all bg-button-teal hover:bg-button-teal-hover hover:cursor-pointer mt-6"
-        >
-          Create a new space
-        </button>
-      </div>
+      <SavingsGoalTotal
+        :savingsGoals="savingsGoalsStore.savingsGoals"
+        :isLoadingSavingsGoals="savingsGoalsStore.isLoadingSavingsGoals"
+        :currency="accountCurrency"
+      />
 
-      <!-- CARD -->
-      <div v-for="goal in savingsGoalsStore.savingsGoals"
-        class="bg-white rounded-lg border border-input-border/70 p-3 md:p-5 flex flex-row justify-between gap-4"
+      <!-- LOADING -->
+      <div v-if="savingsGoalsStore.isLoadingSavingsGoals" 
+        data-test="loading-savings-goals"
+        class="flex flex-col gap-1 items-center mt-2 justify-center min-h-[200px]"
       >
-        <!-- LEFT -->
-        <div class="flex flex-row gap-3">
-          <!-- IMAGE -->
-          <div class="rounded-sm bg-gray-400 w-15 h-15 md:w-18 md:h-18 object-cover overflow-clip">
-            <img :src="`https://picsum.photos/seed/${goal.savingsGoalUid}/100/100`" alt="Goal Image" class="w-full h-full"/>
-          </div>
-
-          <!-- NAME & TOTAL -->
-          <div class="flex flex-col">
-            <h4 class="font-bold text-black/70">
-              {{ goal.name }}
-            </h4>
-            <p class="font-semibold text-sm text-black/60">
-              {{formatCurrencyAmount(goal.target)}}
-            </p>
-          </div>
-        </div>
-        
-        <!-- RIGHT -->
-        <div class="flex flex-col gap-1 items-end justify-between">
-          <h5 class="font-bold text-black/80">
-            {{ formatCurrencyAmount(goal.totalSaved) }}
-          </h5>
-          <div class="flex flex-row items-center gap-1">
-            <p class="text-xs text-black/60">{{goal.savedPercentage}}%</p>
-            <div class="w-[120px] bg-white border border-input-border h-[8px] rounded-full overflow-clip">
-              <div 
-                class="bg-input-border h-full"
-                :style="{ width: goal.savedPercentage + '%' }"
-              />
-            </div>
-          </div>
-        </div>
+        <pie-spinner variant="secondary"/>
+        <p class="text-lg text-black/70">
+          Loading savings spaces...
+        </p>
       </div>
 
+      <!-- NO SAVINGS SPACES -->
+      <div v-else-if="!savingsGoalsStore.savingsGoals.length"
+        data-test="no-savings-goals"
+      >
+        <p class="text-lg text-black/70">
+          No savings goals yet. Click on the button above to create a new space.
+        </p>
+      </div>
 
+      <!-- SAVINGS SPACES LIST -->
+      <div v-else
+        data-test="savings-goals"
+        class="flex flex-col gap-3"
+      >
+        <SavingsGoalCard
+          v-for="goal in savingsGoalsStore.savingsGoals"
+          :goal="goal"
+        />
+      </div>
     </div>
   </NuxtLayout>
 </template>
@@ -76,10 +56,16 @@
 import { ref, onMounted } from 'vue'
 import { useSavingsGoalsStore } from '../../store/savingsGoals'
 import { useUserIdentityStore } from '../../store/userIdentity'
-import {formatCurrencyAmount} from '../../utils/formatData'
+import { useAccountsStore } from '../../store/accounts'
+import SavingsGoalCard from '../../components/SavingsGoalCard.vue'
+import SavingsGoalTotal from '../../components/SavingsGoalTotal.vue'
+import '@justeattakeaway/pie-webc/components/spinner.js'
 
 const savingsGoalsStore = useSavingsGoalsStore()
 const userIdStore = useUserIdentityStore()
+const accountsStore = useAccountsStore()
+
+const accountCurrency = accountsStore.selectedAccount?.currency ?? 'GBP' // default to GBP
 
 useHead({
   title: 'Savings Spaces'
@@ -88,20 +74,6 @@ useHead({
 onMounted(() => {
   savingsGoalsStore.fetchSavingsGoals()
 })
-
-import { computed } from 'vue';
-
-// Computed property to calculate total saved amount with currency
-const totalSavedAmount = computed(() => {
-  if (!savingsGoalsStore.savingsGoals.length) {
-    return { minorUnits: 0, currency: 'GBP' };
-  }
-  const total = savingsGoalsStore.savingsGoals.reduce(
-    (acc, goal) => acc + goal.totalSaved.minorUnits, 
-    0
-  );
-  return { minorUnits: total, currency: 'GBP' };
-});
 </script>
 
 <style scoped>

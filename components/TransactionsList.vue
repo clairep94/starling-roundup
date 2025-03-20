@@ -44,6 +44,7 @@ import { ref, defineProps, computed } from 'vue'
 import TransactionFeedItem from '../components/TransactionFeedItem.vue'
 import type { FeedItem } from '../types/feedItem.type';
 import { extractDate } from '../utils/formatData';
+import '@justeattakeaway/pie-webc/components/spinner.js'
 
 const props = defineProps<{
   isLoading: boolean,
