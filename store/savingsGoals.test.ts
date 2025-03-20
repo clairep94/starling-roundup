@@ -261,7 +261,7 @@ describe('Savings Goal Store', () => {
         expect(notificationsStore.addError).not.toHaveBeenCalled()
       })
 
-      test('should update the savings goals', () => {
+      test('should return true', () => {
         expect(store.createSavingsGoal).toHaveLastResolvedWith(true)
       })
 
@@ -324,6 +324,63 @@ describe('Savings Goal Store', () => {
             "body": transferRequestBody
           }
         )
+      })
+    })
+
+    describe('and when the request fails', async () => {
+      let accountUid, error
+
+      beforeEach(async () => {
+        setupValidAuthentication()
+        accountUid  = accountsStore.selectedAccount?.accountUid;
+        error = generateOfetchError(
+          'PUT', 
+          `/api/starling/account/${accountUid}/savings-goals/${savingsGoalUuid}/add-money/${mockTransferUid}`,
+          403,
+          'Forbidden'
+        )
+        $fetch.mockRejectedValue(error)
+        await performTransfer()
+      })
+
+      test('should add an error notification', () => {
+        expect(notificationsStore.addError).toHaveBeenCalledWith(error)
+      })
+      test('should return false', () => {
+        expect(store.transferToSavingsGoal).toHaveLastResolvedWith(false)
+      })
+      test('should set the loading ref to false', () => {
+        expect(store.isLoadingCreateSavingsGoal).toBe(false)
+      })
+    })
+
+    describe('and when the request is successful', () => {
+      let accountUid, mockResult
+
+      beforeEach(async () => {
+        setupValidAuthentication()
+        accountUid = accountsStore.selectedAccount?.accountUid;
+        mockResult = {
+          transferUid: mockTransferUid,
+          success: true
+        }
+        $fetch.mockResolvedValue({
+          status: 200,
+          data: mockResult
+        })
+        await performTransfer()
+      })
+
+      test('should not add an error notification', () => {
+        expect(notificationsStore.addError).not.toHaveBeenCalled()
+      })
+
+      test('should return true', () => {
+        expect(store.transferToSavingsGoal).toHaveLastResolvedWith(true)
+      })
+
+      test('should set the loading ref to false', () => {
+        expect(store.isLoadingCreateSavingsGoal).toBe(false)
       })
     })
   })
