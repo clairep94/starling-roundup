@@ -4,9 +4,9 @@ import { faker } from '@faker-js/faker'
 export type SavingsGoal = {
   savingsGoalUid: string,
   name: string,
-  target: CurrencyAndAmount,
+  target?: CurrencyAndAmount,
   totalSaved: CurrencyAndAmount,
-  savedPercentage: number,
+  savedPercentage?: number,
   state: 'CREATING' | 'ACTIVE' |  'ARCHIVING' | 'ARCHIVED' | 'RESTORING' | 'PENDING'
 }
 export function generateMockSavingsGoal(overrides?:any): SavingsGoal{
