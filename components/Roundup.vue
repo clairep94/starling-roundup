@@ -29,17 +29,9 @@
     </button>
 
     <!-- SPACES FOR TRANSFER -->
-    <div data-test="spaces-for-transfer"
-      v-if="isSpacesSelectionOpen"
-      class="flex w-full flex-row overflow-scroll bg-gray-50 p-5 rounded-lg border border-input-border mt-2 gap-3"
-    >
-      <div v-if="savingsGoalsStore.savingsGoals.length === 0" class="w-full h-full flex justify-center items-center p-6">
-        <p class="text-black/50">Create a savings spaces to see them here</p>
-      </div>
-      <div v-else v-for="goal in savingsGoalsStore.savingsGoals" class="w-full">
-        <SavingsGoalCard :goal="goal" @click="handleTransfer(goal.savingsGoalUid)"/>
-      </div>
-    </div>
+    <SavingsGoalsForTransferList data-test="spaces-for-transfer" v-if="isSpacesSelectionOpen" class="mt-2"
+      :transferAmount="roundupTotalCurrencyAndAmount"
+    />
   </div>
 </template>
 
@@ -48,8 +40,8 @@ import { computed, ref, onMounted } from 'vue';
 import type { FeedItem } from '../types/feedItem.type';
 import { findRoundUpAmount } from "../utils/roundUpCalculate";
 import { useAccountsStore } from '../store/accounts';
-import { useSavingsGoalsStore } from '../store/savingsGoals';
 import { formatCurrencyAmount } from '../utils/formatData';
+import SavingsGoalsForTransferList from './SavingsGoalsForTransferList.vue';
 
 const props = defineProps<{
   selectedItems: FeedItem[];
@@ -59,7 +51,6 @@ const props = defineProps<{
 const isSpacesSelectionOpen = ref(false);
 
 const accountsStore = useAccountsStore()
-const savingsGoalsStore = useSavingsGoalsStore()
 
 const roundupTotalMinorUnits = computed(() => {
   if(props.selectedItems.length === 0){
@@ -74,17 +65,5 @@ const roundupTotalCurrencyAndAmount = computed(() => {
     currency: accountsStore.selectedAccount?.currency ?? 'GBP', //default to GBP
     minorUnits: roundupTotalMinorUnits.value
   } 
-})
-
-// TODO: This works but need to update UI to reflect
-async function handleTransfer(savingsGoalUid:string) {
-  savingsGoalsStore.transferToSavingsGoal(
-    savingsGoalUid,
-    { amount: roundupTotalCurrencyAndAmount.value }
-  )
-}
-
-onMounted(() => {
-  savingsGoalsStore.fetchSavingsGoals()
 })
 </script>
