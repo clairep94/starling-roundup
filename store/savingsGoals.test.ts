@@ -166,6 +166,7 @@ describe('Savings Goal Store', () => {
 
   describe('createSavingsGoal', () => {
     const savingsGoalRequest = generateMockSavingsGoalRequest({name: "fake savings goal"})
+    const mockSavingsUuid = "some_savings_uuid"
 
     describe('and when selected account or token are missing', async () => {
       beforeEach(async () => {
@@ -247,7 +248,7 @@ describe('Savings Goal Store', () => {
         setupValidAuthentication()
         accountUid = accountsStore.selectedAccount?.accountUid;
         mockResult = {
-          savingsGoalUid: "some uuid",
+          savingsGoalUid: mockSavingsUuid,
           success: true
         }
         $fetch.mockResolvedValue({
@@ -263,6 +264,37 @@ describe('Savings Goal Store', () => {
 
       test('should return true', () => {
         expect(store.createSavingsGoal).toHaveLastResolvedWith(true)
+      })
+
+      test('should set the loading ref to false', () => {
+        expect(store.isLoadingCreateSavingsGoal).toBe(false)
+      })
+    })
+
+    describe('and when the request is successful, but starling api returns a 200 response with success = false', () => {
+      let accountUid, mockResult
+
+      beforeEach(async () => {
+        setupValidAuthentication()
+        accountUid = accountsStore.selectedAccount?.accountUid;
+        mockResult = {
+          savingsGoalUid: mockSavingsUuid,
+          success: false
+        }
+        $fetch.mockResolvedValue({
+          status: 200,
+          data: mockResult
+        })
+        await store.createSavingsGoal(savingsGoalRequest)
+      })
+
+
+      test('should add an error notification', () => {
+        expect(notificationsStore.addError).toHaveBeenCalledWith(`Unknown error for creating savings goal: ${mockSavingsUuid}`)
+      })
+
+      test('should return false', () => {
+        expect(store.createSavingsGoal).toHaveLastResolvedWith(false)
       })
 
       test('should set the loading ref to false', () => {
@@ -377,6 +409,36 @@ describe('Savings Goal Store', () => {
 
       test('should return true', () => {
         expect(store.transferToSavingsGoal).toHaveLastResolvedWith(true)
+      })
+
+      test('should set the loading ref to false', () => {
+        expect(store.isLoadingCreateSavingsGoal).toBe(false)
+      })
+    })
+
+    describe('and when the request is successful, but starling api returns a 200 response with success = false', () => {
+      let accountUid, mockResult
+
+      beforeEach(async () => {
+        setupValidAuthentication()
+        accountUid = accountsStore.selectedAccount?.accountUid;
+        mockResult = {
+          transferUid: mockTransferUid,
+          success: true
+        }
+        $fetch.mockResolvedValue({
+          status: 200,
+          data: {...mockResult, success: false}
+        })
+        await performTransfer()
+      })
+
+      test('should add an error notification', () => {
+        expect(notificationsStore.addError).toHaveBeenCalledWith(`Unknown error for transfering savings goal: ${mockTransferUid}`)
+      })
+
+      test('should return false', () => {
+        expect(store.transferToSavingsGoal).toHaveLastResolvedWith(false)
       })
 
       test('should set the loading ref to false', () => {

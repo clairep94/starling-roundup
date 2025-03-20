@@ -95,7 +95,13 @@ export const useSavingsGoalsStore = defineStore('savingsGoals', () => {
           },
           body: requestBody
         })
-        return response.data.success // TODO: error handling if success if false
+
+        // Error handling for if the request is successful, but starling api returns success = false
+        // Assuming this is for backend handling edgecases (eg. user can only have maximum X number of goals?)
+        if(!response.data.success) {
+          notificationsStore.addError(`Unknown error for creating savings goal: ${response.data.savingsGoalUid}`)
+        }
+        return response.data.success
 
       } catch (error: OfetchError) {
         notificationsStore.addError(error)
@@ -132,7 +138,13 @@ export const useSavingsGoalsStore = defineStore('savingsGoals', () => {
           },
           body: requestBody
         })
-        return response.data.success // TODO: error handling if success if false
+        
+        // Error handling for if the request is successful, but starling api returns success = false
+        // Assuming this is for backend handling edgecases (eg. not enough balance to perform transfer)
+        if(!response.data.success) {
+          notificationsStore.addError(`Unknown error for transfering savings goal: ${response.data.transferUid}`)
+        }
+        return response.data.success
 
       } catch (error: OfetchError) {
         notificationsStore.addError(error)
