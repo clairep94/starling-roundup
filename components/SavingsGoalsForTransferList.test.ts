@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { shallowMount, VueWrapper } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useSavingsGoalsStore } from '../store/savingsGoals'
+import { useNotificationsStore } from '../store/notifications'
+import { useBalanceStore } from '../store/balance'
+import { useTransactionFeedStore } from '../store/transactionFeed'
 import SavingsGoalsForTransferList from './SavingsGoalsForTransferList.vue'
 import { generateMockCurrencyAndAmount } from '../types/currencyAndAmount.type'
 import { generateMockSavingsGoal } from '../types/savingsGoal.type'
@@ -20,6 +23,8 @@ function factory(): VueWrapper{
 describe('Savings Goals for Transfer List', () => {
   let wrapper: VueWrapper<any>
   let savingsGoalsStore: ReturnType<typeof useSavingsGoalsStore>
+  let notificationsStore: ReturnType<typeof useNotificationsStore>
+  let balanceStore: ReturnType<typeof useBalanceStore>
 
   describe('and when the component mounts', () => {
     beforeEach(() => {
@@ -75,6 +80,27 @@ describe('Savings Goals for Transfer List', () => {
     })
     it('should a savings goal card for each goal', () => {
       expect(wrapper.findAll('[data-test="savings-goal"]').length).toBe(3)
+    })
+  })
+  describe('and when the user clicks on a savigns goal', () => {
+    beforeEach(async() => {
+      wrapper = factory()
+      savingsGoalsStore = useSavingsGoalsStore()
+      notificationsStore = useNotificationsStore()
+      balanceStore = useBalanceStore()
+      savingsGoalsStore.savingsGoals = [generateMockSavingsGoal({savingsGoalUid: 'some-uid'})]
+      vi.spyOn(savingsGoalsStore, 'transferToSavingsGoal').mockResolvedValue(true)
+      vi.spyOn(notificationsStore, 'addNotification')  
+    })
+    it('should call transferToSavingsGoal with the savings goals uuid', async () => {
+      await wrapper.find('[data-test="savings-goal"]').trigger('click')
+      expect(savingsGoalsStore.transferToSavingsGoal).toHaveBeenCalled()
+      expect(notificationsStore.addNotification).toHaveBeenCalledWith({
+        message: "Successfully transferred roundup to savings goal: some-uid",
+        variant: "success"
+      })
+      expect(savingsGoalsStore.fetchSavingsGoals).toHaveBeenCalled()
+      expect(balanceStore.fetchBalance).toHaveBeenCalled()
     })
   })
 })

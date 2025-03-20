@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref } from 'vue';
 import type { FeedItem } from '../types/feedItem.type';
 import { findRoundUpAmount } from "../utils/roundUpCalculate";
 import { useAccountsStore } from '../store/accounts';

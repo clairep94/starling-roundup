@@ -1,4 +1,7 @@
 <template>
+  <h4 class="text-black/60 mt-2">
+    Select a savings space to transfer your roundup.
+  </h4>
   <div data-test="spaces-for-transfer"
   class="flex w-full flex-row overflow-scroll bg-gray-50 p-5 rounded-lg border border-input-border gap-3 relative"
   >
@@ -17,9 +20,9 @@
     </div>
 
     <!-- SAVINGS GOALS -->
-    <div data-test="savings-goal" 
-      v-else v-for="goal in savingsGoalsStore.savingsGoals" class="min-w-[400px]">
-      <SavingsGoalCard :goal="goal" @click="handleTransfer(goal.savingsGoalUid)" class="hover:cursor-pointer"/>
+    <div v-else v-for="goal in savingsGoalsStore.savingsGoals" class="min-w-[350px]">
+      <SavingsGoalCard data-test="savings-goal"
+      :goal="goal" @click="handleTransfer(goal.savingsGoalUid)" class="hover:cursor-pointer"/>
     </div>
   </div>
 </template>
@@ -27,6 +30,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useSavingsGoalsStore } from '../store/savingsGoals';
+import { useNotificationsStore } from '../store/notifications';
+import { useBalanceStore } from '../store/balance';
 import type { CurrencyAndAmount } from '../types/currencyAndAmount.type';
 
 const props = defineProps<{
@@ -34,14 +39,22 @@ const props = defineProps<{
 }>();
 
 const savingsGoalsStore = useSavingsGoalsStore()
+const notificationsStore = useNotificationsStore()
+const balanceStore = useBalanceStore()
 
-// TODO: This works but need to update UI to reflect
+/*
+ * Makes savigns goal transfer. If successful, adds a success notification and triggers balance, savings goals and transaction feed to re-fetch
+ */
 async function handleTransfer(savingsGoalUid:string) {
-  savingsGoalsStore.fetchSavingsGoals()
-  // savingsGoalsStore.transferToSavingsGoal(
-  //   savingsGoalUid,
-  //   { amount: props.transferAmount }
-  // )
+  const result = await savingsGoalsStore.transferToSavingsGoal( savingsGoalUid, { amount: props.transferAmount })
+  if (result === true){
+    notificationsStore.addNotification({
+      variant: 'success',
+      message: `Successfully transferred roundup to savings goal: ${savingsGoalUid}`
+    })
+    savingsGoalsStore.fetchSavingsGoals()
+    balanceStore.fetchBalance()
+  }
 }
 
 onMounted(() => {
