@@ -16,9 +16,12 @@
       <!-- TRANSACTIONS -->
       <div class="flex flex-col flex-grow gap-4 w-full">
         <div class="flex w-full items-center justify-center">
+          <!-- TODO: replace props drilling below with date range store -->
           <Roundup data-test="round-up" class="mb-4"
             :selectedItems="outgoingTransactions"
             :isLoadingFeed="transactionFeedStore.isLoadingTransactionFeed"
+            :selectedStart="selectedStart" 
+            :selectedEnd="selectedEnd"
             />
         </div>
         <DateRangePicker data-test="date-range-picker"

@@ -32,15 +32,19 @@ import { onMounted } from 'vue';
 import { useSavingsGoalsStore } from '../store/savingsGoals';
 import { useNotificationsStore } from '../store/notifications';
 import { useBalanceStore } from '../store/balance';
+import { useTransactionFeedStore } from '../store/transactionFeed';
 import type { CurrencyAndAmount } from '../types/currencyAndAmount.type';
 
 const props = defineProps<{
-  transferAmount: CurrencyAndAmount
+  transferAmount: CurrencyAndAmount;
+  selectedStart: string; //TODO: replace props drilling below with date range store
+  selectedEnd: string; //TODO: replace props drilling below with date range store
 }>();
 
 const savingsGoalsStore = useSavingsGoalsStore()
 const notificationsStore = useNotificationsStore()
 const balanceStore = useBalanceStore()
+const transactionFeedStore = useTransactionFeedStore()
 
 /*
  * Makes savigns goal transfer. If successful, adds a success notification and triggers balance, savings goals and transaction feed to re-fetch
@@ -54,6 +58,7 @@ async function handleTransfer(savingsGoalUid:string) {
     })
     savingsGoalsStore.fetchSavingsGoals()
     balanceStore.fetchBalance()
+    transactionFeedStore.fetchTransactionFeed(props.selectedStart, props.selectedEnd)
   }
 }
 

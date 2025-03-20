@@ -12,7 +12,9 @@ import { generateMockSavingsGoal } from '../types/savingsGoal.type'
 function factory(): VueWrapper{
   return shallowMount(SavingsGoalsForTransferList, {
     props: {
-      transferAmount: generateMockCurrencyAndAmount()
+      transferAmount: generateMockCurrencyAndAmount(),
+      selectedStart: 'some_start_date',
+      selectedEnd: 'some_end_date'
     },
     global: {
       plugins: [createTestingPinia({stubActions: false})],
@@ -25,6 +27,7 @@ describe('Savings Goals for Transfer List', () => {
   let savingsGoalsStore: ReturnType<typeof useSavingsGoalsStore>
   let notificationsStore: ReturnType<typeof useNotificationsStore>
   let balanceStore: ReturnType<typeof useBalanceStore>
+  let transactionFeedStore: ReturnType<typeof useTransactionFeedStore>
 
   describe('and when the component mounts', () => {
     beforeEach(() => {
@@ -88,6 +91,8 @@ describe('Savings Goals for Transfer List', () => {
       savingsGoalsStore = useSavingsGoalsStore()
       notificationsStore = useNotificationsStore()
       balanceStore = useBalanceStore()
+      transactionFeedStore = useTransactionFeedStore()
+      
       savingsGoalsStore.savingsGoals = [generateMockSavingsGoal({savingsGoalUid: 'some-uid'})]
       vi.spyOn(savingsGoalsStore, 'transferToSavingsGoal').mockResolvedValue(true)
       vi.spyOn(notificationsStore, 'addNotification')  
@@ -101,6 +106,7 @@ describe('Savings Goals for Transfer List', () => {
       })
       expect(savingsGoalsStore.fetchSavingsGoals).toHaveBeenCalled()
       expect(balanceStore.fetchBalance).toHaveBeenCalled()
+      expect(transactionFeedStore.fetchTransactionFeed).toHaveBeenCalledWith('some_start_date','some_end_date')
     })
   })
 })
