@@ -18,37 +18,12 @@
         :currency="accountCurrency"
       />
 
-      <!-- LOADING -->
-      <div v-if="savingsGoalsStore.isLoadingSavingsGoals" 
-        data-test="loading-savings-goals"
-        class="flex flex-col gap-1 items-center justify-center min-h-[200px]"
-      >
-        <pie-spinner variant="secondary"/>
-        <p class="text-lg text-black/70">
-          Loading savings spaces...
-        </p>
-      </div>
+      <!-- SAVINGS GOALS -->
+      <SavingsGoalsList
+        :savingsGoals="savingsGoalsStore.savingsGoals"
+        :isLoadingSavingsGoals="savingsGoalsStore.isLoadingSavingsGoals"
+      />
 
-      <!-- NO SAVINGS SPACES -->
-      <div v-else-if="!savingsGoalsStore.savingsGoals.length"
-        data-test="no-savings-goals"
-        class="flex flex-col w-full items-center justify-center h-[200px]"
-      >
-        <p class="text-lg text-black/70">
-          No savings goals yet. Click on the button above to create a new space.
-        </p>
-      </div>
-
-      <!-- SAVINGS SPACES LIST -->
-      <div v-else
-        data-test="savings-goals"
-        class="flex flex-col gap-3"
-      >
-        <SavingsGoalCard
-          v-for="goal in savingsGoalsStore.savingsGoals"
-          :goal="goal"
-        />
-      </div>
     </div>
   </NuxtLayout>
 </template>
@@ -58,7 +33,7 @@ import { ref, onMounted } from 'vue'
 import { useSavingsGoalsStore } from '../../store/savingsGoals'
 import { useUserIdentityStore } from '../../store/userIdentity'
 import { useAccountsStore } from '../../store/accounts'
-import SavingsGoalCard from '../../components/SavingsGoalCard.vue'
+import SavingsGoalsList from '../../components/SavingsGoalsList.vue'
 import SavingsGoalTotal from '../../components/SavingsGoalTotal.vue'
 import '@justeattakeaway/pie-webc/components/spinner.js'
 
