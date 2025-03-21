@@ -23,7 +23,11 @@
 
 - Add pinia for state storage -- similar to redux in React
   - In the project I work on at Just Eat, we store use a Pinia store for userIdentity so that it's accessible throughout the app, and also store it in the browser local storage, so I opted to implement this pattern as well.
-- Added the [notification store](../store/notifications.ts), and the [user identity store](../store/userIdentity.ts). See co-located tests for their responsibilities.
+- Added the [notification store](../store/notifications.ts), the [user identity store](../store/userIdentity.ts), and the [accounts store](../store/accounts.ts) See co-located tests for their responsibilities.
+
+  - When user logs in with their token, they call `GET /api/v2/accounts` with the user identity store
+  - If successful, the user ID store stores the token in pinia & local storage, then saves the account info in the accounts store in pinia and local storage.
+
 - Installed the [Pie Design System - Just Eat's public component library](https://www.pie.design/)
   - I couldn't find a public Starling Component Library, so I opted to use this one due to familiarity.
   - This allowed me easy access to [icons](https://www.pie.design/foundations/iconography/library/) and components like the [Toast notification](https://www.pie.design/components/toast/)
@@ -63,20 +67,3 @@
   - Using `$fetch` also caused later additional issues to debug around query params and request bodies (see proceeding days.)
 
 - **If I were to redo the project, I would set it up to use the native `fetch` to have greater control over the request handling.**
-
-<hr>
-
-### Install Vitest & Unit testing
-
-- Add vitest for unit testing -- opted for this due to familiarity
-
-- Went back to existing components and added unit tests for the behaviour/refactored for isolation of responsibilities
-- I did a lot of refactoring at this point to make sure everything was secure and easy to maintain, as my original scaffolding was quick and dirty.
-
-- The above is generally my working pattern:
-  - Make skeleton of feature based on mental list of requirements
-  - Refactor into componenents
-  - Add unit tests for components & refactor for isolation of responsibilities
-  - PR/deploy
-
-<hr>
