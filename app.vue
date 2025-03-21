@@ -12,6 +12,7 @@ import { ref, onBeforeMount, watch } from 'vue'
 import { useUserIdentityStore } from './store/userIdentity'
 import Notifications from './components/Notifications.vue'
 import { storeToRefs } from 'pinia'
+import { navigateTo } from 'nuxt/app'
 
 const userIdStore = useUserIdentityStore()
 const { token } = storeToRefs(userIdStore)

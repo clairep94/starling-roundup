@@ -1,57 +1,61 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { shallowMount, VueWrapper } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
-// import { useUserStore } from './store/user'
+import { useUserIdentityStore } from './store/userIdentity'
 import App from './app.vue'
 
-const navigateTo = vi.fn()
-vi.stubGlobal('navigateTo', navigateTo)
+vi.mock('nuxt/app', () => ({
+  navigateTo: vi.fn()
+}))
 
-describe.skip('App.vue', () => {
-  let wrapper: VueWrapper<any>
-  let userStore: ReturnType<typeof useUserStore>
+function factory(initialState = {}) {
+  return shallowMount(App, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            userIdentity: {
+              token: null, // default to no token
+              ...initialState
+            }
+          }
+        })
+      ],
+      stubs: {
+        NuxtLayout: true,
+        Notifications: true
+      }
+    }
+  })
+}
 
-  const mountApp = (initialState = {}) => {
-    return shallowMount(App, {
-      global: {
-        plugins: [
-          createTestingPinia({
-            stubActions: true,
-            initialState: {
-              user: { token: null, ...initialState }, //override the default state
-            },
-          }),
-        ],
-        stubs: {
-          Notifications: true,
-          NuxtLayout: true,
-        },
-      },
-    })
-  }
-
+describe('App.vue', () => {
   beforeEach(() => {
     vi.resetAllMocks()
   })
 
   it('renders and contains expected components', () => {
-    wrapper = mountApp()
+    const wrapper = factory()
     expect(wrapper.findComponent({ name: 'Notifications' }).exists()).toBe(true)
     expect(wrapper.findComponent({ name: 'NuxtLayout' }).exists()).toBe(true)
   })
 
   it('navigates to the login page when there is no token', async () => {
-    wrapper = mountApp({ token: null })
+    const wrapper = factory()
+    const { navigateTo } = await import('nuxt/app')
+
     await wrapper.vm.$nextTick()
 
     expect(navigateTo).toHaveBeenCalledTimes(1)
     expect(navigateTo).toHaveBeenCalledWith('/login')
   })
 
-  it('does not navigate to the login page when there is a token', async () => {
-    wrapper = mountApp({ token: 'valid-token' })
-    await wrapper.vm.$nextTick()
+  it('navigates to the login page when there is a token', async () => {
+    const wrapper = factory({token: 'some_token'})
+    const { navigateTo } = await import('nuxt/app')
 
+    await wrapper.vm.$nextTick()
+    
     expect(navigateTo).not.toHaveBeenCalled()
   })
 })
