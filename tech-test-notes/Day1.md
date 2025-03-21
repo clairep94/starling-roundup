@@ -36,6 +36,8 @@ Achieve the below WITHOUT using the existing Round Up endpoints:
   - [ ] Transaction feed looks like Starling's transaction feed
   - [ ] Savings spaces look like Starling's transaction feed
 - [ ] User can select/deselect individual transactions to apply to the roundup total
+- [ ] User can see when a transaction already has a roundup applied
+- [ ] User cannot apply roundup on previously applied transactions
 - [ ] User can filter by transaction category and transaction direction
 - [ ] User can see some sort of animation when the roundup transaction is applied to encourage saving
 

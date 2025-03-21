@@ -41,3 +41,5 @@
 - [Transaction Feed Store](../store/transactionFeed.ts), [tests](../store/transactionFeed.test.ts), []
 
 - Rough styling on transaction feed items
+
+<img src="./images/Transaction Feed WIP 1.png"/>
