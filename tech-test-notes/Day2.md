@@ -68,7 +68,7 @@
 
 ### Install Vitest & Unit testing
 
-- Add vitest for unit testing
+- Add vitest for unit testing -- opted for this due to familiarity
 
 - Went back to existing components and added unit tests for the behaviour/refactored for isolation of responsibilities
 - I did a lot of refactoring at this point to make sure everything was secure and easy to maintain, as my original scaffolding was quick and dirty.
