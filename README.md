@@ -71,3 +71,8 @@ _The test for the proxy/middleware has two failing tests because I wasn't able t
 ```
 npm run test
 ```
+
+## TODO:
+
+- If user has a token saved that should time out, it should auto-logout
+- User can filter

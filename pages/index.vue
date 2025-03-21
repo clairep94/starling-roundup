@@ -17,10 +17,39 @@
       <div class="flex flex-col flex-grow gap-4 w-full">
         <div class="flex w-full items-center justify-center">
           <Roundup data-test="round-up" class="mb-4"
-            :selectedItems="filteredTransactions"
+            :selectedItems="filteredRoundupTransactions"
             :isLoadingFeed="transactionFeedStore.isLoadingTransactionFeed"
             />
         </div>
+
+        <label>Category: {{selectedSpendingCategory}}</label>
+        <select 
+          v-model="selectedSpendingCategory"
+          class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5"
+        >
+          <option
+            v-for="option in spendingCategories"
+            :key="option"
+            :value="option"
+          >
+            {{ option[0].toUpperCase() + option.slice(1).toLowerCase() }}
+          </option>
+        </select>
+
+        <label>Direction: {{selectedTransactionDirection}}</label>
+        <select 
+          v-model="selectedTransactionDirection"
+          class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5 " 
+        >
+          <option
+            v-for="option in transactionDirections"
+            :key="option"
+            :value="option"
+          >
+            {{ option[0] + option.slice(1).toLowerCase() }}
+          </option>
+        </select>
+
         <DateRangePicker data-test="date-range-picker"
           @date-range-selected="handleDateRangeSelected"
           :currentDate="currentDate"
@@ -31,7 +60,7 @@
 
         <TransactionsList data-test="transactions-list"
           :is-loading="transactionFeedStore.isLoadingTransactionFeed"
-          :items="transactionFeedStore.transactionFeed"
+          :items="filteredTransactions"
           :current-date="currentDate"
         />
       </div>
@@ -64,12 +93,34 @@ function handleDateRangeSelected(start:string, end:string) {
 
 const currentDate = new Date().toISOString()
 
-/**
- * Assumption that only outgoing transactions that are NOT "INTERNAL_TRANSFER" can be applied topups with -- I believe this is the behaviour on the app
- * So that users cannot apply topups and past topup transactions
- */
+const spendingCategories = computed(() => {
+  let categories:string[] = ['ALL']
+  transactionFeedStore.transactionFeed.forEach((el) => {
+    if(!categories.includes(el.spendingCategory)){
+      categories.push(el.spendingCategory)
+    }
+  })
+  return categories
+})
+
+const selectedSpendingCategory = ref(spendingCategories.value[0])
+
+const transactionDirections = ['ALL', 'IN', 'OUT']
+
+const selectedTransactionDirection = ref(transactionDirections[0])
+
 const filteredTransactions = computed(() => {
   return transactionFeedStore.transactionFeed
+    .filter(el => selectedSpendingCategory.value === 'ALL' ? el : el.spendingCategory === selectedSpendingCategory.value)
+    .filter(el => selectedTransactionDirection.value === 'ALL' ? el : el.direction === selectedTransactionDirection.value)
+})
+
+/**
+ * Assumption that only outgoing transactions that are NOT "INTERNAL_TRANSFER" can be applied topups with -- I believe this is the behaviour on the app
+ * So that users cannot apply topups on past topup transactions
+ */
+const filteredRoundupTransactions = computed(() => {
+  return filteredTransactions.value
     .filter(el => el.direction === 'OUT')
     .filter(el => el.source !== "INTERNAL_TRANSFER")
 })
