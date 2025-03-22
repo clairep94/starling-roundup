@@ -73,7 +73,7 @@ _The test for the proxy/middleware has two failing tests because I wasn't able t
 npm run test
 ```
 
-## TODO:
+## TODO -- Features to add after original tech test submission:
 
 - [x] User can filter
 - [x] User can search
