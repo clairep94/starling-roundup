@@ -77,8 +77,8 @@ npm run test
 
 - [x] User can filter
 - [x] User can search
-- [ ] User can select individual items to apply the transfer with
 - [ ] User can see their spending category breakdown
+- [ ] User can select individual items to apply the transfer with
 
 - [ ] Update loading state UI logic
   - Have loading spinner be on white overlay div instead, so that if there are existing items, we see them under the overlay -- same pattern as the Spaces For Transfer widget
@@ -86,3 +86,5 @@ npm run test
 - [ ] Update login/logout to use the user identity endpoint instead of accounts
 - [ ] Update authenticated endpoints to check for token timeout then autologout if timed out
 - [ ] Update app.js check to use this as well
+
+- [ ] Update all instances of $fetch to use native fetch
