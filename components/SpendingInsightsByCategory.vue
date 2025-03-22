@@ -8,7 +8,7 @@
     <p>No breakdown found...</p>
   </div>
 
-  <div v-else class="relative w-40 h-40">
+  <div v-else class="relative w-50 h-50">
     <div 
       class="w-full h-full rounded-full border-4 border-white"
       :style="pieChartStyle"
@@ -16,9 +16,12 @@
     
     <!-- Overlay Circle -->
     <div class="absolute inset-0 flex items-center justify-center">
-      <div class="w-30 h-30 rounded-full bg-gray-200 border-4 border-white flex items-center justify-center">
-        <p class="text-center text-black">
+      <div class="w-40 h-40 rounded-full bg-gray-200 border-6 border-white flex items-center justify-center flex-col">
+        <p class="text-center text-black/70 text-xs">
           {{ insights.netSpend }} {{ insights.direction }} {{ insights.currency }}
+        </p>
+        <p class="text-center text-black/70 text-xs">
+          between {{ props.dateRange?.summaryStartPeriodInclusive.split('T')[0] }} and {{ props.dateRange?.summaryEndPeriodExclusive.split('T')[0] }}
         </p>
       </div>
     </div>
