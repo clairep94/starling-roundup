@@ -1,6 +1,7 @@
 # Frontend Tech Test - Claire Peng
 
-This is the frontend tech test of Claire Peng for Starling. <br>
+This is the **extended** frontend tech test of Claire Peng for Starling. <br>
+The submitted tech test state is available at [this branch: TECH_TEST_SUBMISSION_FINAL](https://github.com/clairep94/starling-fe-tech-test/tree/TECH_TEST_SUBMISSION_FINAL)
 
 **The live site is deployed [here](https://starling-fe-tech-test.vercel.app/spaces).**
 
@@ -71,3 +72,20 @@ _The test for the proxy/middleware has two failing tests because I wasn't able t
 ```
 npm run test
 ```
+
+## TODO -- Features to add after original tech test submission:
+
+- [x] User can filter
+- [x] User can search
+- [ ] User can see their spending category breakdown
+- [ ] User can select individual items to apply the transfer with
+- [ ] User can see transaction feed for the savings spaces
+
+- [ ] Update loading state UI logic
+  - Have loading spinner be on white overlay div instead, so that if there are existing items, we see them under the overlay -- same pattern as the Spaces For Transfer widget
+- [ ] Update spaces for transfer widget logic -- if there are items in the store, don't reload
+- [ ] Update login/logout to use the user identity endpoint instead of accounts
+- [ ] Update authenticated endpoints to check for token timeout then autologout if timed out
+- [ ] Update app.js check to use this as well
+
+- [ ] Update all instances of $fetch to use native fetch

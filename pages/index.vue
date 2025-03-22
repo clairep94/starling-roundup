@@ -17,21 +17,61 @@
       <div class="flex flex-col flex-grow gap-4 w-full">
         <div class="flex w-full items-center justify-center">
           <Roundup data-test="round-up" class="mb-4"
-            :selectedItems="filteredTransactions"
+            :selectedItems="filteredRoundupTransactions"
             :isLoadingFeed="transactionFeedStore.isLoadingTransactionFeed"
             />
         </div>
-        <DateRangePicker data-test="date-range-picker"
-          @date-range-selected="handleDateRangeSelected"
-          :currentDate="currentDate"
-          :startProp="dateRangeStore.selectedStart"
-          :endProp="dateRangeStore.selectedEnd"
-          :disabled="transactionFeedStore.isLoadingTransactionFeed"
-        />
+
+        <div class="flex flex-col mx-auto gap-3">
+
+          <input placeholder="Search"
+          class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-4.5 p-2.5"
+            v-model="searchInput"
+          />
+          <div data-test="filters-and-date-time-picker"
+          class="flex flex-col md:flex-row lg:flex-col xl:flex-row gap-x-4 gap-y-3 mx-auto">
+            <div data-test="filters" 
+              class="flex flex-row gap-2">
+              <select 
+                v-model="selectedSpendingCategory"
+                class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-3 p-2.5"
+              >
+                <option
+                  v-for="option in spendingCategories"
+                  :key="option"
+                  :value="option"
+                >
+                  {{ option[0].toUpperCase() + option.slice(1).toLowerCase() }}
+                </option>
+              </select>
+  
+              <select 
+                v-model="selectedTransactionDirection"
+                class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-3 p-2.5 " 
+              >
+                <option
+                  v-for="option in transactionDirections"
+                  :key="option"
+                  :value="option"
+                >
+                  {{ option[0] + option.slice(1).toLowerCase() }}
+                </option>
+              </select>
+            </div>
+            
+            <DateRangePicker data-test="date-range-picker"
+              @date-range-selected="handleDateRangeSelected"
+              :currentDate="currentDate"
+              :startProp="dateRangeStore.selectedStart"
+              :endProp="dateRangeStore.selectedEnd"
+              :disabled="transactionFeedStore.isLoadingTransactionFeed"
+            />
+          </div>
+        </div>
 
         <TransactionsList data-test="transactions-list"
           :is-loading="transactionFeedStore.isLoadingTransactionFeed"
-          :items="transactionFeedStore.transactionFeed"
+          :items="filteredTransactions"
           :current-date="currentDate"
         />
       </div>
@@ -56,20 +96,52 @@ const userIdStore = useUserIdentityStore()
 const transactionFeedStore = useTransactionFeedStore()
 const dateRangeStore = useDateRangeStore()
 
-
+// ==== DATE RANGE PICKER ====
 function handleDateRangeSelected(start:string, end:string) {
   dateRangeStore.setDateRange(start, end)
   transactionFeedStore.fetchTransactionFeed(dateRangeStore.selectedStart, dateRangeStore.selectedEnd)
 }
-
 const currentDate = new Date().toISOString()
 
-/**
- * Assumption that only outgoing transactions that are NOT "INTERNAL_TRANSFER" can be applied topups with -- I believe this is the behaviour on the app
- * So that users cannot apply topups and past topup transactions
- */
+// ===== SEARCH & FILTER ====
+const spendingCategories = computed(() => {
+  let categories:string[] = ['ALL CATEGORIES']
+  transactionFeedStore.transactionFeed.forEach((el) => {
+    if(!categories.includes(el.spendingCategory)){
+      categories.push(el.spendingCategory)
+    }
+  })
+  return categories
+})
+
+const selectedSpendingCategory = ref(spendingCategories.value[0])
+
+const transactionDirections = ['ALL TYPES', 'IN', 'OUT']
+
+const selectedTransactionDirection = ref(transactionDirections[0])
+
+const searchInput = ref('')
+
+// TODO: add test cases for this for search/filter:
+// Faster Payment, Mickey Mouse, Trip to Paris
 const filteredTransactions = computed(() => {
   return transactionFeedStore.transactionFeed
+    .filter(el => {
+      if (searchInput.value.length === 0) return true;
+      const searchTerm = searchInput.value.toLowerCase();
+      return el.counterPartyName.toLowerCase().split(' ').some(word => word.startsWith(searchTerm));
+    })
+    .filter(el => selectedSpendingCategory.value === 'ALL CATEGORIES' ? el : el.spendingCategory === selectedSpendingCategory.value)
+    .filter(el => selectedTransactionDirection.value === 'ALL TYPES' ? el : el.direction === selectedTransactionDirection.value)
+})
+
+// ===== ROUNDUPS =====
+/**
+ * Assumption that only outgoing transactions that are NOT "INTERNAL_TRANSFER" can be applied topups with -- I believe this is the behaviour on the app
+ * So that users cannot apply topups on past topup transactions
+ */
+const filteredRoundupTransactions = computed(() => {
+  return filteredTransactions.value
     .filter(el => el.direction === 'OUT')
     .filter(el => el.source !== "INTERNAL_TRANSFER")
 })

@@ -1,6 +1,5 @@
 <template>
-  <div id="date-range-picker" class="flex items-center justify-center w-full">
-    <span class="mx-4 text-gray-500">from</span>
+  <div id="date-range-picker" class="flex items-center gap-2">
     <!-- START TIME -->
     <div class="relative">
       <!-- CALENDAR ICON -->
@@ -15,11 +14,9 @@
         :max="end"
         :disabled="props.disabled"
         @change="emit('date-range-selected', start, end)"
-        class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5 " 
+        class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5" 
         placeholder="Select date start"/>
     </div>
-
-    <span class="mx-4 text-gray-500">to</span>
     
     <!-- END TIME -->
     <div class="relative">
