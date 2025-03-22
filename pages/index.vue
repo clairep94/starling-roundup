@@ -25,7 +25,7 @@
         <div class="flex flex-col mx-auto gap-3">
 
           <input placeholder="Search"
-          class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-3 p-2.5"
+          class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-4.5 p-2.5"
             v-model="searchInput"
           />
           <div data-test="filters-and-date-time-picker"
@@ -96,14 +96,14 @@ const userIdStore = useUserIdentityStore()
 const transactionFeedStore = useTransactionFeedStore()
 const dateRangeStore = useDateRangeStore()
 
-
+// ==== DATE RANGE PICKER ====
 function handleDateRangeSelected(start:string, end:string) {
   dateRangeStore.setDateRange(start, end)
   transactionFeedStore.fetchTransactionFeed(dateRangeStore.selectedStart, dateRangeStore.selectedEnd)
 }
-
 const currentDate = new Date().toISOString()
 
+// ===== SEARCH & FILTER ====
 const spendingCategories = computed(() => {
   let categories:string[] = ['ALL CATEGORIES']
   transactionFeedStore.transactionFeed.forEach((el) => {
@@ -135,6 +135,7 @@ const filteredTransactions = computed(() => {
     .filter(el => selectedTransactionDirection.value === 'ALL TYPES' ? el : el.direction === selectedTransactionDirection.value)
 })
 
+// ===== ROUNDUPS =====
 /**
  * Assumption that only outgoing transactions that are NOT "INTERNAL_TRANSFER" can be applied topups with -- I believe this is the behaviour on the app
  * So that users cannot apply topups on past topup transactions
