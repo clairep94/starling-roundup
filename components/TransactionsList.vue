@@ -24,8 +24,17 @@
   <!-- TRANSACTIONS LIST -->
   <div data-test="transaction-feed-list" v-else
     class="flex flex-col gap-3">
+    <pre>
+      {{ props.items.map(el => `${el.counterPartyName}, ${el.spendingCategory}, ${el.sourceAmount.minorUnits/100}`)  }}
+    </pre>
 
-    <div data-test="transaction-list-group" v-for="transactionGroup in organisedByDatesItems" :key="transactionGroup.date"
+    <pre>
+      {{ organisedByDatesItems.map(el => `${el.date}:
+        ${el.items.map(el => `${el.counterPartyName}, ${el.spendingCategory}, ${el.sourceAmount.minorUnits/100}
+        `)}`) }}
+    </pre>
+
+    <!-- <div data-test="transaction-list-group" v-for="transactionGroup in organisedByDatesItems" :key="transactionGroup.date"
       class="flex flex-col"
     >
       <div data-test="transaction-list-group-date" class="text-black/50 text-sm font-medium py-3 border-b border-input-border">
@@ -40,7 +49,7 @@
         v-for="transaction in transactionGroup.items"
         :transactionFeedItem="transaction"
       />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -58,19 +67,18 @@ const props = defineProps<{
 }>();
 
 const organisedByDatesItems = computed(() => {
-  return props.items.reduce((acc, item) => {
+  const grouped = new Map<string, FeedItem[]>();
+
+  props.items.forEach((item) => {
     const date = item.settlementTime.split('T')[0];
-    const existingGroup = acc.find(group => group.date === date);
-
-    if (existingGroup) {
-      existingGroup.items.push(item);
-    } else {
-      acc.push({ date, items: [item] });
+    if (!grouped.has(date)) {
+      grouped.set(date, []);
     }
+    grouped.get(date)?.push(item);
+  });
 
-    return acc;
-  }, []);
-})
+  return Array.from(grouped, ([date, items]) => ({ date, items }));
+});
 
 </script>
 
