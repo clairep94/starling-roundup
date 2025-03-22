@@ -22,41 +22,50 @@
             />
         </div>
 
-        <label>Category: {{selectedSpendingCategory}}</label>
-        <select 
-          v-model="selectedSpendingCategory"
-          class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5"
-        >
-          <option
-            v-for="option in spendingCategories"
-            :key="option"
-            :value="option"
-          >
-            {{ option[0].toUpperCase() + option.slice(1).toLowerCase() }}
-          </option>
-        </select>
-
-        <label>Direction: {{selectedTransactionDirection}}</label>
-        <select 
-          v-model="selectedTransactionDirection"
-          class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5 " 
-        >
-          <option
-            v-for="option in transactionDirections"
-            :key="option"
-            :value="option"
-          >
-            {{ option[0] + option.slice(1).toLowerCase() }}
-          </option>
-        </select>
-
-        <DateRangePicker data-test="date-range-picker"
-          @date-range-selected="handleDateRangeSelected"
-          :currentDate="currentDate"
-          :startProp="dateRangeStore.selectedStart"
-          :endProp="dateRangeStore.selectedEnd"
-          :disabled="transactionFeedStore.isLoadingTransactionFeed"
-        />
+        <div class="flex flex-col bg-amber-200 mx-auto gap-3">
+          <div class="flex bg-red-200">
+            test
+          </div>
+          <div data-test="filters-and-date-time-picker"
+          class="flex flex-col md:flex-row lg:flex-col xl:flex-row gap-x-4 gap-y-3 mx-auto">
+            <div data-test="filters" 
+              class="flex flex-row gap-2">
+              <select 
+                v-model="selectedSpendingCategory"
+                class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-3 p-2.5"
+              >
+                <option
+                  v-for="option in spendingCategories"
+                  :key="option"
+                  :value="option"
+                >
+                  {{ option[0].toUpperCase() + option.slice(1).toLowerCase() }}
+                </option>
+              </select>
+  
+              <select 
+                v-model="selectedTransactionDirection"
+                class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-3 p-2.5 " 
+              >
+                <option
+                  v-for="option in transactionDirections"
+                  :key="option"
+                  :value="option"
+                >
+                  {{ option[0] + option.slice(1).toLowerCase() }}
+                </option>
+              </select>
+            </div>
+            
+            <DateRangePicker data-test="date-range-picker"
+              @date-range-selected="handleDateRangeSelected"
+              :currentDate="currentDate"
+              :startProp="dateRangeStore.selectedStart"
+              :endProp="dateRangeStore.selectedEnd"
+              :disabled="transactionFeedStore.isLoadingTransactionFeed"
+            />
+          </div>
+        </div>
 
         <TransactionsList data-test="transactions-list"
           :is-loading="transactionFeedStore.isLoadingTransactionFeed"
@@ -94,7 +103,7 @@ function handleDateRangeSelected(start:string, end:string) {
 const currentDate = new Date().toISOString()
 
 const spendingCategories = computed(() => {
-  let categories:string[] = ['ALL']
+  let categories:string[] = ['ALL CATEGORIES']
   transactionFeedStore.transactionFeed.forEach((el) => {
     if(!categories.includes(el.spendingCategory)){
       categories.push(el.spendingCategory)
@@ -105,14 +114,14 @@ const spendingCategories = computed(() => {
 
 const selectedSpendingCategory = ref(spendingCategories.value[0])
 
-const transactionDirections = ['ALL', 'IN', 'OUT']
+const transactionDirections = ['ALL TYPES', 'IN', 'OUT']
 
 const selectedTransactionDirection = ref(transactionDirections[0])
 
 const filteredTransactions = computed(() => {
   return transactionFeedStore.transactionFeed
-    .filter(el => selectedSpendingCategory.value === 'ALL' ? el : el.spendingCategory === selectedSpendingCategory.value)
-    .filter(el => selectedTransactionDirection.value === 'ALL' ? el : el.direction === selectedTransactionDirection.value)
+    .filter(el => selectedSpendingCategory.value === 'ALL CATEGORIES' ? el : el.spendingCategory === selectedSpendingCategory.value)
+    .filter(el => selectedTransactionDirection.value === 'ALL TYPES' ? el : el.direction === selectedTransactionDirection.value)
 })
 
 /**
