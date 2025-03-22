@@ -22,10 +22,10 @@
             />
         </div>
 
-        <div class="flex flex-col bg-amber-200 mx-auto gap-3">
-          <div class="flex bg-red-200">
-            test
-          </div>
+        <div class="flex flex-col mx-auto gap-3">
+          <input placeholder="Search"
+          class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-3 p-2.5">
+          </input>
           <div data-test="filters-and-date-time-picker"
           class="flex flex-col md:flex-row lg:flex-col xl:flex-row gap-x-4 gap-y-3 mx-auto">
             <div data-test="filters" 
