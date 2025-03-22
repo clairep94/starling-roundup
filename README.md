@@ -79,6 +79,7 @@ npm run test
 - [x] User can search
 - [ ] User can see their spending category breakdown
 - [ ] User can select individual items to apply the transfer with
+- [ ] User can see transaction feed for the savings spaces
 
 - [ ] Update loading state UI logic
   - Have loading spinner be on white overlay div instead, so that if there are existing items, we see them under the overlay -- same pattern as the Spaces For Transfer widget
