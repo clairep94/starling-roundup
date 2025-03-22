@@ -29,12 +29,12 @@
     </pre>
 
     <pre>
-      {{ organisedByDatesItems.map(el => `${el.date}:
+      {{ organisedByDatesItems.map(el => `${el.date}, ${el.items.length}:
         ${el.items.map(el => `${el.counterPartyName}, ${el.spendingCategory}, ${el.sourceAmount.minorUnits/100}
         `)}`) }}
     </pre>
 
-    <!-- <div data-test="transaction-list-group" v-for="transactionGroup in organisedByDatesItems" :key="transactionGroup.date"
+    <div data-test="transaction-list-group" v-for="transactionGroup in organisedByDatesItems" :key="transactionGroup.date"
       class="flex flex-col"
     >
       <div data-test="transaction-list-group-date" class="text-black/50 text-sm font-medium py-3 border-b border-input-border">
@@ -44,12 +44,20 @@
           : extractDate(transactionGroup.date) 
         }}
       </div>
-
-      <TransactionFeedItem
+      {{ transactionGroup.items.length }}
+      <pre class="text-xs" v-for="transaction in transactionGroup.items">
+        {{ {
+          date: transaction.settlementTime,
+          name: transaction.counterPartyName,
+          type: transaction.spendingCategory,
+          amount: (transaction.amount.minorUnits/100)
+        } }}
+      </pre>
+      <!-- <TransactionFeedItem
         v-for="transaction in transactionGroup.items"
         :transactionFeedItem="transaction"
-      />
-    </div> -->
+      /> -->
+    </div>
   </div>
 </template>
 
