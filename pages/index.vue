@@ -23,9 +23,11 @@
         </div>
 
         <div class="flex flex-col mx-auto gap-3">
+
           <input placeholder="Search"
-          class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-3 p-2.5">
-          </input>
+          class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-3 p-2.5"
+            v-model="searchInput"
+          />
           <div data-test="filters-and-date-time-picker"
           class="flex flex-col md:flex-row lg:flex-col xl:flex-row gap-x-4 gap-y-3 mx-auto">
             <div data-test="filters" 
@@ -118,8 +120,17 @@ const transactionDirections = ['ALL TYPES', 'IN', 'OUT']
 
 const selectedTransactionDirection = ref(transactionDirections[0])
 
+const searchInput = ref('')
+
+// TODO: add test cases for this for search/filter:
+// Faster Payment, Mickey Mouse, Trip to Paris
 const filteredTransactions = computed(() => {
   return transactionFeedStore.transactionFeed
+    .filter(el => {
+      if (searchInput.value.length === 0) return true;
+      const searchTerm = searchInput.value.toLowerCase();
+      return el.counterPartyName.toLowerCase().split(' ').some(word => word.startsWith(searchTerm));
+    })
     .filter(el => selectedSpendingCategory.value === 'ALL CATEGORIES' ? el : el.spendingCategory === selectedSpendingCategory.value)
     .filter(el => selectedTransactionDirection.value === 'ALL TYPES' ? el : el.direction === selectedTransactionDirection.value)
 })
