@@ -29,6 +29,7 @@
       <SavingsGoalCard
         v-for="goal in savingsGoals"
         :goal="goal"
+        @click="navigateTo(`/spaces/${goal.name}/${goal.savingsGoalUid}`)"
       />
     </div>
 

@@ -11,12 +11,7 @@
     <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 gap-6 lg:flex-row-reverse lg:px-8 lg:py-6 lg:gap-8">
       <div class="flex flex-col gap-6 w-full lg:w-1/3 items-center">
         <Balance />
-        <SpendingInsightsByCategory
-          :dateRange="{
-            summaryStartPeriodInclusive: dateRangeStore.selectedStart,
-            summaryEndPeriodExclusive: dateRangeStore.selectedEnd
-          }"
-        />
+        <SpendingInsightsByCategory :useDateRange="true" />
       </div>
 
       <!-- TRANSACTIONS -->
@@ -96,6 +91,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useUserIdentityStore } from '../store/userIdentity'
 import { useTransactionFeedStore } from '../store/transactionFeed'
 import { useDateRangeStore } from '../store/dateRange'
@@ -112,11 +108,11 @@ useHead({
 const userIdStore = useUserIdentityStore()
 const transactionFeedStore = useTransactionFeedStore()
 const dateRangeStore = useDateRangeStore()
+const { selectedStart, selectedEnd } = storeToRefs(dateRangeStore)
 
 // ==== DATE RANGE PICKER ====
 function handleDateRangeSelected(start:string, end:string) {
   dateRangeStore.setDateRange(start, end)
-  transactionFeedStore.fetchTransactionFeed(dateRangeStore.selectedStart, dateRangeStore.selectedEnd)
 }
 const currentDate = new Date().toISOString()
 
@@ -163,9 +159,12 @@ const filteredRoundupTransactions = computed(() => {
     .filter(el => el.source !== "INTERNAL_TRANSFER")
 })
 
-onMounted(() => {
-  transactionFeedStore.fetchTransactionFeed(dateRangeStore.selectedStart, dateRangeStore.selectedEnd)
-})
+watch(
+  [selectedStart, selectedEnd],
+  () => {
+    transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
+  }, {immediate:true}
+)
 </script>
 
 <style scoped>

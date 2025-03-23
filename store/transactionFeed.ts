@@ -27,16 +27,18 @@ export const useTransactionFeedStore = defineStore('transactionFeed', () => {
    * @endpoint GET /api/starling/feed/account/{accountUid}/category/{categoryUid}/transactions-between
    * @param minTransactionTimestamp ISO string of the date to fetch changes since
    * @param maxTransactionTimestamp ISO string of the date to fetch changes until
+   * @param spaceUid optional: uid of the spending space, otherwise uses the account default category Uid
    */
-  async function fetchTransactionFeed(minTransactionTimestamp: string, maxTransactionTimestamp:string): Promise<void> {
+  async function fetchTransactionFeed(minTransactionTimestamp: string, maxTransactionTimestamp:string, spaceUid?:string): Promise<void> {
     if (!accountsStore.selectedAccount || !userIdentityStore.token) {
       notificationsStore.addError('Cannot fetch transactions without an account or token')
       return
     }
     isLoadingTransactionFeed.value = true
+    const {accountUid, defaultCategory} = accountsStore.selectedAccount
 
     const proxyBaseURL = '/api/starling'
-    const endpoint = `/feed/account/${accountsStore.selectedAccount.accountUid}/category/${accountsStore.selectedAccount.defaultCategory}/transactions-between`
+    const endpoint = `/feed/account/${accountUid}/category/${ spaceUid ? spaceUid : defaultCategory}/transactions-between`
     let url = proxyBaseURL + endpoint
     url += '?minTransactionTimestamp=' + minTransactionTimestamp
     url += '&maxTransactionTimestamp=' + maxTransactionTimestamp
