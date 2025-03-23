@@ -28,7 +28,7 @@
             />
         </div>
 
-        <div class="flex flex-col mx-auto gap-3">
+        <div class="flex flex-col mx-auto gap-3 mt-3">
           <div class="relative flex flex-col items-end">
             <div class="absolute -translate-y-7">
               <NewFeatureChip/>
