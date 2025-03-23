@@ -35,11 +35,9 @@
             </div>
 
             <!-- SEARCHBAR -->
-            <input placeholder="Search"
-            class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-4.5 p-2.5"
+            <SearchBar
               v-model="searchInput"
-            >
-            </input>
+            />
           </div>
 
           <!-- FILTERS & DATE-RANGE PICKER -->
@@ -47,31 +45,15 @@
           class="flex flex-col md:flex-row lg:flex-col xl:flex-row gap-x-4 gap-y-3 mx-auto">
             <div data-test="filters" 
               class="flex flex-row gap-2">
-              <select 
+
+              <SelectDropdown
                 v-model="selectedSpendingCategory"
-                class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-3 p-2.5"
-              >
-                <option
-                  v-for="option in spendingCategories"
-                  :key="option"
-                  :value="option"
-                >
-                  {{ option[0].toUpperCase() + option.slice(1).toLowerCase() }}
-                </option>
-              </select>
-  
-              <select 
+                :options="spendingCategories"
+              />
+              <SelectDropdown
                 v-model="selectedTransactionDirection"
-                class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-3 p-2.5 " 
-              >
-                <option
-                  v-for="option in transactionDirections"
-                  :key="option"
-                  :value="option"
-                >
-                  {{ option[0] + option.slice(1).toLowerCase() }}
-                </option>
-              </select>
+                :options="transactionDirections"
+              />
             </div>
             
             <DateRangePicker data-test="date-range-picker"
@@ -104,6 +86,8 @@ import Balance from '../components/Balance.vue'
 import Roundup from '../components/Roundup.vue'
 import SpendingInsightsByCategory from '../components/SpendingInsightsByCategory.vue'
 import NewFeatureChip from '../components/NewFeatureChip.vue'
+import SearchBar from '../components/SearchBar.vue'
+import SelectDropdown from '../components/SelectDropdown.vue'
 
 useHead({
   title: 'Transaction Feed'
