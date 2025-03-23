@@ -11,6 +11,12 @@
     <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 gap-6 lg:flex-row-reverse lg:px-8 lg:py-6 lg:gap-8">
       <div class="flex flex-col gap-6 w-full lg:w-1/3 items-center">
         <Balance />
+        <SpendingInsightsByCategory
+          :dateRange="{
+            summaryStartPeriodInclusive: dateRangeStore.selectedStart,
+            summaryEndPeriodExclusive: dateRangeStore.selectedEnd
+          }"
+        />
       </div>
 
       <!-- TRANSACTIONS -->
@@ -87,6 +93,7 @@ import { useDateRangeStore } from '../store/dateRange'
 import DateRangePicker from '../components/DateRangePicker.vue'
 import Balance from '../components/Balance.vue'
 import Roundup from '../components/Roundup.vue'
+import SpendingInsightsByCategory from '../components/SpendingInsightsByCategory.vue'
 
 useHead({
   title: 'Transaction Feed'
