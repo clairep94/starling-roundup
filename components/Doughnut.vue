@@ -4,59 +4,83 @@
       <slot></slot>
     </div>
     <Doughnut
-      v-if="loaded"
       id="my-chart-id"
       :data="chartData"
       class="opacity-90"
-      :options="{ maintainAspectRatio: false, cutout: '70%', radius: '90%' }"
+      :options="options"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { ref } from "vue";
 import { Doughnut } from "vue-chartjs";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const loaded = ref(true);
+const props = defineProps<{
+  optionsOverrides?: any,
+  data?: {
+    labels: string[],
+    datasets: {
+      label: string,
+      data: number[]
+    }[]
+  }
+}>();
 
-const chartData = {
-  "labels": ["Income", "Payments"],
+const options = computed(() => {
+  return {
+    maintainAspectRatio: false,
+    cutout: '70%',
+    radius: '90%',
+    ...(props.optionsOverrides ? props.optionsOverrides : {})
+  }
+})
+
+const segmentColours = [
+  "rgba(3,199,194,255)",
+  "rgba(196,39,80,255)",
+  "rgba(52,149,173,255)",
+  "rgba(201,62,133,255)",
+  "rgba(242,133,100,255)",
+  "rgba(0,95,130,255)",
+  "rgba(123,137,64,255)",
+  "rgba(175,175,175,255)"
+]
+
+const noDataSegment = "rgba(175,175,175,255)"
+
+const hoverOffset = 4
+
+const noDataChartData = {
+  "labels": ["No transaction data available"],
   "datasets": [
     {
-      "label": "Net amount",
-      "data": [50, 100],
-      "backgroundColor": [
-        "rgba(3,199,194,255)",
-        "rgba(196,39,80,255)",
-        "rgba(52,149,173,255)",
-        "rgba(201,62,133,255)",
-        "rgba(242,133,100,255)",
-        "rgba(0,95,130,255)",
-        "rgba(123,137,64,255)",
-        "rgba(175,175,175,255)"
-      ],
-      "hoverOffset": 4
-    },
-    {
-      "label": "Transactions",
-      "data": [5,2],
-      "backgroundColor": [
-        "rgba(3,199,194,255)",
-        "rgba(196,39,80,255)",
-        "rgba(52,149,173,255)",
-        "rgba(201,62,133,255)",
-        "rgba(242,133,100,255)",
-        "rgba(0,95,130,255)",
-        "rgba(123,137,64,255)",
-        "rgba(175,175,175,255)"
-      ],
-      "hoverOffset": 4
+      "label": "No data available",
+      "data": [1],
+      "backgroundColor": [noDataSegment],
+      "hoverOffset": hoverOffset
     }
   ]
 }
+
+const chartData = computed(() => {
+  if (!props.data) {
+    return noDataChartData
+  } else {
+    return {
+      labels: props.data.labels,
+      datasets: props.data.datasets.map((el) => {
+        return {
+          ...el,
+          backgroundColor: segmentColours,
+          hoverOffset: hoverOffset
+        }
+      })
+    }
+  }
+})
 </script>
 
 <style scoped>

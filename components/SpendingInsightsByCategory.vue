@@ -4,27 +4,28 @@
     <p class="text-md text-black/70">Loading spending breakdown...</p>
   </div>
 
-  <div v-else-if="!insights?.breakdown" class="flex items-center justify-center flex-col min-h-[300px] w-full">
-    <p>No breakdown found...</p>
-  </div>
-
-  <div v-else>
-   <Doughnut>
-    <h3 class="text-xl font-extrabold text-black/70">
-      {{ insights.direction === 'IN' ? '+' : '' }}
-      {{ formatCurrencyAmount({
-        currency: insights.currency,
-        minorUnits: (insights.netSpend*100)
-      }) }}
-    </h3>
-
-    <h4 data-test="roundup-title" class="text-xs font-semibold text-black/50 text-center">
-      between <br>{{ 
-        new Date(props.dateRange?.summaryStartPeriodInclusive.split('T')[0]).toLocaleDateString('en-GB')
-         }} - {{ new Date(props.dateRange?.summaryEndPeriodExclusive.split('T')[0]).toLocaleDateString('en-GB') }}
-    </h4>
-   </Doughnut>
-  </div>
+  <Doughnut 
+    :data="formattedChartData" 
+    v-else>
+    <div v-if="!insights?.breakdown"
+    class="flex flex-col items-center justify-center">
+      <p class="text-center text-sm text-black/60">
+        No data available <br>
+        between <br>
+        {{ dateRangeDisplay }}
+      </p>
+    </div>
+    <div v-else
+    class="flex flex-col items-center justify-center">
+      <h3 class="text-xl font-extrabold text-black/70">
+        {{netAmountDisplay}}
+      </h3>
+      <p class="text-center text-sm text-black/60">
+        between <br>
+        {{ dateRangeDisplay }}
+      </p>
+    </div>
+  </Doughnut>
 </template>
 
 <script setup lang="ts">
@@ -43,6 +44,41 @@ const props = defineProps<{
 
 const spendingInsightsStore = useSpendingInsightsStore();
 const { spendingInsightsSummaryByCategory: insights, isLoadingSpendingInsightsByCategory: isLoading } = storeToRefs(spendingInsightsStore);
+
+const dateRangeDisplay = computed(() => {
+  return `${new Date(props.dateRange?.summaryStartPeriodInclusive.split('T')[0]).toLocaleDateString('en-GB')} - ${new Date(props.dateRange?.summaryEndPeriodExclusive.split('T')[0]).toLocaleDateString('en-GB')}`
+})
+
+const netAmountDisplay = computed(() => {
+  if(!insights.value){
+    return ''
+  } else {
+    return `${insights.value?.direction === 'IN' ? '+' : ''} ${formatCurrencyAmount({currency: insights.value.currency, minorUnits: (insights.value.netSpend*100)})}`
+  }
+})
+
+const formattedChartData = computed(() => {
+  if(!insights.value){
+    return undefined
+  } else {
+    let labels:string[] = [] //categories
+    let datasets:{ label: string, data: number[] }[] = [
+      { label: `Total ${insights.value.currency}`, data:[]},
+      { label: "Number of Transactions", data:[]}
+    ]
+
+    insights.value.breakdown.forEach((el) => {
+      labels.push(`${el.spendingCategory[0]}${el.spendingCategory.slice(1).toLowerCase()}`)
+      datasets[0].data.push((el.netDirection === 'IN' ? 1 : -1)*el.netSpend)
+      datasets[1].data.push(el.transactionCount)
+    })
+
+    return {
+      labels,
+      datasets
+    }
+  }
+})
 
 const fetchInsights = () => {
   spendingInsightsStore.fetchSpendingInsightsByCategory(props.dateRange);
