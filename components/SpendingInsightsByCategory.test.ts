@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { shallowMount, VueWrapper } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useSpendingInsightsStore } from '../store/spendingInsights'
+import { useDateRangeStore } from '../store/dateRange'
 import SpendingInsightsByCategory from './SpendingInsightsByCategory.vue'
 import { generateMockSpendingCategorySummary } from '../types/spendingInsights.type'
 import { formatCurrencyAmount } from '../utils/formatData'
@@ -13,32 +14,24 @@ const DoughnutChartStub = {
   props: ['data']
 }
 
-function factory(
-  dateRange?: {
-    summaryStartPeriodInclusive: string,
-    summaryEndPeriodExclusive: string
-  }): VueWrapper<any> {
+function factory(useDateRange:boolean = false): VueWrapper<any> {
   return shallowMount(SpendingInsightsByCategory, {
     global: {
       stubs: {DoughnutChart: DoughnutChartStub},
       plugins: [createTestingPinia({stubActions: false})],
     },
-    props: dateRange
+    props: useDateRange
   })
 }
 
 describe('Spending Insights by Category', () => {
   let wrapper: VueWrapper<any>
   let spendingInsightsStore: ReturnType<typeof useSpendingInsightsStore>
+  let dateRangeStore: ReturnType<typeof useDateRangeStore>
 
   describe('and when the componnent mounts', () => {
     beforeEach(() => {
-      wrapper = factory(
-        {
-          summaryStartPeriodInclusive: 'abc',
-          summaryEndPeriodExclusive: 'xyz'
-        }
-      )
+      wrapper = factory()
       spendingInsightsStore = useSpendingInsightsStore()
     })
     it('should call fetchSpendingInsightsByCategory with the dateRange', () => {
@@ -61,12 +54,7 @@ describe('Spending Insights by Category', () => {
   })
   describe('and when data is finished loading but there is no data', () => {
     beforeEach(() => {
-      wrapper = factory(
-        {
-          summaryStartPeriodInclusive: 'abc',
-          summaryEndPeriodExclusive: 'xyz'
-        }
-      )
+      wrapper = factory()
       spendingInsightsStore = useSpendingInsightsStore()
       spendingInsightsStore.isLoadingSpendingInsightsByCategory = false
     })
@@ -90,8 +78,7 @@ describe('Spending Insights by Category', () => {
       ]
     })
     beforeEach(() => {
-      wrapper = factory(
-      )
+      wrapper = factory()
       spendingInsightsStore = useSpendingInsightsStore()
       spendingInsightsStore.isLoadingSpendingInsightsByCategory = false
       spendingInsightsStore.spendingInsightsSummaryByCategory = mockSpendingInsights
@@ -117,7 +104,7 @@ describe('Spending Insights by Category', () => {
     })
   })
 
-  describe('and when data is finished loading but there is no date range prop', () => {
+  describe('and when data is finished loading but there is no date range', () => {
     const mockSpendingInsights = generateMockSpendingCategorySummary({
       period: '01/2025',
       currency: 'GBP',
@@ -139,7 +126,7 @@ describe('Spending Insights by Category', () => {
     })
   })
 
-  describe.skip('and when data is finished loading but there is a date range prop', () => {
+  describe.skip('and when data is finished loading but there is a date range', () => {
     const mockSpendingInsights = generateMockSpendingCategorySummary({
       period: '01/2025',
       currency: 'GBP',
@@ -151,15 +138,15 @@ describe('Spending Insights by Category', () => {
       ]
     })
     beforeEach(() => {
-      wrapper = factory({
-        summaryStartPeriodInclusive: 'abc',
-        summaryEndPeriodExclusive: 'xyz'
-      })
+      wrapper = factory(true)
       spendingInsightsStore = useSpendingInsightsStore()
       spendingInsightsStore.isLoadingSpendingInsightsByCategory = false
       spendingInsightsStore.spendingInsightsSummaryByCategory = mockSpendingInsights
+      dateRangeStore = useDateRangeStore()
+      dateRangeStore.selectedStart = 'abc'
+      dateRangeStore.selectedEnd = 'xyz'
     })
-    it('should display the current month', () => {
+    it('should display the date range', () => {
       expect(wrapper.find('[data-test="center-info-summary"]').text()).toContain('between abc-xyz')
     })
   })

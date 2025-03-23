@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-1 items-center justify-center ">
+  <div class="flex flex-col gap-1 items-center justify-center">
     <h3 data-test="spending-insights-title"
     class="text-center text-sm font-semibold text-black/70 relative">
       Your Spending by Category  <NewFeatureChip class="absolute"/>
@@ -36,23 +36,25 @@
 import { ref, watch, computed } from 'vue'
 import { storeToRefs } from 'pinia';
 import { useSpendingInsightsStore } from '../store/spendingInsights';
+import { useDateRangeStore } from '../store/dateRange';
 import '@justeattakeaway/pie-webc/components/spinner.js'
 import DoughnutChart from './DoughnutChart.vue';
 import { formatCurrencyAmount } from '../utils/formatData';
 
 const props = defineProps<{
-  dateRange?: {
-    summaryStartPeriodInclusive: string,
-    summaryEndPeriodExclusive: string
-  }
+  useDateRange: boolean
 }>();
 
 const spendingInsightsStore = useSpendingInsightsStore();
 const { spendingInsightsSummaryByCategory: insights, isLoadingSpendingInsightsByCategory: isLoading } = storeToRefs(spendingInsightsStore);
+const { fetchSpendingInsightsByCategory: fetchInsights } = spendingInsightsStore
+
+const dateRangeStore = useDateRangeStore()
+const { selectedStart, selectedEnd } = storeToRefs(dateRangeStore)
 
 const dateRangeDisplay = computed(() => {
-  if(props.dateRange){
-    return `between ${new Date(props.dateRange?.summaryStartPeriodInclusive.split('T')[0]).toLocaleDateString('en-GB')} - ${new Date(props.dateRange?.summaryEndPeriodExclusive.split('T')[0]).toLocaleDateString('en-GB')}`
+  if(props.useDateRange){
+    return `between ${new Date(selectedStart.value.split('T')[0]).toLocaleDateString('en-GB')} - ${new Date(selectedEnd.value.split('T')[0]).toLocaleDateString('en-GB')}`
   } else{
     return `for ${insights.value?.period}`
   }
@@ -89,12 +91,16 @@ const formattedChartData = computed(() => {
   }
 })
 
-const fetchInsights = () => {
-  spendingInsightsStore.fetchSpendingInsightsByCategory(props.dateRange);
-};
-
-watch(() => props.dateRange, fetchInsights, { immediate: true, deep: true });
-
+watch(
+  [selectedStart, selectedEnd],
+  () => {
+    fetchInsights({
+      summaryStartPeriodInclusive: selectedStart.value,
+      summaryEndPeriodExclusive: selectedEnd.value
+    });
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped>

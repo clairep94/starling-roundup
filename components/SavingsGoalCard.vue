@@ -1,6 +1,6 @@
 <template>
   <div data-test="savings-goal-card"
-    class="bg-white rounded-lg border border-input-border/70 p-3 md:p-5 flex flex-row justify-between gap-4 w-full"
+    class="bg-white hover:cursor-pointer hover:bg-gray-100 rounded-lg border border-input-border/70 p-3 md:p-5 flex flex-row justify-between gap-4 w-full"
   >
   <!-- LEFT -->
   <div data-test="left-side"
