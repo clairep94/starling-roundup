@@ -42,7 +42,8 @@
 
 <script setup lang="ts">
 import { useDateRangeStore } from '../store/dateRange';
-import { ref, defineProps, defineEmits } from 'vue'
+import { ref, defineProps } from 'vue'
+import { storeToRefs } from 'pinia';
 import "@justeattakeaway/pie-icons-webc/dist/IconCalendarDay.js";
 
 const props = defineProps<{
