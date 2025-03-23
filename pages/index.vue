@@ -67,6 +67,7 @@
         <TransactionsList data-test="transactions-list"
           :isLoading="isLoadingTransactionFeed"
           :items="filteredTransactions"
+          :selectedTransactions="selectedTransactions"
           :currentDate="currentDate"
           :isSelectingRoundupTransactions="isSelectingRoundupTransactions"
         />

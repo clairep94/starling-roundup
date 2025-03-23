@@ -38,8 +38,10 @@
       <div class="flex flex-row border-b border-b-input-border" v-for="transaction in transactionGroup.items" >
         <div v-if="isSelectingRoundupTransactions" class="flex w-8 items-center justify-center">
           <input 
-            type="checkbox" 
+            type="checkbox"
+            :checked="selectedTransactions.some(t => t.feedItemUid === transaction.feedItemUid)"
             :disabled="!isEligibleForRoundup(transaction)"
+            @change="toggleTransaction(transaction, $event.target.checked)"
           />
         </div>
         <TransactionFeedItem
@@ -52,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, computed } from 'vue'
+import { ref, defineProps, defineEmits, computed } from 'vue'
 import TransactionFeedItem from '../components/TransactionFeedItem.vue'
 import type { FeedItem } from '../types/feedItem.type';
 import { extractDate } from '../utils/formatData';
@@ -61,10 +63,13 @@ import { isEligibleForRoundup } from '../utils/roundUpCalculate';
 
 const props = defineProps<{
   isLoading: boolean,
-  items: FeedItem[],
+  items: FeedItem[], //all potential items
+  selectedTransactions: FeedItem[], //selected items
   currentDate: string,
   isSelectingRoundupTransactions: boolean
 }>();
+
+const emit = defineEmits(['update:selectedTransactions'])
 
 const organisedByDatesItems = computed(() => {
   const grouped = new Map<string, FeedItem[]>();
@@ -79,6 +84,10 @@ const organisedByDatesItems = computed(() => {
 
   return Array.from(grouped, ([date, items]) => ({ date, items }));
 });
+
+function toggleTransaction(transaction: FeedItem, isSelected: boolean){
+  console.log(transaction, isSelected)
+}
 
 </script>
 
