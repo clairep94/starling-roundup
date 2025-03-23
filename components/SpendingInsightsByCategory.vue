@@ -1,31 +1,37 @@
 <template>
-  <div v-if="isLoading" class="flex items-center justify-center flex-col min-h-[300px] w-full">
-    <pie-spinner variant="secondary"/>
-    <p class="text-md text-black/70">Loading spending breakdown...</p>
-  </div>
+  <div class="flex flex-col gap-1 items-center justify-center">
+    <h3 class="text-center text-sm font-semibold text-black/70">
+      Your Spending by Category
+    </h3>
+    <div v-if="isLoading" class="flex items-center justify-center flex-col min-h-[300px] w-full">
+      <pie-spinner variant="secondary"/>
+      <p class="text-md text-black/70">Loading spending breakdown...</p>
+    </div>
+  
+    <Doughnut 
+      :data="formattedChartData" 
+      v-else>
+      <div v-if="!insights?.breakdown"
+      class="flex flex-col items-center justify-center">
+        <p class="text-center text-sm text-black/60">
+          No data available <br>
+          between <br>
+          {{ dateRangeDisplay }}
+        </p>
+      </div>
+      <div v-else
+      class="flex flex-col items-center justify-center">
+        <h3 class="text-xl font-extrabold text-black/70">
+          {{netAmountDisplay}}
+        </h3>
+        <p class="text-center text-sm text-black/60">
+          between <br>
+          {{ dateRangeDisplay }}
+        </p>
+      </div>
+    </Doughnut>
 
-  <Doughnut 
-    :data="formattedChartData" 
-    v-else>
-    <div v-if="!insights?.breakdown"
-    class="flex flex-col items-center justify-center">
-      <p class="text-center text-sm text-black/60">
-        No data available <br>
-        between <br>
-        {{ dateRangeDisplay }}
-      </p>
-    </div>
-    <div v-else
-    class="flex flex-col items-center justify-center">
-      <h3 class="text-xl font-extrabold text-black/70">
-        {{netAmountDisplay}}
-      </h3>
-      <p class="text-center text-sm text-black/60">
-        between <br>
-        {{ dateRangeDisplay }}
-      </p>
-    </div>
-  </Doughnut>
+  </div>
 </template>
 
 <script setup lang="ts">
