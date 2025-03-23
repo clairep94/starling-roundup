@@ -1,8 +1,8 @@
 <template>
-  <div class="flex flex-col gap-1 items-center justify-center">
+  <div class="flex flex-col gap-1 items-center justify-center ">
     <h3 data-test="spending-insights-title"
-    class="text-center text-sm font-semibold text-black/70">
-      Your Spending by Category
+    class="text-center text-sm font-semibold text-black/70 relative">
+      Your Spending by Category  <NewFeatureChip class="absolute"/>
     </h3>
 
     <div data-test="spending-insights-loading" v-if="isLoading" 

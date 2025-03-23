@@ -28,12 +28,21 @@
             />
         </div>
 
-        <div class="flex flex-col mx-auto gap-3">
+        <div class="flex flex-col mx-auto gap-3 mt-3">
+          <div class="relative flex flex-col items-end">
+            <div class="absolute -translate-y-7">
+              <NewFeatureChip/>
+            </div>
 
-          <input placeholder="Search"
-          class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-4.5 p-2.5"
-            v-model="searchInput"
-          />
+            <!-- SEARCHBAR -->
+            <input placeholder="Search"
+            class="bg-gray-50 border min-w-[140px] border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-4.5 p-2.5"
+              v-model="searchInput"
+            >
+            </input>
+          </div>
+
+          <!-- FILTERS & DATE-RANGE PICKER -->
           <div data-test="filters-and-date-time-picker"
           class="flex flex-col md:flex-row lg:flex-col xl:flex-row gap-x-4 gap-y-3 mx-auto">
             <div data-test="filters" 
@@ -94,6 +103,7 @@ import DateRangePicker from '../components/DateRangePicker.vue'
 import Balance from '../components/Balance.vue'
 import Roundup from '../components/Roundup.vue'
 import SpendingInsightsByCategory from '../components/SpendingInsightsByCategory.vue'
+import NewFeatureChip from '../components/NewFeatureChip.vue'
 
 useHead({
   title: 'Transaction Feed'
