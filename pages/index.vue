@@ -18,8 +18,12 @@
       <div class="flex flex-col flex-grow gap-4 w-full">
         <div class="flex w-full items-center justify-center">
           <Roundup data-test="round-up" class="mb-4"
-            :selectedItems="filteredRoundupTransactions"
+            :selectedTransactions="selectedTransactions"
+            :allPotentialTransactions="filteredRoundupTransactions"
             :isLoadingFeed="isLoadingTransactionFeed"
+            :isSelectingRoundupTransactions="isSelectingRoundupTransactions"
+            @openSelectingRoundupTransactions="handleOpenSelectingRoundupTransactions"
+            @closeSelectingRoundupTransactions="handleCloseSelectingRoundupTransactions"
             />
         </div>
 
@@ -58,12 +62,13 @@
           </div>
         </div>
 
-        {{ selectedItems.length }}
+        Selected transactions:{{ selectedTransactions.length }}
 
         <TransactionsList data-test="transactions-list"
-          :is-loading="isLoadingTransactionFeed"
+          :isLoading="isLoadingTransactionFeed"
           :items="filteredTransactions"
-          :current-date="currentDate"
+          :currentDate="currentDate"
+          :isSelectingRoundupTransactions="isSelectingRoundupTransactions"
         />
       </div>
     </div>
@@ -84,6 +89,7 @@ import SearchBar from '../components/SearchBar.vue'
 import SelectDropdown from '../components/SelectDropdown.vue'
 import type { FeedItem } from '../types/feedItem.type'
 import { storeToRefs } from 'pinia'
+import { isEligibleForRoundup } from '../utils/roundUpCalculate'
 
 useHead({
   title: 'Transaction Feed'
@@ -135,23 +141,27 @@ const filteredTransactions = computed(() => {
 })
 
 // ===== ROUNDUPS =====
-/**
- * Assumption that only outgoing transactions that are NOT "INTERNAL_TRANSFER" can be applied topups with -- I believe this is the behaviour on the app
- * So that users cannot apply topups on past topup transactions
- */
-function isEligibleForRoundup(item:FeedItem):boolean{
-  return item.direction === 'OUT' && item.source !== "INTERNAL_TRANSFER"
-}
-
 const filteredRoundupTransactions = computed(() => {
   return filteredTransactions.value
     .filter(el => isEligibleForRoundup(el))
 })
 
+const isSelectingRoundupTransactions = ref(false)
+
 /**
  * Items selected for the roundup out of all eligible & pre-filtered items
+ * Auto-select all items when the user starts configuring a roundup transaction
  */ 
-const selectedItems = ref([])
+const selectedTransactions = ref<FeedItem[]>([])
+
+function handleOpenSelectingRoundupTransactions(){
+  selectedTransactions.value = filteredRoundupTransactions.value
+  isSelectingRoundupTransactions.value = true
+}
+
+function handleCloseSelectingRoundupTransactions(){
+  isSelectingRoundupTransactions.value = false
+}
 </script>
 
 <style scoped>

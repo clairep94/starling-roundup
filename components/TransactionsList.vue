@@ -5,7 +5,7 @@
   >
     <pie-spinner variant="secondary"/>
     <p class="text-lg text-black/70">
-      Loading balance...
+      Loading transactions...
     </p>
   </div>
 
@@ -35,11 +35,18 @@
         }}
       </div>
 
-      <TransactionFeedItem
-        :key="transaction.feedItemUid"
-        v-for="transaction in transactionGroup.items"
-        :transactionFeedItem="transaction"
-      />
+      <div class="flex flex-row border-b border-b-input-border" v-for="transaction in transactionGroup.items" >
+        <div v-if="isSelectingRoundupTransactions" class="flex w-8 items-center justify-center">
+          <input 
+            type="checkbox" 
+            :disabled="!isEligibleForRoundup(transaction)"
+          />
+        </div>
+        <TransactionFeedItem
+          :key="transaction.feedItemUid"
+          :transactionFeedItem="transaction"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -50,11 +57,13 @@ import TransactionFeedItem from '../components/TransactionFeedItem.vue'
 import type { FeedItem } from '../types/feedItem.type';
 import { extractDate } from '../utils/formatData';
 import '@justeattakeaway/pie-webc/components/spinner.js'
+import { isEligibleForRoundup } from '../utils/roundUpCalculate';
 
 const props = defineProps<{
   isLoading: boolean,
   items: FeedItem[],
   currentDate: string,
+  isSelectingRoundupTransactions: boolean
 }>();
 
 const organisedByDatesItems = computed(() => {

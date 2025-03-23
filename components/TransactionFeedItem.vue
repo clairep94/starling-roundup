@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row w-full justify-between p-4 border-b border-input-border">
+  <div class="flex flex-row w-full justify-between p-4">
     <div data-test="left-side" class="flex flex-row gap-4 justify-center items-center">
       <div data-test="counterparty-image-container" 
         class="rounded-sm bg-gray-400 min-w-12 h-12 object-cover overflow-clip">
