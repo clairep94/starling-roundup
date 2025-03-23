@@ -13,7 +13,7 @@
         @input="start = $event.target.value"
         :max="end"
         :disabled="props.disabled"
-        @change="emit('date-range-selected', start, end)"
+        @change="setDateRange(start, end)"
         class="bg-gray-50 border border-gray-300 text-black/50 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-6 p-2.5" 
         placeholder="Select date start"/>
     </div>
@@ -29,7 +29,7 @@
       <input id="datepicker-range-end" name="end" type="date" 
         :value="end"
         @input="end = $event.target.value"
-        @change="emit('date-range-selected', start, end)"
+        @change="setDateRange(start, end)"
         :min="start"
         :max="currentDate"
         :disabled="props.disabled"
@@ -41,20 +41,23 @@
 </template>
 
 <script setup lang="ts">
+import { useDateRangeStore } from '../store/dateRange';
 import { ref, defineProps, defineEmits } from 'vue'
 import "@justeattakeaway/pie-icons-webc/dist/IconCalendarDay.js";
 
 const props = defineProps<{
-  startProp: string,
-  endProp: string,
   currentDate: string,
   disabled: boolean
 }>();
 
-const start = ref<string>(props.startProp.split('T')[0])
-const end = ref<string>(props.endProp.split('T')[0])
+const dateRangeStore = useDateRangeStore()
+const { selectedStart, selectedEnd } = storeToRefs(dateRangeStore)
+const { setDateRange } = dateRangeStore
+
+const start = ref<string>(selectedStart.value.split('T')[0])
+const end = ref<string>(selectedEnd.value.split('T')[0])
 const currentDate = ref<string>(props.currentDate.split('T')[0])
-const emit = defineEmits(['date-range-selected'])
+
 </script>
 
 <style scoped>

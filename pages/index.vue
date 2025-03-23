@@ -11,12 +11,7 @@
     <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 gap-6 lg:flex-row-reverse lg:px-8 lg:py-6 lg:gap-8">
       <div class="flex flex-col gap-6 w-full lg:w-1/3 items-center">
         <Balance />
-        <SpendingInsightsByCategory
-          :dateRange="{
-            summaryStartPeriodInclusive: dateRangeStore.selectedStart,
-            summaryEndPeriodExclusive: dateRangeStore.selectedEnd
-          }"
-        />
+        <SpendingInsightsByCategory :useDateRange="true" />
       </div>
 
       <!-- TRANSACTIONS -->
@@ -24,7 +19,7 @@
         <div class="flex w-full items-center justify-center">
           <Roundup data-test="round-up" class="mb-4"
             :selectedItems="filteredRoundupTransactions"
-            :isLoadingFeed="transactionFeedStore.isLoadingTransactionFeed"
+            :isLoadingFeed="isLoadingTransactionFeed"
             />
         </div>
 
@@ -57,17 +52,16 @@
             </div>
             
             <DateRangePicker data-test="date-range-picker"
-              @date-range-selected="handleDateRangeSelected"
               :currentDate="currentDate"
-              :startProp="dateRangeStore.selectedStart"
-              :endProp="dateRangeStore.selectedEnd"
-              :disabled="transactionFeedStore.isLoadingTransactionFeed"
+              :disabled="isLoadingTransactionFeed"
             />
           </div>
         </div>
 
+        {{ selectedItems.length }}
+
         <TransactionsList data-test="transactions-list"
-          :is-loading="transactionFeedStore.isLoadingTransactionFeed"
+          :is-loading="isLoadingTransactionFeed"
           :items="filteredTransactions"
           :current-date="currentDate"
         />
@@ -77,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { useUserIdentityStore } from '../store/userIdentity'
 import { useTransactionFeedStore } from '../store/transactionFeed'
 import { useDateRangeStore } from '../store/dateRange'
@@ -88,26 +82,30 @@ import SpendingInsightsByCategory from '../components/SpendingInsightsByCategory
 import NewFeatureChip from '../components/NewFeatureChip.vue'
 import SearchBar from '../components/SearchBar.vue'
 import SelectDropdown from '../components/SelectDropdown.vue'
+import type { FeedItem } from '../types/feedItem.type'
+import { storeToRefs } from 'pinia'
 
 useHead({
   title: 'Transaction Feed'
 })
 
 const userIdStore = useUserIdentityStore()
-const transactionFeedStore = useTransactionFeedStore()
-const dateRangeStore = useDateRangeStore()
 
-// ==== DATE RANGE PICKER ====
-function handleDateRangeSelected(start:string, end:string) {
-  dateRangeStore.setDateRange(start, end)
-  transactionFeedStore.fetchTransactionFeed(dateRangeStore.selectedStart, dateRangeStore.selectedEnd)
-}
+const transactionFeedStore = useTransactionFeedStore()
+const { isLoadingTransactionFeed, transactionFeed } = storeToRefs(transactionFeedStore)
+
+const dateRangeStore = useDateRangeStore()
+const { selectedStart, selectedEnd } = storeToRefs(dateRangeStore)
 const currentDate = new Date().toISOString()
+
+watch([selectedStart, selectedEnd], ([newStart, newEnd]) => {
+  transactionFeedStore.fetchTransactionFeed(newStart, newEnd)
+}, { immediate: true })
 
 // ===== SEARCH & FILTER ====
 const spendingCategories = computed(() => {
   let categories:string[] = ['ALL CATEGORIES']
-  transactionFeedStore.transactionFeed.forEach((el) => {
+  transactionFeed.value.forEach((el) => {
     if(!categories.includes(el.spendingCategory)){
       categories.push(el.spendingCategory)
     }
@@ -126,7 +124,7 @@ const searchInput = ref('')
 // TODO: add test cases for this for search/filter:
 // Faster Payment, Mickey Mouse, Trip to Paris
 const filteredTransactions = computed(() => {
-  return transactionFeedStore.transactionFeed
+  return transactionFeed.value
     .filter(el => {
       if (searchInput.value.length === 0) return true;
       const searchTerm = searchInput.value.toLowerCase();
@@ -141,15 +139,19 @@ const filteredTransactions = computed(() => {
  * Assumption that only outgoing transactions that are NOT "INTERNAL_TRANSFER" can be applied topups with -- I believe this is the behaviour on the app
  * So that users cannot apply topups on past topup transactions
  */
+function isEligibleForRoundup(item:FeedItem):boolean{
+  return item.direction === 'OUT' && item.source !== "INTERNAL_TRANSFER"
+}
+
 const filteredRoundupTransactions = computed(() => {
   return filteredTransactions.value
-    .filter(el => el.direction === 'OUT')
-    .filter(el => el.source !== "INTERNAL_TRANSFER")
+    .filter(el => isEligibleForRoundup(el))
 })
 
-onMounted(() => {
-  transactionFeedStore.fetchTransactionFeed(dateRangeStore.selectedStart, dateRangeStore.selectedEnd)
-})
+/**
+ * Items selected for the roundup out of all eligible & pre-filtered items
+ */ 
+const selectedItems = ref([])
 </script>
 
 <style scoped>
