@@ -1,48 +1,47 @@
 <template>
   <div class="flex flex-col gap-1 items-center justify-center">
-    <h3 class="text-center text-sm font-semibold text-black/70">
+    <h3 data-test="spending-insights-title"
+    class="text-center text-sm font-semibold text-black/70">
       Your Spending by Category
     </h3>
-    <div v-if="isLoading" class="flex items-center justify-center flex-col min-h-[300px] w-full">
+
+    <div data-test="spending-insights-loading" v-if="isLoading" 
+    class="flex items-center justify-center flex-col min-h-[300px] w-full">
       <pie-spinner variant="secondary"/>
       <p class="text-md text-black/70">Loading spending breakdown...</p>
     </div>
   
-    <Doughnut 
-      :data="formattedChartData" 
-      v-else>
-      <div v-if="!insights?.breakdown"
+    <DoughnutChart data-test="doughnut" v-else
+      :data="formattedChartData" >
+      <div data-test="center-info-summary"
       class="flex flex-col items-center justify-center">
-        <p class="text-center text-sm text-black/60">
-          No data available <br>
-          between <br>
-          {{ dateRangeDisplay }}
+        <p v-if="!insights?.breakdown" data-test="spending-insights-no-data"
+        class="text-center text-sm text-black/60">
+          No data available
         </p>
-      </div>
-      <div v-else
-      class="flex flex-col items-center justify-center">
-        <h3 class="text-xl font-extrabold text-black/70">
+        <h3 v-else data-test="spending-insights-amount"
+        class="text-xl font-extrabold text-black/70">
           {{netAmountDisplay}}
         </h3>
-        <p class="text-center text-sm text-black/60">
-          between <br>
+        <p data-test="spending-insights-date-range"
+        class="text-center text-xs text-black/60">
           {{ dateRangeDisplay }}
         </p>
       </div>
-    </Doughnut>
-
+    </DoughnutChart>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
+import { storeToRefs } from 'pinia';
 import { useSpendingInsightsStore } from '../store/spendingInsights';
 import '@justeattakeaway/pie-webc/components/spinner.js'
-import Doughnut from './Doughnut.vue';
+import DoughnutChart from './DoughnutChart.vue';
 import { formatCurrencyAmount } from '../utils/formatData';
 
 const props = defineProps<{
-  dateRange: {
+  dateRange?: {
     summaryStartPeriodInclusive: string,
     summaryEndPeriodExclusive: string
   }
@@ -52,7 +51,11 @@ const spendingInsightsStore = useSpendingInsightsStore();
 const { spendingInsightsSummaryByCategory: insights, isLoadingSpendingInsightsByCategory: isLoading } = storeToRefs(spendingInsightsStore);
 
 const dateRangeDisplay = computed(() => {
-  return `${new Date(props.dateRange?.summaryStartPeriodInclusive.split('T')[0]).toLocaleDateString('en-GB')} - ${new Date(props.dateRange?.summaryEndPeriodExclusive.split('T')[0]).toLocaleDateString('en-GB')}`
+  if(props.dateRange){
+    return `between ${new Date(props.dateRange?.summaryStartPeriodInclusive.split('T')[0]).toLocaleDateString('en-GB')} - ${new Date(props.dateRange?.summaryEndPeriodExclusive.split('T')[0]).toLocaleDateString('en-GB')}`
+  } else{
+    return `for ${insights.value?.period}`
+  }
 })
 
 const netAmountDisplay = computed(() => {

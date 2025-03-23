@@ -4,7 +4,7 @@
       <slot></slot>
     </div>
     <Doughnut
-      id="my-chart-id"
+      data-test="doughnut-chart"
       :data="chartData"
       class="opacity-90"
       :options="options"
@@ -13,6 +13,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "vue-chartjs";
 
@@ -29,12 +30,31 @@ const props = defineProps<{
   }
 }>();
 
+// ==== Options ========
 const options = computed(() => {
   return {
     maintainAspectRatio: false,
     cutout: '70%',
     radius: '90%',
     ...(props.optionsOverrides ? props.optionsOverrides : {})
+  }
+})
+
+// ===== ChartData =======
+const chartData = computed(() => {
+  if (!props.data) {
+    return noDataChartData
+  } else {
+    return {
+      labels: props.data.labels,
+      datasets: props.data.datasets.map((el) => {
+        return {
+          ...el,
+          backgroundColor: segmentColours,
+          hoverOffset: hoverOffset
+        }
+      })
+    }
   }
 })
 
@@ -64,23 +84,6 @@ const noDataChartData = {
     }
   ]
 }
-
-const chartData = computed(() => {
-  if (!props.data) {
-    return noDataChartData
-  } else {
-    return {
-      labels: props.data.labels,
-      datasets: props.data.datasets.map((el) => {
-        return {
-          ...el,
-          backgroundColor: segmentColours,
-          hoverOffset: hoverOffset
-        }
-      })
-    }
-  }
-})
 </script>
 
 <style scoped>
