@@ -1,6 +1,7 @@
 <template>
-  <h4 class="text-black/60 mt-3">
-    Select transactions and a savings space to transfer your roundup.
+  <h4 class="text-black/60 mt-3 text-sm">
+    Select transactions eligible transactions below. <NewFeatureChip/><br>
+    Then select a savings space to transfer your roundup.
   </h4>
   <div data-test="spaces-for-transfer"
   class="flex w-full flex-row overflow-scroll bg-gray-50 p-5 rounded-lg border border-input-border gap-3 relative"

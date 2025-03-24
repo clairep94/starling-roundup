@@ -16,8 +16,8 @@
 
       <!-- TRANSACTIONS -->
       <div class="flex flex-col flex-grow gap-4 w-full">
-        <div class="flex w-full items-center justify-center">
-          <Roundup data-test="round-up" class="mb-4"
+        <div data-test="round-up" class="flex w-full items-center justify-center mb-4">
+          <Roundup 
             :selectedTransactions="selectedTransactions"
             :allPotentialTransactions="filteredRoundupTransactions"
             :isLoadingFeed="isLoadingTransactionFeed"
@@ -55,21 +55,20 @@
               />
             </div>
             
-            <DateRangePicker data-test="date-range-picker"
+            <DateRangePicker
               :currentDate="currentDate"
               :disabled="isLoadingTransactionFeed"
             />
           </div>
         </div>
 
-        Selected transactions:{{ selectedTransactions.length }}
-
-        <TransactionsList data-test="transactions-list"
+        <TransactionsList
+          :currentDate="currentDate"
           :isLoading="isLoadingTransactionFeed"
+          :isSelectingRoundupTransactions="isSelectingRoundupTransactions"
           :items="filteredTransactions"
           :selectedTransactions="selectedTransactions"
-          :currentDate="currentDate"
-          :isSelectingRoundupTransactions="isSelectingRoundupTransactions"
+          @update:selectedTransactions="handleUpdateSelectedTransactions"
         />
       </div>
     </div>
@@ -105,9 +104,6 @@ const dateRangeStore = useDateRangeStore()
 const { selectedStart, selectedEnd } = storeToRefs(dateRangeStore)
 const currentDate = new Date().toISOString()
 
-watch([selectedStart, selectedEnd], ([newStart, newEnd]) => {
-  transactionFeedStore.fetchTransactionFeed(newStart, newEnd)
-}, { immediate: true })
 
 // ===== SEARCH & FILTER ====
 const spendingCategories = computed(() => {
@@ -163,6 +159,17 @@ function handleOpenSelectingRoundupTransactions(){
 function handleCloseSelectingRoundupTransactions(){
   isSelectingRoundupTransactions.value = false
 }
+
+function handleUpdateSelectedTransactions(updatedArray: FeedItem[]){
+  selectedTransactions.value = updatedArray
+}
+
+watch([selectedStart, selectedEnd], async ([newStart, newEnd]) => {
+  isSelectingRoundupTransactions.value = false
+  await transactionFeedStore.fetchTransactionFeed(newStart, newEnd)
+  handleOpenSelectingRoundupTransactions()
+}, { immediate: true })
+
 </script>
 
 <style scoped>
