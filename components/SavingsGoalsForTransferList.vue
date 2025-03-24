@@ -25,7 +25,7 @@
 
       <!-- Confirm savings card -->
       <div data-test="confirm-transfer-to-savings-goal-card" v-if="itemToConfirm === goal"
-        class="bg-white rounded-lg border border-input-border/70 p-3 md:p-5 flex flex-col w-full gap-2 items-center justify-center min-h-[114px]"
+        class="bg-white rounded-lg border border-input-border/70 p-3 md:p-5 flex flex-col w-full gap-2 items-center justify-center min-h-[85px] md:min-h-[114px]"
       >
         <p class="font-semibold text-black/70 text-center">
           Confirm transfer to 

@@ -15,5 +15,5 @@ export function calculateRoundUpFromTransactionFeed(transactionFeedList: FeedIte
  * So that users cannot apply topups on past topup transactions
  */
 export function isEligibleForRoundup(item:FeedItem):boolean{
-  return item.direction === 'OUT' && item.source !== "INTERNAL_TRANSFER"
+  return item.direction === 'OUT' && item.source !== "INTERNAL_TRANSFER" && !item.userNote
 }

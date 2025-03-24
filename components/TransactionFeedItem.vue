@@ -27,8 +27,11 @@
         {{ direction === 'IN' ? '+' : '' }}{{ formattedCurrencyAmount }}   
       </div>
       <div v-if="direction === 'OUT' && source !=='INTERNAL_TRANSFER'" data-test="round-up-amount" class="flex flex-row gap-[2px] items-center text-gray-500">
-        <icon-coins/>
-        <p class="text-xs">
+        <icon-coins v-if="!userNote"/>
+        <icon-check-circle-filled v-else/>
+        <p class="text-xs "
+          :class="{'line-through' : userNote}"
+        >
           {{ formattedRoundupAmount }}
         </p>
       </div>
@@ -41,7 +44,7 @@ import type { FeedItem } from "../types/feedItem.type";
 import { formatCurrencyAmount, formatUpperSnakeCaseToTitleString, extractTime } from "~/utils/formatData";
 import { findRoundUpAmount } from "~/utils/roundUpCalculate";
 import "@justeattakeaway/pie-icons-webc/dist/IconCoins.js";
-import "@justeattakeaway/pie-icons-webc/dist/IconCoinsFilled.js";
+import "@justeattakeaway/pie-icons-webc/dist/IconCheckCircleFilled.js";
 import { useAccountsStore } from '@/store/accounts'
 
 const accountsStore = useAccountsStore()

@@ -168,7 +168,11 @@ watch([selectedStart, selectedEnd], async ([newStart, newEnd]) => {
   isSelectingRoundupTransactions.value = false
   await transactionFeedStore.fetchTransactionFeed(newStart, newEnd)
   handleOpenSelectingRoundupTransactions()
-}, { immediate: true })
+})
+
+onMounted(async() => {
+  await transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
+})
 
 </script>
 
