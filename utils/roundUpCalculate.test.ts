@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { findRoundUpAmount, calculateRoundUpFromTransactionFeed } from './roundUpCalculate'
+import { findRoundUpAmount, calculateRoundUpFromTransactionFeed, isEligibleForRoundup } from './roundUpCalculate'
 
 // Test data
 const transactionFeedList = [
@@ -30,5 +30,18 @@ describe('calculateRoundUpFromTransactionFeed', () => {
 
   it('should return 0 for an empty transaction feed', () => {
     expect(calculateRoundUpFromTransactionFeed([])).toBe(0)
+  })
+})
+
+describe('isEligibleForRoundup', () => {
+  it('should return false if item direction is IN or an INTERNAL_TRANSFER', () => {
+    expect(isEligibleForRoundup({direction: 'IN'})).toBe(false)
+    expect(isEligibleForRoundup({source: 'INTERNAL_TRANSFER'})).toBe(false)
+    expect(isEligibleForRoundup({direction: 'OUT', source: 'INTERNAL_TRANSFER'})).toBe(false)
+    expect(isEligibleForRoundup({direction: 'IN', source: 'NOT_INTERNAL_TRANSFER'})).toBe(false)
+    expect(isEligibleForRoundup({direction: 'IN', source: 'INTERNAL_TRANSFER'})).toBe(false)
+  })
+  it('should return true if item direction is OUT & item is not an internal transfer', () => {
+    expect(isEligibleForRoundup({direction: 'OUT', source: 'NOT_INTERNAL_TRANSFER'})).toBe(true)
   })
 })

@@ -1,6 +1,7 @@
 <template>
-  <h4 class="text-black/60 mt-2">
-    Select a savings space to transfer your roundup.
+  <h4 class="text-black/60 mt-3 text-sm">
+    Select transactions eligible transactions below. <NewFeatureChip/><br>
+    Then select a savings space to transfer your roundup.
   </h4>
   <div data-test="spaces-for-transfer"
   class="flex w-full flex-row overflow-scroll bg-gray-50 p-5 rounded-lg border border-input-border gap-3 relative"
@@ -21,8 +22,35 @@
 
     <!-- SAVINGS GOALS -->
     <div v-else v-for="goal in savingsGoalsStore.savingsGoals" class="min-w-[350px]">
-      <SavingsGoalCard data-test="savings-goal"
-      :goal="goal" @click="handleTransfer(goal.savingsGoalUid)" class="hover:cursor-pointer"/>
+
+      <!-- Confirm savings card -->
+      <div data-test="confirm-transfer-to-savings-goal-card" v-if="itemToConfirm === goal"
+        class="bg-white rounded-lg border border-input-border/70 p-3 md:p-5 flex flex-col w-full gap-2 items-center justify-center min-h-[85px] md:min-h-[114px]"
+      >
+        <p class="font-semibold text-black/70 text-center">
+          Confirm transfer to 
+          <span class="font-bold">
+            {{goal.name}}
+          </span>?
+        </p>
+        <div class="flex justify-center gap-3">
+          <button class="px-4 py-1 bg-black/90 hover:bg-black/70 hover:cursor-pointer text-white text-xs rounded-full font-semibold"
+          @click="handleTransfer(goal.savingsGoalUid)"
+          >
+            Confirm
+          </button>
+
+          <button  class="px-4 py-1 bg-gray-300 hover:bg-gray-200 hover:cursor-pointer text-xs rounded-full font-semibold"
+          @click="itemToConfirm = undefined"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      <SavingsGoalCard data-test="savings-goal" v-else
+      :goal="goal" @click="itemToConfirm = goal" class="hover:cursor-pointer"/>
+
     </div>
   </div>
 </template>
@@ -45,6 +73,8 @@ const notificationsStore = useNotificationsStore()
 const balanceStore = useBalanceStore()
 const transactionFeedStore = useTransactionFeedStore()
 const dateRangeStore = useDateRangeStore()
+
+const itemToConfirm = ref()
 
 /*
  * Makes savigns goal transfer. If successful, adds a success notification and triggers balance, savings goals and transaction feed to re-fetch

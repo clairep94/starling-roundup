@@ -77,8 +77,9 @@ npm run test
 
 - [x] User can filter
 - [x] User can search
-- [ ] User can see their spending category breakdown
-- [ ] User can select individual items to apply the transfer with
+- [x] User can see their spending category breakdown
+- [x] User can select individual items to apply the transfer with
+- [ ] User can see when a past transaction has had a roundup applied
 - [ ] User can see transaction feed for the savings spaces
 
 - [ ] Update loading state UI logic

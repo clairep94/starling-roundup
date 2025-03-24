@@ -2,7 +2,7 @@
   <div class="flex flex-col lg:w-[400px] w-full items-center gap-1">
     <!-- TITLE -->
     <h4 data-test="roundup-title" class="text-sm font-semibold text-black/70">
-      Your Potential Roundup
+      {{ titleMessage }}
     </h4>
 
     <!-- LOADING -->
@@ -20,16 +20,17 @@
     <button data-test="show-spaces-for-transfer-button"
       class="rounded-full text-text-default py-2 px-6 text-md transition-all cursor-pointer"
       :class="{
-        'bg-button-teal hover:bg-button-teal-hover': !isSpacesSelectionOpen,
-        'bg-gray-400 hover:bg-gray-500': isSpacesSelectionOpen
+        'bg-button-teal hover:bg-button-teal-hover': !isSelectingRoundupTransactions,
+        'bg-gray-400 hover:bg-gray-500': isSelectingRoundupTransactions
       }"
-      @click="isSpacesSelectionOpen = !isSpacesSelectionOpen"
+      @click="emit(isSelectingRoundupTransactions ? 'closeSelectingRoundupTransactions' : 'openSelectingRoundupTransactions')"
     >
-    {{ isSpacesSelectionOpen ? 'Cancel' : 'Perform transfer' }}
+    {{ isSelectingRoundupTransactions ? 'Cancel' : 'Perform transfer' }}
     </button>
 
     <!-- SPACES FOR TRANSFER -->
-    <SavingsGoalsForTransferList data-test="spaces-for-transfer" v-if="isSpacesSelectionOpen" class="mt-2"
+    <SavingsGoalsForTransferList data-test="spaces-for-transfer" v-if="isSelectingRoundupTransactions" 
+      class="mt-2"
       :transferAmount="roundupTotalCurrencyAndAmount"
     />
   </div>
@@ -44,19 +45,30 @@ import { formatCurrencyAmount } from '../utils/formatData';
 import SavingsGoalsForTransferList from './SavingsGoalsForTransferList.vue';
 
 const props = defineProps<{
-  selectedItems: FeedItem[];
+  selectedTransactions: FeedItem[];
+  allPotentialTransactions: FeedItem[];
   isLoadingFeed: boolean;
+  isSelectingRoundupTransactions: boolean;
 }>();
 
-const isSpacesSelectionOpen = ref(false);
+const emit = defineEmits(['openSelectingRoundupTransactions', 'closeSelectingRoundupTransactions']);
 
 const accountsStore = useAccountsStore()
 
+const titleMessage = computed(() => {
+  return props.isSelectingRoundupTransactions ? 'Your Selected Roundup Total' : 'Your Potential Roundup'
+})
+
 const roundupTotalMinorUnits = computed(() => {
-  if(props.selectedItems.length === 0){
+  // if not selecting roundup transactions -- show the potential roundup amount of all eligible & filtered items
+  // if selecting roundup transactions -- show the actual roundup amount of all selected items in eligible & filtered items
+  const applicableItemsList = props.isSelectingRoundupTransactions ? 
+    props.selectedTransactions : props.allPotentialTransactions
+
+  if(applicableItemsList.length === 0){
     return 0
   } else {
-    return props.selectedItems.reduce((acc, item) => acc + findRoundUpAmount(item.amount), 0);
+    return applicableItemsList.reduce((acc, item) => acc + findRoundUpAmount(item.amount), 0);
   }
 });
 

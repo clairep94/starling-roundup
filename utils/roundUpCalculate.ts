@@ -9,3 +9,11 @@ export function findRoundUpAmount(amount: CurrencyAndAmount): number{
 export function calculateRoundUpFromTransactionFeed(transactionFeedList: FeedItem[]): number{
   return transactionFeedList.reduce((acc, item) => acc + findRoundUpAmount(item.amount), 0);
 }
+
+/**
+ * Assumption that only outgoing transactions that are NOT "INTERNAL_TRANSFER" can be applied topups with -- I believe this is the behaviour on the app
+ * So that users cannot apply topups on past topup transactions
+ */
+export function isEligibleForRoundup(item:FeedItem):boolean{
+  return item.direction === 'OUT' && item.source !== "INTERNAL_TRANSFER" && !item.userNote
+}

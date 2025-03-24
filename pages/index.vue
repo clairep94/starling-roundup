@@ -11,20 +11,19 @@
     <div data-test="transaction-feed-main" class="flex flex-col flex-grow px-6 py-4 gap-6 lg:flex-row-reverse lg:px-8 lg:py-6 lg:gap-8">
       <div class="flex flex-col gap-6 w-full lg:w-1/3 items-center">
         <Balance />
-        <SpendingInsightsByCategory
-          :dateRange="{
-            summaryStartPeriodInclusive: dateRangeStore.selectedStart,
-            summaryEndPeriodExclusive: dateRangeStore.selectedEnd
-          }"
-        />
+        <SpendingInsightsByCategory :useDateRange="true" />
       </div>
 
       <!-- TRANSACTIONS -->
       <div class="flex flex-col flex-grow gap-4 w-full">
-        <div class="flex w-full items-center justify-center">
-          <Roundup data-test="round-up" class="mb-4"
-            :selectedItems="filteredRoundupTransactions"
-            :isLoadingFeed="transactionFeedStore.isLoadingTransactionFeed"
+        <div data-test="round-up" class="flex w-full items-center justify-center mb-4">
+          <Roundup 
+            :selectedTransactions="selectedTransactions"
+            :allPotentialTransactions="filteredRoundupTransactions"
+            :isLoadingFeed="isLoadingTransactionFeed"
+            :isSelectingRoundupTransactions="isSelectingRoundupTransactions"
+            @openSelectingRoundupTransactions="handleOpenSelectingRoundupTransactions"
+            @closeSelectingRoundupTransactions="handleCloseSelectingRoundupTransactions"
             />
         </div>
 
@@ -56,20 +55,20 @@
               />
             </div>
             
-            <DateRangePicker data-test="date-range-picker"
-              @date-range-selected="handleDateRangeSelected"
+            <DateRangePicker
               :currentDate="currentDate"
-              :startProp="dateRangeStore.selectedStart"
-              :endProp="dateRangeStore.selectedEnd"
-              :disabled="transactionFeedStore.isLoadingTransactionFeed"
+              :disabled="isLoadingTransactionFeed"
             />
           </div>
         </div>
 
-        <TransactionsList data-test="transactions-list"
-          :is-loading="transactionFeedStore.isLoadingTransactionFeed"
+        <TransactionsList
+          :currentDate="currentDate"
+          :isLoading="isLoadingTransactionFeed"
+          :isSelectingRoundupTransactions="isSelectingRoundupTransactions"
           :items="filteredTransactions"
-          :current-date="currentDate"
+          :selectedTransactions="selectedTransactions"
+          @update:selectedTransactions="handleUpdateSelectedTransactions"
         />
       </div>
     </div>
@@ -77,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { useUserIdentityStore } from '../store/userIdentity'
 import { useTransactionFeedStore } from '../store/transactionFeed'
 import { useDateRangeStore } from '../store/dateRange'
@@ -88,26 +87,28 @@ import SpendingInsightsByCategory from '../components/SpendingInsightsByCategory
 import NewFeatureChip from '../components/NewFeatureChip.vue'
 import SearchBar from '../components/SearchBar.vue'
 import SelectDropdown from '../components/SelectDropdown.vue'
+import type { FeedItem } from '../types/feedItem.type'
+import { storeToRefs } from 'pinia'
+import { isEligibleForRoundup } from '../utils/roundUpCalculate'
 
 useHead({
   title: 'Transaction Feed'
 })
 
 const userIdStore = useUserIdentityStore()
-const transactionFeedStore = useTransactionFeedStore()
-const dateRangeStore = useDateRangeStore()
 
-// ==== DATE RANGE PICKER ====
-function handleDateRangeSelected(start:string, end:string) {
-  dateRangeStore.setDateRange(start, end)
-  transactionFeedStore.fetchTransactionFeed(dateRangeStore.selectedStart, dateRangeStore.selectedEnd)
-}
+const transactionFeedStore = useTransactionFeedStore()
+const { isLoadingTransactionFeed, transactionFeed } = storeToRefs(transactionFeedStore)
+
+const dateRangeStore = useDateRangeStore()
+const { selectedStart, selectedEnd } = storeToRefs(dateRangeStore)
 const currentDate = new Date().toISOString()
+
 
 // ===== SEARCH & FILTER ====
 const spendingCategories = computed(() => {
   let categories:string[] = ['ALL CATEGORIES']
-  transactionFeedStore.transactionFeed.forEach((el) => {
+  transactionFeed.value.forEach((el) => {
     if(!categories.includes(el.spendingCategory)){
       categories.push(el.spendingCategory)
     }
@@ -126,7 +127,7 @@ const searchInput = ref('')
 // TODO: add test cases for this for search/filter:
 // Faster Payment, Mickey Mouse, Trip to Paris
 const filteredTransactions = computed(() => {
-  return transactionFeedStore.transactionFeed
+  return transactionFeed.value
     .filter(el => {
       if (searchInput.value.length === 0) return true;
       const searchTerm = searchInput.value.toLowerCase();
@@ -137,19 +138,42 @@ const filteredTransactions = computed(() => {
 })
 
 // ===== ROUNDUPS =====
-/**
- * Assumption that only outgoing transactions that are NOT "INTERNAL_TRANSFER" can be applied topups with -- I believe this is the behaviour on the app
- * So that users cannot apply topups on past topup transactions
- */
 const filteredRoundupTransactions = computed(() => {
   return filteredTransactions.value
-    .filter(el => el.direction === 'OUT')
-    .filter(el => el.source !== "INTERNAL_TRANSFER")
+    .filter(el => isEligibleForRoundup(el))
 })
 
-onMounted(() => {
-  transactionFeedStore.fetchTransactionFeed(dateRangeStore.selectedStart, dateRangeStore.selectedEnd)
+const isSelectingRoundupTransactions = ref(false)
+
+/**
+ * Items selected for the roundup out of all eligible & pre-filtered items
+ * Auto-select all items when the user starts configuring a roundup transaction
+ */ 
+const selectedTransactions = ref<FeedItem[]>([])
+
+function handleOpenSelectingRoundupTransactions(){
+  selectedTransactions.value = filteredRoundupTransactions.value
+  isSelectingRoundupTransactions.value = true
+}
+
+function handleCloseSelectingRoundupTransactions(){
+  isSelectingRoundupTransactions.value = false
+}
+
+function handleUpdateSelectedTransactions(updatedArray: FeedItem[]){
+  selectedTransactions.value = updatedArray
+}
+
+watch([selectedStart, selectedEnd], async ([newStart, newEnd]) => {
+  isSelectingRoundupTransactions.value = false
+  await transactionFeedStore.fetchTransactionFeed(newStart, newEnd)
+  handleOpenSelectingRoundupTransactions()
 })
+
+onMounted(async() => {
+  await transactionFeedStore.fetchTransactionFeed(selectedStart.value, selectedEnd.value)
+})
+
 </script>
 
 <style scoped>
