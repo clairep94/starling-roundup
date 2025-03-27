@@ -102,6 +102,7 @@ describe('Savings Goals for Transfer List', () => {
     })
     it('should call transferToSavingsGoal with the savings goals uuid', async () => {
       await wrapper.find('[data-test="savings-goal"]').trigger('click')
+      await wrapper.find('[data-test="confirm-transfer-button"]').trigger('click')
       expect(savingsGoalsStore.transferToSavingsGoal).toHaveBeenCalled()
       expect(notificationsStore.addNotification).toHaveBeenCalledWith({
         message: "Successfully transferred roundup to savings goal: some-uid",

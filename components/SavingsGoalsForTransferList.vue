@@ -34,13 +34,15 @@
           </span>?
         </p>
         <div class="flex justify-center gap-3">
-          <button class="px-4 py-1 bg-black/90 hover:bg-black/70 hover:cursor-pointer text-white text-xs rounded-full font-semibold"
+          <button data-test="confirm-transfer-button"
+          class="px-4 py-1 bg-black/90 hover:bg-black/70 hover:cursor-pointer text-white text-xs rounded-full font-semibold"
           @click="handleTransfer(goal.savingsGoalUid)"
           >
             Confirm
           </button>
 
-          <button  class="px-4 py-1 bg-gray-300 hover:bg-gray-200 hover:cursor-pointer text-xs rounded-full font-semibold"
+          <button data-test="cancel-transfer-button"
+          class="px-4 py-1 bg-gray-300 hover:bg-gray-200 hover:cursor-pointer text-xs rounded-full font-semibold"
           @click="itemToConfirm = undefined"
           >
             Cancel
@@ -56,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useSavingsGoalsStore } from '../store/savingsGoals';
 import { useNotificationsStore } from '../store/notifications';
 import { useBalanceStore } from '../store/balance';
